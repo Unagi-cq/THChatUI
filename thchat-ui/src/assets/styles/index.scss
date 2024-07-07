@@ -1,0 +1,111 @@
+/****
+ * 系统主题
+ */
+
+/* 设置全局字体为思源宋体 */
+body, html {
+  font-family: 'Heiti SC', sans-serif;
+  font-weight: lighter;
+}
+
+/* 亮 主题样式 */
+.light-theme {
+  /* 背景样式 */
+  .theme-bg {
+    background-color: #fff;
+    color: #333;
+  }
+  /* 用户和机器人对话卡字体颜色 输入框 */
+  --chat-card-font-color: black;
+  /* 布局背景 */
+  --layout-common-layout-bg: #eee;
+  /* 输入框背景 与 theme-bg一致 */
+  --send-box-search-input-bg: #fff;
+  /* 输入框模糊背景样式切换 */
+  --send-box-search-input-before: none;
+}
+
+/* 暗黑 主题样式 */
+.dark-theme {
+  /* 背景样式 */
+  .theme-bg {
+    background-color: #333;
+    color: #fff;
+  }
+  /* 用户和机器人对话卡字体颜色 */
+  --chat-card-font-color: white;
+  /* 布局背景 */
+  --layout-common-layout-bg: black;
+  /* 输入框背景 与 theme-bg一致 */
+  --send-box-search-input-bg: #333;
+  /* 输入框模糊背景样式切换 */
+  --send-box-search-input-before: none;
+}
+
+/* 毛玻璃 主题样式 */
+.glass-theme {
+  /* 背景样式 */
+  .theme-bg {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: #333;
+  }
+  /* 用户和机器人对话卡字体颜色 */
+  --chat-card-font-color: black;
+  /* 布局背景 */
+  --layout-common-layout-bg: url('../images/bg.jpg') no-repeat center center;
+  /* 输入框背景 与 theme-bg一致 */
+  --send-box-search-input-bg: none;
+  /* 输入框模糊背景样式切换 */
+  --send-box-search-input-before: blur(20px);
+}
+
+
+.el-row {
+  margin-bottom: 20px;
+}
+
+.el-row:last-child {
+  margin-bottom: 0;
+}
+
+.el-col {
+  border-radius: 4px;
+}
+
+.grid-content {
+  border-radius: 4px;
+  min-height: 36px;
+}
+
+.ground-glass {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* 如果浏览器不支持 backdrop-filter，则可以提供一个替代方案 */
+@supports not ((backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px))) {
+  .ground-glass {
+    background: white;
+  }
+}
+
+.dashed-border-right {
+  border-right: 1px dashed grey;
+}
+
+.dashed-border-left {
+  border-left: 1px dashed grey;
+}
+
+.dashed-border-top {
+  border-top: 1px dashed grey;
+}
+
+.dashed-border-bottom {
+  border-bottom: 1px dashed grey;
+}
+
+.dashed-border {
+  border: 1px dashed grey;
+}
