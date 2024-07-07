@@ -387,7 +387,7 @@ export default {
                             controller: this.controller,
                             onopen: (event) => {
                                 console.log('连接成功')
-                                if (event.status === 401) {
+                                if (event != undefined && event.status === 401) {
                                     this.$notify({
                                         title: '远程调用失败!',
                                         message: '请检查API KEY是否填写或过期',

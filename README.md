@@ -3,8 +3,6 @@
     嗨喽~朋友！🤖 欢迎使用THWebUI <span style="font-size: 10px;">v1.0.0</span>，一个基于Vue2/Vue3和Element Plus的Web对话方案。项目持续集成与升级中，敬请期待更多功能与优化。
 </p>
 
-[[toc]]
-
 ## THChatUI介绍
 THChatUI是一个专为**数据敏感型个人/组织/公司**设计的**开源大模型对话WebUI**，可简便快捷的接入本地大模型，保护信息安全。本项目基于Apache 2.0协议开源。
 
@@ -30,7 +28,7 @@ THChatUI界面如下：
 [THChatUI代码仓库](https://github.com/Unagi-cq/THChatUI)
 > 【注2】代码仓提供了前端项目和后端接口示例。
 
-[THChatUI代码视频讲解教程]()
+[THChatUI代码视频讲解教程](https://www.bilibili.com/video/BV1tb421n7Li/)
 [个人博客](https://blog.csdn.net/qq_43592352?type=blog)
 公众号
 
@@ -220,4 +218,4 @@ location ^~ /ali/remote/
 ```
 
 ### 项目目录与代码实现
-请参考：[THChatUI代码视频讲解教程]()
+请参考：[THChatUI代码视频讲解教程](https://www.bilibili.com/video/BV1tb421n7Li/)

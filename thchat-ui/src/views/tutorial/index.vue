@@ -55,7 +55,7 @@ THChatUI界面如下：
 [THChatUI代码仓库](https://github.com/Unagi-cq/THChatUI)
 > 【注2】代码仓提供了前端项目和后端接口示例。
 
-[THChatUI代码视频讲解教程]()
+[THChatUI代码视频讲解教程](https://www.bilibili.com/video/BV1tb421n7Li/)
 [个人博客](https://blog.csdn.net/qq_43592352?type=blog)
 公众号
 
@@ -245,7 +245,7 @@ location ^~ /ali/remote/
 \`\`\`
 
 ### 项目目录与代码实现
-请参考：[THChatUI代码视频讲解教程]()
+请参考：[THChatUI代码视频讲解教程](https://www.bilibili.com/video/BV1tb421n7Li/)
 `
         };
     },

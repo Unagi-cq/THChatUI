@@ -27,13 +27,13 @@ const defaultSettings = {
     "bg": bg,
     "chat_detail": true,
     "method": 'remote',
-    "region": 'Ali_DashScope',
+    "region": 'Xunfei_Spark',
     "api_key": '...',
-    "model_name": 'qwen',
-    "model_version": 'qwen-turbo',
+    "model_name": 'xunfei',
+    "model_version": 'spark lite',
     "memory": true,
-    "pre_group": 0,
-    "post_group": 0,
+    "pre_group": 1,
+    "post_group": 1,
     "chat_type": 'chat'
 }
 
