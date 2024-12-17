@@ -236,6 +236,8 @@ export default {
                 return import("@/api/Xunfei_Spark").then(module => module.remote);
             } else if (this.region === 'Zhipu_BigModel') {
                 return import("@/api/Zhipu_BigModel").then(module => module.remote);
+            } else if (this.region === 'Baidu_QianFan') {
+                return import("@/api/Baidu_QianFan").then(module => module.remote);
             }
         },
 

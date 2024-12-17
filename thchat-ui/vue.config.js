@@ -13,6 +13,13 @@ module.exports = defineConfig({
           '^/ali/remote': ''
         },
       },
+      '/baidu/remote': {
+        target: 'https://aip.baidubce.com', // 代理的目标地址
+        changeOrigin: true, // 是否需要改变源
+        pathRewrite: {
+          '^/baidu/remote': ''
+        },
+      },
       // 配置代理 本地使用
       '/local': {
         target: 'http://localhost:5000', // 代理的目标地址

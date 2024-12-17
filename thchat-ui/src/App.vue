@@ -3,43 +3,27 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
-import { useStore } from 'vuex';
+import { ref, watch, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import '@/util/resize' // 引入 ResizeObserver 设置
 
 export default {
     setup() {
-        const store = useStore();
-        const theme = ref(store.state.setting.theme);
+        const store = useStore()
+        const theme = ref(store.state.setting.theme)
+
+        // 监听主题变化
+        watch(() => store.state.setting.theme, (newTheme) => {
+            theme.value = newTheme
+            document.body.className = `${newTheme}-theme`
+        })
 
         // 挂载时设置初始主题
         onMounted(() => {
-            document.body.className = theme.value + '-theme';
-        });
+            document.body.className = `${theme.value}-theme`
+        })
 
-        return {
-
-        };
-    }
-}
-
-const debounce = (fn, delay) => {
-    let timer
-    return (...args) => {
-        if (timer) {
-            clearTimeout(timer)
-        }
-        timer = setTimeout(() => {
-            fn(...args)
-        }, delay)
-    }
-}
-
-// 窗口防抖
-const _ResizeObserver = window.ResizeObserver;
-window.ResizeObserver = class ResizeObserver extends _ResizeObserver{
-    constructor(callback) {
-        callback = debounce(callback, 200);
-        super(callback);
+        return {}
     }
 }
 </script>

@@ -111,8 +111,6 @@ module.exports = {
             {label: "通义千问（qwen-max-longcontext）", value: "qwen;qwen-max-longcontext", pre_group: 0, post_group: 0},
             {label: "百川（baichuan-7b-v1）", value: "baichuan;baichuan-7b-v1", pre_group: 0, post_group: 0},
             {label: "百川（baichuan2-7b-chat-v1）", value: "baichuan;baichuan2-7b-chat-v1", pre_group: 0, post_group: 0},
-            // {label: "LlaMa（llama2-7b-chat-v2）", value: "llama;llama2-7b-chat-v2", pre_group: 0, post_group: 0},
-            // {label: "LlaMa（llama2-13b-chat-v2）", value: "llama;llama2-13b-chat-v2", pre_group: 0, post_group: 0},
             {label: "ChatGLM(chatglm3-6b)", value: "zhipu;chatglm3-6b", pre_group: 0, post_group: 0},
         ],
         "Xunfei_Spark": [
@@ -121,6 +119,10 @@ module.exports = {
         "Zhipu_BigModel": [
             {label: "智谱（glm-4）", value: "zhipu;glm-4", pre_group: 2, post_group: 2},
             {label: "智谱（glm-3-turbo）", value: "zhipu;glm-3-turbo", pre_group: 2, post_group: 2},
+            {label: "智谱（glm-4-flash）", value: "zhipu;glm-4-flash", pre_group: 2, post_group: 2},
+        ],
+        "Baidu_QianFan": [
+            {label: "ERNIE（ernie-speed-8k）", value: "baidu;ernie_speed", pre_group: 3, post_group: 2}
         ]
     },
     preProcess: preProcess,

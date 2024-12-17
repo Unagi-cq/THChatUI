@@ -20,6 +20,7 @@
                                     <el-option label="阿里云灵积" value="Ali_DashScope" />
                                     <el-option label="讯飞星火" value="Xunfei_Spark" />
                                     <el-option label="智谱AI" value="Zhipu_BigModel" />
+                                    <el-option label="百度千帆" value="Baidu_QianFan" />
                                 </el-select>
                             </el-form-item>
 

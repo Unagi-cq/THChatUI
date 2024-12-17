@@ -121,7 +121,7 @@ export default {
     /* 卡片样式 */
     > .file-card, .upload-card {
         display: flex;
-        //align-items: center;
+        
         justify-content: space-between;
         padding: 10px;
         border-bottom: 1px dashed grey;
