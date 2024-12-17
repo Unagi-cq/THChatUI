@@ -7,7 +7,7 @@
             </div>
 
             <el-col :md="20" :sm="24" :xs="24">
-                <ChatCard :query="c['query']" :answer="c['answer']" :model_name="c['model_name']" :responseTime="c['responseTime']" :finishTime="c['finishTime']" v-for="c in chat"/>
+                <ChatCard :query="c['query']" :answer="c['answer']" :model_name="c['model_name']" :responseTime="c['responseTime']" :finishTime="c['finishTime']" :sessionId="c['sessionId']" @delete-chat="handleDeleteChat" v-for="c in chat"/>
 
                 <div class="title-container theme-bg dashed-border" v-if="chat.length === 0">
                     <div class="title-line">LLM的Web会话管理方案 <span>THChatUI</span></div>
@@ -98,7 +98,16 @@ export default {
             } else {
                 return '远程调用' + ' ' + this.$store.state.setting.model_version + ' ' + (this.$store.state.setting.memory ? '多轮对话' : '单轮对话');
             }
-        }
+        },
+        chats: {
+            // 获取所有聊天内容
+            get() {
+                return this.$store.state.app.chats;
+            },
+            set(val) {
+                this.$store.dispatch('setChats', val);
+            }
+        },
     },
     watch: {
         // 监听chats的变化，当变化时，表示在Bot回答，此时需要刷新滚动条的位置
@@ -147,6 +156,23 @@ export default {
         goTo(path) {
             this.$router.push(path)
         },
+        /**
+         * 删除缓存中的单个对话卡
+         * @param sessionId 会话id
+         */
+        handleDeleteChat(sessionId) {
+            let chats = [...this.chats];
+            const index = chats.findIndex(item => item.uuid === this.active);
+            if (index !== -1) {
+                let chat = [...chats[index]['data']];
+                const sessionIndex = chat.findIndex(item => item.sessionId === sessionId);
+                if (sessionIndex > -1) {
+                    chat.splice(sessionIndex, 1);
+                    chats[index]['data'] = chat;
+                    this.chats = chats;
+                }
+            }
+        }
     }
 }
 </script>

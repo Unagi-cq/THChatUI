@@ -6,7 +6,7 @@
             <p>{{ query }}</p>
         </div>
 
-        <div class="bot-div" v-if="answer">
+        <div class="bot-div" v-if="answer || responseTime && finishTime">
             <!-- 机器人消息 -->
             <div class="bot-message" v-if="answer">
                 <img v-if="baseAvatar[model_name]" class="avatar" :src="baseAvatar[model_name]" alt="Bot Avatar" >
@@ -17,7 +17,11 @@
             <div class="answer-stats" v-if="chat_detail && responseTime && finishTime">
                 <span>回答耗时: {{finishTime - responseTime}} ms</span>
                 <el-icon @click="copyText"><CopyDocument /></el-icon>
+                <el-icon @click="deleteChat"><Delete /></el-icon>
                 <span>字数统计: {{answer.length}} 字符</span>
+            </div>
+            <div class="answer-stats" v-else>
+                <el-icon @click="deleteChat"><Delete /></el-icon>
             </div>
         </div>
 
@@ -55,8 +59,10 @@ export default {
         model_name: String,
         // 回复时间
         responseTime: Number,
-       // 结束时间
+        // 结束时间
         finishTime: Number,
+        // 用于标识对话
+        sessionId: String 
     },
     computed: {
         // 是否开启回答统计
@@ -90,6 +96,10 @@ export default {
                     type: 'error',
                 });
             }
+        },
+        // 删除对话
+        deleteChat() {
+            this.$emit('delete-chat', this.sessionId);
         }
     },
 }
@@ -126,7 +136,7 @@ $border-radius: 15px;
 }
 
 .user-message img,
-.bot-message img, {
+.bot-message img {
     width: 40px;
     height: 40px;
     border-radius: 50%;

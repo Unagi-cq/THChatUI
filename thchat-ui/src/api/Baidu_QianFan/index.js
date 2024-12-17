@@ -1,17 +1,17 @@
 /**
- * @description 阿里云平台的接口采用SSE请求方式，直接调会跨域，需要配代理，部署在服务器上之后也需要配置代理，详情可以参考本项目的文档
+ * @description 百度千帆平台的接口采用SSE请求方式，直接调会跨域，需要配代理，部署在服务器上之后也需要配置代理，详情可以参考本项目的文档
  */
 import {fetchEventSource} from "@microsoft/fetch-event-source";
 import {preProcess} from "@/util/rule"
 // 引入 store
 import store from '../../store';
 
-// 阿里云平台的接口地址 在项目内部设置了跨域 所以拼接了字符串"/ali/remote" 对应项目里面的代理配置 vue.config.js
+// 百度千帆平台的接口地址 在项目内部设置了跨域 所以拼接了字符串"/baidu/remote" 对应项目里面的代理配置 vue.config.js
 const URL = "/baidu/remote/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/";
 
 
 /**
- * 调用阿里云平台的接口
+ * 调用百度千帆平台的接口
  * @param model_version 模型名
  * @param prompt 用户输入的问题
  * @param history 历史对话消息 在SendBox中限制最多三轮
