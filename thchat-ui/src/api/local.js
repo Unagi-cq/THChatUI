@@ -34,8 +34,9 @@ export async function local({prompt, history, files, controller, onopen, onmessa
         // 连接关闭时的处理
         onclose,
         // 处理错误
-        onerror
-
+        onerror,
+        // 切换页面时正常传输数据
+        openWhenHidden: true
     })
 }
 

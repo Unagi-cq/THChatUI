@@ -42,7 +42,9 @@ export async function remote({model_version, prompt, history, groupIndex, contro
         // 连接关闭时的处理
         onclose,
         // 处理错误
-        onerror
+        onerror,
+        // 切换页面时正常传输数据
+        openWhenHidden: true
     });
 }
 
