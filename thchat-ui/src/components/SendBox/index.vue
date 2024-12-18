@@ -444,38 +444,26 @@ export default {
     bottom: -20px;
 }
 
-.search-input::before {
-    content: '';
-    position: absolute;
-    max-height: 150px;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: v-bind(textareaHeight);
-    z-index: 0; /* 将伪元素置于输入框下层 */
-    background: var(--send-box-search-input-bg);
-    backdrop-filter: var(--send-box-search-input-before);
-    -webkit-backdrop-filter: var(--send-box-search-input-before);
-}
-
 :deep(.el-textarea__inner) {
     max-height: 150px;
     font-size: 14px;
-    color: var(--chat-card-font-color);
+    color: var(--common-color);
     background: none;
-    padding: 10px 40px 10px 5px;
+    padding: 8px 40px 8px 5px;
     position: absolute;
-    bottom: 0;
-    border: 1px dashed grey;
+    bottom: -5px;
+    border: 2px solid var(--common-color);
+    border-radius: 10px;
+    box-shadow: 0 0;
+    font-weight: 100;
 }
 
 .search-button {
     z-index: 99;
-    margin: -35px 5px 0 0;
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
+    margin: -31px 3px 0 0;
+    height: 32px;
+    width: 32px;
+    border-radius: 10px;
 
 }
 

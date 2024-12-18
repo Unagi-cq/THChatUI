@@ -2,7 +2,7 @@
     <div class="common-layout">
         <el-container>
             <!-- 侧边导航栏 Start-->
-            <el-aside class="theme-bg" :class="{'no-border' : active}">
+            <el-aside class="aside-bg" :class="{'no-border' : active}">
                 <app-aside/>
             </el-aside>
             <!-- 侧边导航栏 End-->
@@ -22,7 +22,7 @@
             <!-- 右侧侧边竖条 用以隐藏或弹出侧边栏 End -->
 
             <!-- 右边窗口 Start -->
-            <el-container>
+            <el-container class="main-bg">
                 <!-- 主要内容 -->
                 <el-main>
                     <router-view/>
@@ -111,8 +111,6 @@ $vertical-divider-width: 40px; // 竖条的宽度
             height: 100%;
             overflow-y: hidden;
             transition: all $animation-time; // 平滑过渡宽度和阴影变化
-            border-top-right-radius: 15px;
-            border-bottom-right-radius: 15px;
             border-right: 1px dashed grey;
             scrollbar-width: none; /* Firefox */
 

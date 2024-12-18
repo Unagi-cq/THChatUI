@@ -341,7 +341,6 @@ $animation-time: 0.3s;
     //border-top: 1px solid #afafaf;
     padding: 6px 0 6px 0;
     bottom: 0;
-    position: absolute;
 
     > .options {
         display: -webkit-box;
@@ -368,8 +367,6 @@ $animation-time: 0.3s;
             position: relative;
             cursor: pointer;
             padding: 10px 0;
-            -webkit-border-radius: 8px;
-            -moz-border-radius: 8px;
             box-sizing: border-box;
 
             // 鼠标移动到上面之后的样式

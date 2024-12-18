@@ -1,7 +1,7 @@
 <template>
     <el-row :gutter="24" justify="center">
         <el-col :md="18" :sm="24" :xs="24">
-            <div class="title-container dashed-border theme-bg">
+            <div class="title-container dashed-border">
                 <el-page-header @back="onBack" title="关闭" content="系统设置" :icon="CloseBold"></el-page-header>
 
                 <el-tabs tab-position="left" style="margin-top: 20px;" class="demo-tabs">
@@ -234,10 +234,10 @@ export default {
 }
 
 :deep(.el-page-header__content) {
-    color: var(--chat-card-font-color);
+    color: var(--common-color);
 }
 
 :deep(.el-tabs__item)[aria-selected="false"] {
-    color: var(--chat-card-font-color);
+    color: var(--common-color);
 }
 </style>

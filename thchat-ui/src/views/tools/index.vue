@@ -5,7 +5,7 @@
             <el-row :gutter="24" style="margin-left: 0;margin-right: 0;">
 
                 <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6">
-                    <div class="tool-card dashed-border theme-bg">
+                    <div class="tool-card dashed-border">
                         <div class="tool-card-header">
                             <span class="tool-card-title">联网搜索</span>
                             <el-switch  v-model="is_search"/>
@@ -19,7 +19,7 @@
                 </el-col>
 
                 <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6">
-                    <div class="tool-card dashed-border theme-bg">
+                    <div class="tool-card dashed-border">
                         <div class="tool-card-header">
                             <span class="tool-card-title">知识库检索</span>
                             <el-switch  v-model="is_rag"/>
@@ -120,6 +120,6 @@ export default {
 }
 
 :deep(.el-page-header__content), :deep(.el-page-header__back) {
-    color: var(--chat-card-font-color);
+    color: var(--common-color);
 }
 </style>

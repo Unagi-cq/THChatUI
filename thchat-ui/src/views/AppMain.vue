@@ -9,7 +9,7 @@
             <el-col :md="20" :sm="24" :xs="24">
                 <ChatCard :query="c['query']" :answer="c['answer']" :model_name="c['model_name']" :responseTime="c['responseTime']" :finishTime="c['finishTime']" :sessionId="c['sessionId']" @delete-chat="handleDeleteChat" v-for="c in chat"/>
 
-                <div class="title-container theme-bg dashed-border" v-if="chat.length === 0">
+                <div class="title-container dashed-border" v-if="chat.length === 0">
                     <div class="title-line">LLM的Web会话管理方案 <span>THChatUI</span></div>
                     <div class="sub-title-line"> 嗨喽~朋友！🤖 欢迎使用THWebUI。目前项目已支持</div>
                     <el-row>
@@ -182,7 +182,7 @@ export default {
     position: fixed;
     margin-top: -18px;
     font-size: 12px;
-    color: var(--chat-card-font-color);
+    color: var(--common-color);
 }
 /* 确保容器可以滚动 */
 .home {

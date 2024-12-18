@@ -4,7 +4,7 @@
 
         <el-row :gutter="24" justify="center">
             <el-col :md="18" :sm="24" :xs="24">
-                    <div class="file-container dashed-border theme-bg">
+                    <div class="file-container dashed-border">
                         <v-md-preview :text="text" @copy-code-success="handleCopyCodeSuccess"></v-md-preview>
                     </div>
                 </el-col>
@@ -280,7 +280,7 @@ location ^~ /ali/remote/
 }
 
 :deep(.el-page-header__content), :deep(.el-page-header__back) {
-    color: var(--chat-card-font-color);
+    color: var(--common-color);
 }
 
 :deep(.v-md-editor-preview) {
@@ -303,7 +303,7 @@ location ^~ /ali/remote/
 
 :deep(.vuepress-markdown-body) {
     font-size: 12px;
-    color: var(--chat-card-font-color);
+    color: var(--common-color);
     background: none;
     word-wrap: break-word;
     margin: 0;

@@ -1,5 +1,5 @@
 <template>
-    <div class="container theme-bg dashed-border">
+    <div class="container dashed-border">
         <!-- 用户消息 -->
         <div class="user-message" v-if="query">
             <img class="avatar" :src="baseAvatar['user']" alt="User" >
@@ -62,7 +62,7 @@ export default {
         // 结束时间
         finishTime: Number,
         // 用于标识对话
-        sessionId: String 
+        sessionId: Number 
     },
     computed: {
         // 是否开启回答统计
@@ -128,7 +128,7 @@ $border-radius: 15px;
 .bot-message {
     display: flex;
     align-items: start;
-    padding: 0.4rem 0.4rem;
+    padding: 0.3rem 0.4rem;
 }
 
 .bot-div {
@@ -166,7 +166,7 @@ $border-radius: 15px;
 
 .user-message p, :deep(.vuepress-markdown-body) {
     font-size: 12px;
-    color: var(--chat-card-font-color);
+    color: var(--common-color);
     background: none;
     word-wrap: break-word;
 }
@@ -176,11 +176,10 @@ $border-radius: 15px;
  */
 .answer-stats {
     font-size: 10px;
-    color: #666;
+    color: var(--answer-stats-color);
     display: flex;
     justify-content: space-between;
     padding: 0.2rem 0.8rem;
-    margin-top: 5px; // 新增的上边距
 
     > .el-icon {
         cursor: pointer;

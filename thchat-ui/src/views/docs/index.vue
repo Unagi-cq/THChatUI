@@ -5,7 +5,7 @@
             <el-row :gutter="24" style="margin-left: 0;margin-right: 0;">
 
                 <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                    <div class="file-container dashed-border theme-bg">
+                    <div class="file-container dashed-border">
                         <!-- 文件展示卡片 -->
                         <div class="file-card" v-for="x in files">
                             <img src="@/assets/images/file.svg" alt="File Icon" class="file-icon"/>
@@ -177,6 +177,6 @@ export default {
 }
 
 :deep(.el-page-header__content), :deep(.el-page-header__back) {
-    color: var(--chat-card-font-color);
+    color: var(--common-color);
 }
 </style>

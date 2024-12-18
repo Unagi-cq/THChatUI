@@ -33,6 +33,7 @@ export default {
 
 <style scoped>
 .copyright, :deep(.el-link__inner) {
+    margin-top: 6px;
     font-size: 12px;
 }
 
