@@ -9,19 +9,31 @@
         <div class="bot-div" v-if="answer || responseTime && finishTime">
             <!-- 机器人消息 -->
             <div class="bot-message" v-if="answer">
-                <img v-if="baseAvatar[model_name]" class="avatar" :src="baseAvatar[model_name]" alt="Bot Avatar" >
-                <img v-else class="avatar" :src="baseAvatar['default']" alt="Default Bot Avatar" >
+                <div class="bot-header">
+                    <img v-if="baseAvatar[model_name]" class="avatar" :src="baseAvatar[model_name]" alt="Bot Avatar" >
+                    <img v-else class="avatar" :src="baseAvatar['default']" alt="Default Bot Avatar" >
+                    <span class="bot-name">{{ model_name }}</span>
+                </div>
                 <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess"></v-md-preview>
             </div>
             <!-- 新增的回答统计 -->
             <div class="answer-stats" v-if="chat_detail && responseTime && finishTime">
                 <span>回答耗时: {{finishTime - responseTime}} ms</span>
-                <el-icon @click="copyText"><CopyDocument /></el-icon>
-                <el-icon @click="deleteChat"><Delete /></el-icon>
+                <el-tooltip content="复制 Markdown" placement="bottom">
+                    <el-icon @click="copyMarkdown"><CopyDocument /></el-icon>
+                </el-tooltip>
+                <el-tooltip content="复制纯文本" placement="bottom">
+                    <el-icon @click="copyPlainText"><Document /></el-icon>
+                </el-tooltip>
+                <el-tooltip content="删除对话" placement="bottom">
+                    <el-icon @click="deleteChat"><Delete /></el-icon>
+                </el-tooltip>
                 <span>字数统计: {{answer.length}} 字符</span>
             </div>
-            <div class="answer-stats" v-else>
-                <el-icon @click="deleteChat"><Delete /></el-icon>
+            <div class="answer-stats" v-else-if="chat_detail">
+                <el-tooltip content="删除对话" placement="bottom">
+                    <el-icon @click="deleteChat"><Delete /></el-icon>
+                </el-tooltip>
             </div>
         </div>
 
@@ -42,6 +54,8 @@
 </template>
 
 <script>
+import { marked } from 'marked';
+
 export default {
     name: 'ChatCard',
     data() {
@@ -81,16 +95,37 @@ export default {
                 type: 'success',
             });
         },
-        // 复制AI回答
-        async copyText() {
+        // 重命名原来的复制方法
+        async copyMarkdown() {
             try {
                 await navigator.clipboard.writeText(this.answer);
                 this.$notify({
-                    title: '复制成功！',
+                    title: '复制 Markdown 成功！',
                     type: 'success',
                 });
             } catch (error) {
-                console.log('文本内容复制error:', error)
+                console.log('Markdown内容复制error:', error)
+                this.$notify({
+                    title: '复制失败！',
+                    type: 'error',
+                });
+            }
+        },
+        // 新增纯文本复制方法
+        async copyPlainText() {
+            try {
+                // 创建临��DOM元素来解析Markdown
+                const div = document.createElement('div');
+                div.innerHTML = marked.parse(this.answer);
+                const plainText = div.textContent || div.innerText || '';
+                
+                await navigator.clipboard.writeText(plainText);
+                this.$notify({
+                    title: '复制纯文本成功！',
+                    type: 'success',
+                });
+            } catch (error) {
+                console.log('纯文本复制error:', error)
                 this.$notify({
                     title: '复制失败！',
                     type: 'error',
@@ -127,8 +162,9 @@ $border-radius: 15px;
 .user-message,
 .bot-message {
     display: flex;
-    align-items: start;
-    padding: 0.3rem 0.4rem;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.3rem 0.8rem;
 }
 
 .bot-div {
@@ -137,25 +173,27 @@ $border-radius: 15px;
 
 .user-message img,
 .bot-message img {
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     object-fit: cover;
-    top: 0;
+    margin-bottom: 4px;
 }
 
 .user-message p {
     width: 100%;
-    padding: 0.8rem 0.8rem;
+    padding: 0.4rem 0;
     margin: 0;
+    text-align: left;
 }
 
 :deep(.v-md-editor-preview) {
     width: 100%;
+    text-align: left;
 }
 
 :deep(.vuepress-markdown-body:not(.custom)) {
-    padding: 0.4rem 0.8rem;
+    padding: 0.4rem 0;
 }
 
 @media (max-width: 419px) {
@@ -188,5 +226,17 @@ $border-radius: 15px;
             color: var(--el-color-primary);
         }
     }
+}
+
+.bot-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.bot-name {
+    font-size: 12px;
+    color: var(--common-color);
 }
 </style>

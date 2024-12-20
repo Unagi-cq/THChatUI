@@ -12,6 +12,7 @@
     "@microsoft/fetch-event-source": "^2.0.1",
     "crypto-js": "^4.2.0",
     "element-plus": "^2.7.0",
+    "marked": "^15.0.4",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"
