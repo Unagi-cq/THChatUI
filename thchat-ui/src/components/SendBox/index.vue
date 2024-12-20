@@ -44,8 +44,6 @@ export default {
         return {
             // 输入框内容
             query: "",
-            // 输入框高度 由于毛玻璃主题有些特殊性，所以需要手动设置高度
-            textareaHeight: '41px', // 初始值
             // 聊天控制
             controller: undefined
         }
@@ -126,19 +124,6 @@ export default {
                 return this.$store.state.setting.post_group;
             }
         }
-    },
-    /**
-     * 这里是为了自动调节输入框毛玻璃UI的高度
-     */
-    mounted() {
-        // 获取textarea元素
-        const textarea = this.$el.querySelector('.el-textarea__inner');
-        // 更新CSS变量以匹配textarea的高度
-        const updateHeight = () => {
-            this.textareaHeight = `${textarea.scrollHeight}px`
-        };
-        // 监听textarea的输入事件来更新高度
-        textarea.addEventListener('input', updateHeight);
     },
     methods: {
         /**
@@ -257,8 +242,6 @@ export default {
 
             // 重置输入框
             this.query = ''
-            // 重置输入框高度 毛玻璃蒙版高度需要手动设置
-            this.textareaHeight = '41px'
 
             let session = {
                 "sessionId": uuid,
@@ -448,7 +431,7 @@ export default {
     max-height: 150px;
     font-size: 14px;
     color: var(--common-color);
-    background: none;
+    background: var(--sendBox-bg-color);
     padding: 8px 40px 8px 5px;
     position: absolute;
     bottom: -5px;
@@ -460,11 +443,10 @@ export default {
 
 .search-button {
     z-index: 99;
-    margin: -31px 3px 0 0;
+    margin: -31px 5px 0 0;
     height: 32px;
     width: 32px;
     border-radius: 10px;
-
 }
 
 :deep(.el-textarea__inner) {
