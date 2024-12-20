@@ -2,17 +2,20 @@
     <div class="container dashed-border">
         <!-- 用户消息 -->
         <div class="user-message" v-if="query">
-            <img class="avatar" :src="baseAvatar['user']" alt="User" >
+            <div class="avatar-header">
+                <img class="avatar" :src="baseAvatar['user']" alt="User">
+                <span class="avatar-name">用户</span>
+            </div>
             <p>{{ query }}</p>
         </div>
 
         <div class="bot-div" v-if="answer || responseTime && finishTime">
             <!-- 机器人消息 -->
             <div class="bot-message" v-if="answer">
-                <div class="bot-header">
+                <div class="avatar-header">
                     <img v-if="baseAvatar[model_name]" class="avatar" :src="baseAvatar[model_name]" alt="Bot Avatar" >
                     <img v-else class="avatar" :src="baseAvatar['default']" alt="Default Bot Avatar" >
-                    <span class="bot-name">{{ model_name }}</span>
+                    <span class="avatar-name">{{ model_name }}</span>
                 </div>
                 <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess"></v-md-preview>
             </div>
@@ -91,7 +94,7 @@ export default {
         // 复制代码成功
         handleCopyCodeSuccess(code) {
             this.$notify({
-                title: '复制成功！',
+                title: '代码复制成功！',
                 type: 'success',
             });
         },
@@ -100,7 +103,7 @@ export default {
             try {
                 await navigator.clipboard.writeText(this.answer);
                 this.$notify({
-                    title: '复制 Markdown 成功！',
+                    title: 'Markdown复制成功！',
                     type: 'success',
                 });
             } catch (error) {
@@ -114,14 +117,14 @@ export default {
         // 新增纯文本复制方法
         async copyPlainText() {
             try {
-                // 创建临��DOM元素来解析Markdown
+                // 创建临时DOM元素来解析Markdown
                 const div = document.createElement('div');
                 div.innerHTML = marked.parse(this.answer);
                 const plainText = div.textContent || div.innerText || '';
                 
                 await navigator.clipboard.writeText(plainText);
                 this.$notify({
-                    title: '复制纯文本成功！',
+                    title: '纯文本复制成功！',
                     type: 'success',
                 });
             } catch (error) {
@@ -177,7 +180,6 @@ $border-radius: 15px;
     height: 20px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 4px;
 }
 
 .user-message p {
@@ -228,15 +230,19 @@ $border-radius: 15px;
     }
 }
 
-.bot-header {
+.avatar-header {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 4px;
 }
 
-.bot-name {
+.avatar {
+    border: 1px solid var(--common-color);
+}
+
+.avatar-name {
     font-size: 12px;
     color: var(--common-color);
+    font-weight: bold;
 }
 </style>
