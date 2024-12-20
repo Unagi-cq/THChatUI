@@ -1,6 +1,6 @@
 <h1 align="center">LLM的Web会话管理方案<span style="color: #2454ff;">THChatUI</span></h1>
 <p align="center">
-    嗨喽~朋友！🤖 欢迎使用THWebUI <span style="font-size: 10px;">v1.0.0</span>，一个基于Vue2/Vue3和Element Plus的Web对话方案。项目持续集成与升级中，敬请期待更多功能与优化。
+    嗨喽~朋友！🤖 欢迎使用THWebUI <span style="font-size: 10px;">v1.0.2</span>，一个基于Vue2/Vue3和Element Plus的Web对话方案。项目持续集成与升级中，敬请期待更多功能与优化。
 </p>
 
 ## THChatUI介绍
@@ -44,6 +44,17 @@ THChatUI拥有常见的大模型聊天UI的基本功能。主要功能有：
 5. 支持手机版
 6. 三种对话模式
 7. 两种模型请求模式
+
+### 更新日志
+```
+v1.0.2
+1. [fix]使用microsoft/fetch-event-source库接受流式传输时，浏览器页面切换后传输停止并重传
+2. [add]新增百度千帆平台的LLM调用支持
+3. [add]新增单次对话卡删除功能
+4. [add]新增AI回答的纯文本复制功能
+5. [add]新增用户消息折叠功能（大于3行时）
+6. [upd]主题优化、输入框样式优化
+```
 
 ## 使用文档
 如果你只想为你的API KEY提供一个友好对话的界面，那么仅仅需要去阿里云平台或智谱平台申请KEY，然后在[THChatUI在线体验版](http://localchatui.wuxitianyouqi.com/#/)的设置页面填写对应平台的API KEY即可快速使用。
