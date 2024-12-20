@@ -6,7 +6,13 @@
                 <img class="avatar" :src="baseAvatar['user']" alt="User">
                 <span class="avatar-name">用户</span>
             </div>
-            <p>{{ query }}</p>
+            <p :class="{ 'collapse-p': !isExpanded }" ref="queryText">
+                {{ query }}
+            </p>
+            <el-icon v-if="isTruncatable" @click="toggleExpand" class="collapse-icon">
+                <ArrowDown v-if="!isExpanded" />
+                <ArrowUp v-else />
+            </el-icon>
         </div>
 
         <div class="bot-div" v-if="answer || responseTime && finishTime">
@@ -64,7 +70,13 @@ export default {
     data() {
         return {
             // 本地头像列表
-            baseAvatar: this.$store.state.setting.baseAvatar
+            baseAvatar: this.$store.state.setting.baseAvatar,
+            // 是否展开
+            isExpanded: false,
+            // 用户文本最大显示高度
+            maxHeight: 60,
+            // 是否可折叠
+            isTruncatable: false
         }
     },
     props: {
@@ -87,8 +99,13 @@ export default {
             return this.$store.state.setting.chat_detail;
         }
     },
-    created() {
-
+    mounted() {
+        this.$nextTick(() => {
+            const queryTextElement = this.$refs.queryText;
+            if (queryTextElement.scrollHeight > this.maxHeight) {
+                this.isTruncatable = true;
+            }
+        });
     },
     methods: {
         // 复制代码成功
@@ -98,7 +115,7 @@ export default {
                 type: 'success',
             });
         },
-        // 重命名原来的复制方法
+        // md复制
         async copyMarkdown() {
             try {
                 await navigator.clipboard.writeText(this.answer);
@@ -114,7 +131,7 @@ export default {
                 });
             }
         },
-        // 新增纯文本复制方法
+        // 纯文本复制
         async copyPlainText() {
             try {
                 // 创建临时DOM元素来解析Markdown
@@ -138,6 +155,9 @@ export default {
         // 删除对话
         deleteChat() {
             this.$emit('delete-chat', this.sessionId);
+        },
+        toggleExpand() {
+            this.isExpanded = !this.isExpanded;
         }
     },
 }
@@ -164,6 +184,7 @@ $border-radius: 15px;
  */
 .user-message,
 .bot-message {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -184,7 +205,7 @@ $border-radius: 15px;
 
 .user-message p {
     width: 100%;
-    padding: 0.4rem 0;
+    padding: 0.4rem 0 0 0;
     margin: 0;
     text-align: left;
 }
@@ -205,10 +226,29 @@ $border-radius: 15px;
 }
 
 .user-message p, :deep(.vuepress-markdown-body) {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--common-color);
     background: none;
     word-wrap: break-word;
+}
+
+/**
+ * 用户与AI头像样式
+ */
+.avatar-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    > .avatar {
+        border: 1px solid var(--common-color);
+    }
+
+    > .avatar-name {
+        font-size: 13px;
+        color: var(--common-color);
+        font-weight: bold;
+    }
 }
 
 /**
@@ -230,19 +270,20 @@ $border-radius: 15px;
     }
 }
 
-.avatar-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.collapse-p {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.avatar {
-    border: 1px solid var(--common-color);
-}
-
-.avatar-name {
-    font-size: 12px;
+.collapse-icon {
+    position: absolute;
+    bottom: 5px;
+    right: -14px;
+    font-size: 13px;
     color: var(--common-color);
-    font-weight: bold;
+    cursor: pointer;
 }
 </style>
