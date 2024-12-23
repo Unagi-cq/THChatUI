@@ -3,7 +3,7 @@
         <!-- 用户消息 -->
         <div class="user-message" v-if="query">
             <div class="avatar-header">
-                <img class="avatar" :src="baseAvatar['user']" alt="User">
+                <img class="avatar" :src="avatar_list.user" alt="User">
                 <span class="avatar-name">用户</span>
             </div>
             <p :class="{ 'collapse-p': !isExpanded }" ref="queryText">
@@ -19,8 +19,8 @@
             <!-- 机器人消息 -->
             <div class="bot-message" v-if="answer">
                 <div class="avatar-header">
-                    <img v-if="baseAvatar[model_name]" class="avatar" :src="baseAvatar[model_name]" alt="Bot Avatar" >
-                    <img v-else class="avatar" :src="baseAvatar['default']" alt="Default Bot Avatar" >
+                    <img v-if="avatar_list[series]" class="avatar" :src="avatar_list[series]" alt="Bot Avatar" >
+                    <img v-else class="avatar" :src="avatar_list.local" alt="Default Bot Avatar" >
                     <span class="avatar-name">{{ model_name }}</span>
                 </div>
                 <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess"></v-md-preview>
@@ -69,14 +69,12 @@ export default {
     name: 'ChatCard',
     data() {
         return {
-            // 本地头像列表
-            baseAvatar: this.$store.state.setting.baseAvatar,
             // 是否展开
             isExpanded: false,
             // 用户文本最大显示高度
             maxHeight: 60,
             // 是否可折叠
-            isTruncatable: false
+            isTruncatable: false,
         }
     },
     props: {
@@ -84,19 +82,34 @@ export default {
         answer: String,
         // 用户提问
         query: String,
-        // 模型名称
-        model_name: String,
+        // 模型系列
+        series: String,
         // 回复时间
         responseTime: Number,
         // 结束时间
         finishTime: Number,
         // 用于标识对话
-        sessionId: Number 
+        sessionId: Number,
+        // 模型名称
+        model_name: String
     },
     computed: {
         // 是否开启回答统计
         chat_detail() {
             return this.$store.state.setting.chat_detail;
+        },
+        // 使用计算属性动态获取头像
+        avatar_list() {
+            return {
+                user: new URL('@/assets/images/user.png', import.meta.url).href,
+                qwen: new URL('@/assets/images/qwen.jpg', import.meta.url).href,
+                baichuan: new URL('@/assets/images/baichuan.png', import.meta.url).href,
+                xunfei: new URL('@/assets/images/xunfei.svg', import.meta.url).href,
+                zhipu: new URL('@/assets/images/zhipu.png', import.meta.url).href,
+                wenxin: new URL('@/assets/images/wenxin.png', import.meta.url).href,
+                yi: new URL('@/assets/images/yi.svg', import.meta.url).href,
+                local: new URL('@/assets/images/logo.png', import.meta.url).href
+            }
         }
     },
     mounted() {

@@ -1,13 +1,12 @@
 import { fetchEventSource } from "@microsoft/fetch-event-source"
 // 引入 store
-import store from '../store';
+import store from '../../store';
 
 // 本地接口设置了3种模式，根据store中的chat_type来选择 ['chat','search','rag']
 const URL = '/local/' + store.state.setting.chat_type + '/stream';
 
 /**
  * 本地接口
- * @param model_version 模型名
  * @param prompt 用户输入的问题
  * @param history 历史对话消息 在SendBox中限制最多三轮
  * @param controller 控制请求的取消
@@ -17,13 +16,12 @@ const URL = '/local/' + store.state.setting.chat_type + '/stream';
  * @param onerror 处理错误时的回调函数
  * @returns {Promise<void>}
  */
-export async function local({prompt, history, files, controller, onopen, onmessage, onclose, onerror}) {
+export async function fenchStream({prompt, history, files, controller, onopen, onmessage, onclose, onerror}) {
     const response = await fetchEventSource(URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Accept':'text/event-stream',
-            'X-DashScope-SSE': 'enable'
+            'Accept':'text/event-stream'
         },
         body: getParams(prompt, history, files),
         signal: controller.signal,

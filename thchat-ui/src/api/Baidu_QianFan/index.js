@@ -2,7 +2,7 @@
  * @description 百度千帆平台的接口采用SSE请求方式，直接调会跨域，需要配代理，部署在服务器上之后也需要配置代理，详情可以参考本项目的文档
  */
 import {fetchEventSource} from "@microsoft/fetch-event-source";
-import {preProcess} from "@/util/rule"
+import {preProcess} from "@/util/config"
 // 引入 store
 import store from '../../store';
 
@@ -12,10 +12,8 @@ const URL = "/baidu/remote/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/";
 
 /**
  * 调用百度千帆平台的接口
- * @param model_version 模型名
  * @param prompt 用户输入的问题
  * @param history 历史对话消息 在SendBox中限制最多三轮
- * @param groupIndex 前处理组的索引 由于不同厂商的接口参数不同，需要根据厂商的接口文档来确定传参的结构
  * @param controller 控制请求的取消
  * @param onopen 连接成功时的回调函数
  * @param onmessage 接收到消息时的回调函数
@@ -23,7 +21,10 @@ const URL = "/baidu/remote/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/";
  * @param onerror 处理错误时的回调函数
  * @returns {Promise<void>}
  */
-export async function remote({model_version, prompt, history, groupIndex, controller, onopen, onmessage, onclose, onerror}) {
+export async function fenchStream({prompt, history, files, controller, onopen, onmessage, onclose, onerror}) {
+    let model_version = store.state.setting.model_config.version;
+    let pre_method = store.state.setting.model_config.pre_method;
+
     const response = await fetchEventSource(URL + model_version + '?access_token=' + store.state.setting.api_key, {
         method: "POST",
         headers: {
@@ -31,7 +32,7 @@ export async function remote({model_version, prompt, history, groupIndex, contro
             // 'Accept': 'text/event-stream',
             // 'X-DashScope-SSE': 'enable'
         },
-        body: JSON.stringify(preProcess(model_version, prompt, history, groupIndex)),
+        body: JSON.stringify(preProcess(model_version, prompt, history, pre_method)),
         signal: controller.signal,
         // 连接成功时的处理
         onopen,

@@ -2,7 +2,9 @@
  * @description 讯飞平台的接口采用WebSocket请求方式
  */
 import CryptoJS from "crypto-js";
-import {preProcess} from "@/util/rule";
+import {preProcess} from "@/util/config";
+// 引入 store
+import store from '../../store';
 
 // 四个必要参数 这里的是spark lite模型 官方已经完全免费 可无限调用
 const URL = "wss://spark-api.xf-yun.com/v1.1/chat";
@@ -12,10 +14,8 @@ const API_KEY = "414d88c1dadf5c3abb761766d5be1f14";
 
 /**
  * 调用讯飞平台的接口
- * @param model_version 模型名
  * @param prompt 用户输入的问题
  * @param history 历史对话消息 在SendBox中限制最多三轮
- * @param groupIndex 前处理组的索引 由于不同厂商的接口参数不同，需要根据厂商的接口文档来确定传参的结构
  * @param controller 控制请求的取消
  * @param onopen 连接成功时的回调函数
  * @param onmessage 接收到消息时的回调函数
@@ -23,18 +23,21 @@ const API_KEY = "414d88c1dadf5c3abb761766d5be1f14";
  * @param onerror 处理错误时的回调函数
  * @returns {Promise<void>}
  */
-export async function remote({model_version, prompt, history, groupIndex, controller, onopen, onmessage, onclose, onerror}) {
+export async function fenchStream({prompt, history, files, controller, onopen, onmessage, onclose, onerror}) {
+    let model_version = store.state.setting.model_config.version;
+    let pre_method = store.state.setting.model_config.pre_method;
+
     return new Promise((resolve, reject) => {
         let fullMsg = "";
         const webSocket = new WebSocket(getWebSocketUrl());
         webSocket.onmessage = (e) => {
             try {
                 const resultData = e.data;
-                console.log(resultData)
+                
                 const jsonData = JSON.parse(resultData);
                 if (jsonData.header.code === 0) {
                     const msg = getContent(jsonData);
-                    console.log("Got message", msg);
+                    
                     fullMsg += msg;
                     onmessage(msg);
                     if (jsonData.header.status === 2) {
@@ -65,7 +68,7 @@ export async function remote({model_version, prompt, history, groupIndex, contro
         };
         webSocket.onopen = () => {
             onopen();
-            let body = preProcess(model_version, prompt, history, groupIndex);
+            let body = preProcess(model_version, prompt, history, pre_method);
             body["header"] = {
                 "app_id": APPID,
                 "uid": "fd3f47e40d",

@@ -8,30 +8,19 @@
                     <el-tab-pane label="模型">
                         <el-form  label-width="100" label-position="left">
 
-                            <el-form-item label="模型调用">
-                                <el-select v-model="method" placeholder="选择模型调用的方式/途径">
-                                    <el-option label="本地模型" value="local" />
-                                    <el-option label="第三方平台" value="remote" />
+                            <el-form-item label="平台">
+                                <el-select v-model="platform" placeholder="选择平台">
+                                    <el-option :label="x.platform_name" :value="y" v-for="(x, y) in model_list"/>
                                 </el-select>
                             </el-form-item>
 
-                            <el-form-item label="平台" v-if="method === 'remote'">
-                                <el-select v-model="region" placeholder="选择第三方平台">
-                                    <el-option label="阿里云灵积" value="Ali_DashScope" />
-                                    <el-option label="讯飞星火" value="Xunfei_Spark" />
-                                    <el-option label="智谱AI" value="Zhipu_BigModel" />
-                                    <el-option label="百度千帆" value="Baidu_QianFan" />
-                                </el-select>
-                            </el-form-item>
-
-                            <el-form-item label="API Key" v-if="method === 'remote'">
+                            <el-form-item label="API Key" v-if="platform !== 'Local'">
                                 <el-input v-model="api_key" />
                             </el-form-item>
 
-                            <el-form-item label="模型" v-if="method === 'remote'">
-                                <el-select v-model="model_name_model_version" placeholder="选择模型" @change="onChangeModel">
-                                    <!-- 这里可选的模型列表model_list写在util/rule.js中 -->
-                                    <el-option :label="x.label" :value="x.value" :data-id="x.pre_group" v-for="x in model_list[region]"/>
+                            <el-form-item label="模型">
+                                <el-select v-model="model_version" placeholder="选择模型" @change="onChangeModel">
+                                    <el-option :label="x.name" :value="x.version" :data-id="x.pre_group" v-for="x in model_list[platform].list"/>
                                 </el-select>
                             </el-form-item>
 
@@ -77,14 +66,13 @@
 </template>
 
 <script>
-import {model_list} from "@/util/rule"
+import {model_list} from "@/util/config";
 import {CloseBold} from "@element-plus/icons-vue";
 
 export default {
     name: 'Setting',
     data() {
         return {
-            // 可选的模型列表model_list写在util/rule.js中
             model_list: model_list,
         };
     },
@@ -105,30 +93,18 @@ export default {
                 })
             }
         },
-        // 调用方法 local 本地 remote 远程
-        method: {
-            get() {
-                return this.$store.state.setting.method;
-            },
-            set(val) {
-                this.$store.dispatch('changeSetting', {
-                    key: 'method',
-                    value: val
-                })
-            }
-        },
         // 调用平台
-        region: {
+        platform: {
             get() {
-                return this.$store.state.setting.region;
+                return this.$store.state.setting.platform;
             },
             set(val) {
                 this.$store.dispatch('changeSetting', {
-                    key: 'region',
+                    key: 'platform',
                     value: val
                 })
                 // api平台更换时 把默认模型设置为平台内的第一个
-                this.onChangeModel(this.model_list[val][0].value)
+                this.onChangeModel(this.model_list[val].list[0].version)
             }
         },
         // api_key
@@ -143,7 +119,7 @@ export default {
                 })
             }
         },
-       // 是否多轮对话
+        // 是否多轮对话
         memory: {
             get() {
                 return this.$store.state.setting.memory;
@@ -168,33 +144,19 @@ export default {
             }
         },
         // 模型名称和版本 拼接值 以能够显示在select中
-        model_name_model_version: {
+        model_version: {
             get() {
-                return this.$store.state.setting.model_name + ';' + this.$store.state.setting.model_version
+                return this.$store.state.setting.model_config.version
             }
         }
     },
     methods: {
         onChangeModel(e) {
             // 获取选中项的 id
-            const model = this.model_list[this.region].find(option => option.value === e);
+            const model_config = this.model_list[this.platform].list.find(option => option.version === e);
             this.$store.dispatch('changeSetting', {
-                key: 'pre_group',
-                value: model.pre_group
-            })
-            this.$store.dispatch('changeSetting', {
-                key: 'post_group',
-                value: model.post_group
-            })
-            // 使用分号 ; 分割字符串
-            let parts = e.split(';');
-            this.$store.dispatch('changeSetting', {
-                key: 'model_name',
-                value: parts[0]
-            })
-            this.$store.dispatch('changeSetting', {
-                key: 'model_version',
-                value: parts[1]
+                key: 'model_config',
+                value: model_config
             })
         },
         onBack() {

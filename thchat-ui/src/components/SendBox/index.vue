@@ -35,8 +35,7 @@
 </template>
 
 <script>
-import {local} from "@/api/local";
-import {postProcess} from "@/util/rule";
+import {postProcess} from "@/util/config";
 
 export default {
     name: 'SendBox',
@@ -77,15 +76,9 @@ export default {
             }
         },
         // 平台标识
-        region: {
+        platform: {
             get() {
-                return this.$store.state.setting.region;
-            }
-        },
-        // 请求方式 本地/远程
-        method: {
-            get() {
-                return this.$store.state.setting.method;
+                return this.$store.state.setting.platform;
             }
         },
         // API Key
@@ -94,34 +87,16 @@ export default {
                 return this.$store.state.setting.api_key;
             }
         },
-        // 模型名称
-        model_name: {
+        // 模型配置
+        model_config: {
             get() {
-                return this.$store.state.setting.model_name;
-            }
-        },
-        // 模型版本
-        model_version: {
-            get() {
-                return this.$store.state.setting.model_version;
+                return this.$store.state.setting.model_config;
             }
         },
         // 是否开启多轮对话
         memory: {
             get() {
                 return this.$store.state.setting.memory;
-            }
-        },
-        // 前置规则处理组 远程请求一律在util/rule.js统一处理
-        pre_group: {
-            get() {
-                return this.$store.state.setting.pre_group;
-            }
-        },
-        // 后置规则处理组 远程请求一律在util/rule.js统一处理
-        post_group: {
-            get() {
-                return this.$store.state.setting.post_group;
             }
         }
     },
@@ -214,15 +189,17 @@ export default {
         /**
          * 动态导入不同平台的远程接口规范
          */
-        getRemoteCall() {
-            if (this.region === 'Ali_DashScope') {
-                return import("@/api/Ali_DashScope").then(module => module.remote);
-            } else if (this.region === 'Xunfei_Spark') {
-                return import("@/api/Xunfei_Spark").then(module => module.remote);
-            } else if (this.region === 'Zhipu_BigModel') {
-                return import("@/api/Zhipu_BigModel").then(module => module.remote);
-            } else if (this.region === 'Baidu_QianFan') {
-                return import("@/api/Baidu_QianFan").then(module => module.remote);
+        getDynamicCall() {
+            if (this.platform === 'Ali_DashScope') {
+                return import("@/api/Ali_DashScope").then(module => module.fenchStream);
+            } else if (this.platform === 'Xunfei_Spark') {
+                return import("@/api/Xunfei_Spark").then(module => module.fenchStream);
+            } else if (this.platform === 'Zhipu_BigModel') {
+                return import("@/api/Zhipu_BigModel").then(module => module.fenchStream);
+            } else if (this.platform === 'Baidu_QianFan') {
+                return import("@/api/Baidu_QianFan").then(module => module.fenchStream);
+            } else if (this.platform === 'Local') {
+                return import("@/api/Local").then(module => module.fenchStream);
             }
         },
 
@@ -231,14 +208,10 @@ export default {
          */
         async onSubmitChat() {
             if (this.query === '') {
-                this.$notify({
-                    title: '请输入你的问题或需求!',
-                    type: 'warning',
-                });
                 return;
             }
-            // 此处的model_name 用以未来显示模型的头像
-            let [query, uuid, model_name, model_version] = [this.query, Date.now(), this.method === 'local' ? 'default' : this.model_name, this.model_version];
+            
+            let [query, uuid] = [this.query, Date.now()];
 
             // 重置输入框
             this.query = ''
@@ -249,7 +222,8 @@ export default {
                 "responseTime": undefined,
                 "answer": "",
                 "finishTime": undefined,
-                "model_name": model_name
+                "series": this.model_config.series,
+                "model_name": this.model_config.name
             }
 
             // active为空表示现在是新建会话，否则表示是已有会话
@@ -291,22 +265,29 @@ export default {
 
             try {
                 this.controller = new AbortController();
-                if (this.method === 'local') {
-                    await local({
+                this.getDynamicCall().then(fenchStream => {
+                    fenchStream({
                         prompt: query,
                         history: chat,
                         files: this.$store.state.app.files,
                         controller: this.controller,
                         onopen: (event) => {
                             // SSE的500错误需要在onopen中检测 https://github.com/Azure/fetch-event-source/issues/70
-                            console.log('开始发送', uuid)
-                            if (event.status === 500 || event.status === 404) {
+                            console.log('连接成功')
+                            if (event != undefined && event.status === 401) {
+                                this.$notify({
+                                    title: '远程调用失败!',
+                                    message: '请检查API KEY是否填写或过期',
+                                    type: 'error',
+                                });
+                            }
+                            if (event != undefined && (event.status === 500 || event.status === 404)) {
                                 this.$notify({
                                     title: '无法连接本地接口!',
                                     message: '请检测网络或接口是否开启',
                                     type: 'error',
                                 });
-                            } else if (event.status === 422) {
+                            } else if (event != undefined && event.status === 422) {
                                 this.$notify({
                                     title: '本地接口错误!',
                                     message: '请检测接口是否正常',
@@ -327,21 +308,9 @@ export default {
                                 });
                                 session.finishTime = new Date().getTime();
                                 this.stopChat()
-                                // 更新聊天记录
-                                this.updateChats(uuid, session);
                             }
                             try {
-                                // 假设 event.data 是一次消息的内容
-                                let data = JSON.parse(event.data).data;
-
-                                if (typeof data === 'string') {
-                                    session.answer += data;
-                                } else if (typeof data === 'object' && data.hasOwnProperty('content')) {
-                                    session.answer += data.content;
-                                } else if (typeof data === 'object' && data.hasOwnProperty('data')) {
-                                    session.answer += data.data;
-                                }
-
+                                session.answer += postProcess(event, this.model_config.post_method);
                             } catch (e) {
                                 console.log("本地模型解析响应error:", e)
                             }
@@ -349,7 +318,7 @@ export default {
                             this.updateChats(uuid, session);
                         },
                         onclose: () => {
-                            console.log("连接关闭", uuid)
+                            console.log("连接关闭")
                             session.finishTime = new Date().getTime();
                             this.stopChat()
                             // 更新聊天记录
@@ -361,52 +330,7 @@ export default {
                             this.$message.error(`系统错误：${error}`)
                         }
                     });
-                } else {
-                    this.getRemoteCall().then(remote => {
-                        // 现在 remote 可以使用了，它是根据条件导入的模块的 remote
-                        remote({
-                            model_version: model_version,
-                            prompt: query,
-                            history: chat,
-                            groupIndex: this.pre_group,
-                            controller: this.controller,
-                            onopen: (event) => {
-                                console.log('连接成功')
-                                if (event != undefined && event.status === 401) {
-                                    this.$notify({
-                                        title: '远程调用失败!',
-                                        message: '请检查API KEY是否填写或过期',
-                                        type: 'error',
-                                    });
-                                }
-                                session.responseTime = new Date().getTime();
-                                // 更新聊天记录
-                                this.updateChats(uuid, session);
-                            },
-                            onmessage: (event) => {
-                                try {
-                                    session.answer += postProcess(event, this.post_group);
-                                } catch (e) {
-                                    console.log("本地模型解析响应error:", e)
-                                }
-                                // 更新聊天记录
-                                this.updateChats(uuid, session);
-                            },
-                            onclose: () => {
-                                console.log("连接关闭")
-                                session.finishTime = new Date().getTime();
-                                this.stopChat()
-                                // 更新聊天记录
-                                this.updateChats(uuid, session);
-                            },
-                            onerror: (error) => {
-                                console.log('close', error)
-                                this.stopChat()
-                                this.$message.error(`系统错误：${error}`)
-                            }
-                        });
-                    });
-                }
+                });
             } catch (e) {
                 console.error(e);
             }

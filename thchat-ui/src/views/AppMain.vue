@@ -7,7 +7,7 @@
             </div>
 
             <el-col :md="20" :sm="24" :xs="24">
-                <ChatCard :query="c['query']" :answer="c['answer']" :model_name="c['model_name']" :responseTime="c['responseTime']" :finishTime="c['finishTime']" :sessionId="c['sessionId']" @delete-chat="handleDeleteChat" v-for="c in chat"/>
+                <ChatCard :query="c['query']" :answer="c['answer']" :model_name="c['model_name']" :series="c['series']" :responseTime="c['responseTime']" :finishTime="c['finishTime']" :sessionId="c['sessionId']" @delete-chat="handleDeleteChat" v-for="c in chat"/>
 
                 <div class="title-container dashed-border" v-if="chat.length === 0">
                     <div class="title-line">LLM的Web会话管理方案 <span>THChatUI</span></div>
@@ -20,7 +20,7 @@
                                 <div class="sub-title-line">
                                     <p>① <b>聊天对话</b>功能：</p>
                                     <div style="font-size: 10px">
-                                        <p>开源模型网站：Huggingface</p> <p>远程模型平台：阿里云灵积 \ 讯飞星火 \ 智谱AI</p>
+                                        <p>开源模型网站：Huggingface</p> <p>远程模型平台：阿里云百炼 \ 讯飞星火 \ 智谱AI</p>
                                     </div>
                                 </div>
                                 <div class="sub-title-line">
@@ -39,7 +39,7 @@
                                 <h1>远程模型</h1>
                                 <p style="font-size: 10px">(只需填写api-key但仅支持聊天模型)</p>
                                 <div class="sub-title-line">
-                                    <p> ① <b>阿里云灵积</b>平台以下模型：</p>
+                                    <p> ① <b>阿里云百炼</b>平台以下模型：</p>
                                     <div style="font-size: 10px">
                                         <p>千问（7个版本）</p>
                                         <p>百川（2个版本）</p>
@@ -83,21 +83,14 @@ export default {
         },
         // 激活的聊天记录
         chat() {
-            let chats =  this.$store.state.app.chats;
-
-            try {
-                return chats.filter(item => item.uuid === this.active)[0]['data'];
-            } catch (error) {
-                return []
-            }
+            const chats =  this.$store.state.app.chats;
+            const activeChats = chats.filter(item => item.uuid === this.active);
+            return activeChats.length > 0 ? activeChats[0].data : [];
         },
         // 页眉提示
         header_msg() {
-            if (this.$store.state.setting.method === 'local') {
-                return '本地调用'+ ' ' + (this.$store.state.setting.memory ? '多轮对话' : '单轮对话');
-            } else {
-                return '远程调用' + ' ' + this.$store.state.setting.model_version + ' ' + (this.$store.state.setting.memory ? '多轮对话' : '单轮对话');
-            }
+            const { platform, model_config, memory } = this.$store.state.setting;
+            return `${platform} ${model_config.name} ${memory ? '多轮对话' : '单轮对话'}`;
         },
         chats: {
             // 获取所有聊天内容
