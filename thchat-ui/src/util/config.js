@@ -89,6 +89,8 @@ function postProcess(e, post_method) {
             return JSON.parse(e.data).choices[0].delta.content;
         case "baidu":
             return JSON.parse(e.data).result;
+        case "local":
+            return JSON.parse(e.data).data;
         default:
             console.warn(`未知的后处理方法: ${post_method}`);
             return e;
@@ -151,8 +153,9 @@ module.exports = {
         {
             platform_name: "本地模型调用",
             list: [
-                { type: "llm", name: "本地模型", series: "local", version: "local", pre_method: "base", post_method: "base"}
-            ]
+                { type: "llm", name: "本地模型", series: "local", version: "local", post_method: "local"}
+            ],
+            description: "为了更强的自定义性，本地模型调用时，多轮对话数据不在前端项目作预处理，而是在本地调用时的接口里处理。"
         }
     },
     /**
