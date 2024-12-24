@@ -70,8 +70,8 @@ body, html {
 .glass-theme {
   /* AppAside 背景样式 */
   .aside-bg {
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     color: #333;
   }
   /* AppMain 背景样式 */
@@ -92,7 +92,7 @@ body, html {
   /* 用户和机器人对话卡 底部提示信息字体颜色 */
   --answer-stats-color: #555;
   /* 布局背景 */
-  --layout-common-layout-bg: url('../images/bg.jpg') no-repeat center center;
+  --layout-common-layout-bg: var(--custom-bg, url('../images/bg.jpg')) center center;
   /* 发送框背景 */
   --sendBox-bg-color: white;
 }

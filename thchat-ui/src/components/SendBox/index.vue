@@ -2,7 +2,7 @@
     <div class="search-container">
         <!--    输入框    -->
         <el-input
-            placeholder="请输入你的问题或需求"
+            placeholder="请输入你的问题或需求，按‘↑’可快捷复制问题"
             v-model="query"
             class="search-input"
             autosize

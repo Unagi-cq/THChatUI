@@ -1,4 +1,5 @@
 import cache from '@/util/cache'
+import bg from '@/assets/images/bg.jpg'
 
 const settingStorage = JSON.parse(localStorage.getItem('settingStorage')) || ''
 
@@ -9,6 +10,8 @@ const settingStorage = JSON.parse(localStorage.getItem('settingStorage')) || ''
 const defaultSettings = {
     // 系统主题
     "theme": 'glass',
+    // 背景图片
+    "bg": bg,
     // 是否显示回答统计
     "chat_detail": true,
     // api_key

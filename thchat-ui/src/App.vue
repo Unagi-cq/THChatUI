@@ -5,22 +5,32 @@
 <script>
 import { ref, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import '@/util/resize' // 引入 ResizeObserver 设置
+import '@/util/resize'
 
 export default {
     setup() {
         const store = useStore()
         const theme = ref(store.state.setting.theme)
 
-        // 监听主题变化
-        watch(() => store.state.setting.theme, (newTheme) => {
-            theme.value = newTheme
+        // 统一处理主题和背景的设置
+        const updateTheme = (newTheme) => {
             document.body.className = `${newTheme}-theme`
-        })
+        }
 
-        // 挂载时设置初始主题
+        const updateBackground = (newBg) => {
+            if (newBg) {
+                document.documentElement.style.setProperty('--custom-bg', `url(${newBg})`)
+            }
+        }
+
+        // 监听主题和背景变化
+        watch(() => store.state.setting.theme, updateTheme)
+        watch(() => store.state.setting.bg, updateBackground)
+
+        // 初始化设置
         onMounted(() => {
-            document.body.className = `${theme.value}-theme`
+            updateTheme(theme.value)
+            updateBackground(store.state.setting.bg)
         })
 
         return {}
