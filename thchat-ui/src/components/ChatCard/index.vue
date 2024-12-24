@@ -64,14 +64,6 @@
 
 <script>
 import { marked } from 'marked';
-import user from '../../assets/images/user.png';
-import qwen from '../../assets/images/qwen.jpg';
-import baichuan from '../../assets/images/baichuan.png';
-import xunfei from '../../assets/images/xunfei.svg';
-import zhipu from '../../assets/images/zhipu.png';
-import wenxin from '../../assets/images/wenxin.png';
-import yi from '../../assets/images/yi.svg';
-import local from '../../assets/images/logo.png';
 
 export default {
     name: 'ChatCard',
@@ -109,14 +101,14 @@ export default {
         // 使用计算属性动态获取头像
         avatar_list() {
             return {
-                user: user,
-                qwen: qwen,
-                baichuan: baichuan,
-                xunfei: xunfei,
-                zhipu: zhipu,
-                wenxin: wenxin,
-                yi: yi,
-                local: local
+                user: new URL('@/assets/images/user.png', import.meta.url).href,
+                qwen: new URL('@/assets/images/qwen.jpg', import.meta.url).href,
+                baichuan: new URL('@/assets/images/baichuan.png', import.meta.url).href,
+                xunfei: new URL('@/assets/images/xunfei.svg', import.meta.url).href,
+                zhipu: new URL('@/assets/images/zhipu.png', import.meta.url).href,
+                wenxin: new URL('@/assets/images/wenxin.png', import.meta.url).href,
+                yi: new URL('@/assets/images/yi.svg', import.meta.url).href,
+                local: new URL('@/assets/images/logo.png', import.meta.url).href
             }
         }
     },
