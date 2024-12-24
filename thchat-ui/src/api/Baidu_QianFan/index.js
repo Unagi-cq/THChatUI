@@ -24,8 +24,9 @@ const URL = "/baidu/remote/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/";
 export async function fenchStream({prompt, history, files, controller, onopen, onmessage, onclose, onerror}) {
     let model_version = store.state.setting.model_config.version;
     let pre_method = store.state.setting.model_config.pre_method;
+    let api_key = store.state.setting.api_key_map[store.state.setting.platform];
 
-    const response = await fetchEventSource(URL + model_version + '?access_token=' + store.state.setting.api_key, {
+    const response = await fetchEventSource(URL + model_version + '?access_token=' + api_key, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',

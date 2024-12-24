@@ -24,12 +24,13 @@ const URL = "/ali/remote/api/v1/services/aigc/text-generation/generation";
 export async function fenchStream({prompt, history, files, controller, onopen, onmessage, onclose, onerror}) {
     let model_version = store.state.setting.model_config.version;
     let pre_method = store.state.setting.model_config.pre_method;
+    let api_key = store.state.setting.api_key_map[store.state.setting.platform];
 
     const response = await fetchEventSource(URL, {
         method: "POST",
         headers: {
             // 阿里云平台的Key 需要去阿里云平台申请
-            "Authorization": `Bearer ${store.state.setting.api_key}`,
+            "Authorization": `Bearer ${api_key}`,
             'Content-Type': 'application/json',
             'Accept': 'text/event-stream',
             'X-DashScope-SSE': 'enable'

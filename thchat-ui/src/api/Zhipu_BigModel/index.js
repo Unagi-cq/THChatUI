@@ -22,12 +22,13 @@ const URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
 export async function fenchStream({prompt, history, files, controller, onopen, onmessage, onclose, onerror}) {
     let model_version = store.state.setting.model_config.version;
     let pre_method = store.state.setting.model_config.pre_method;
+    let api_key = store.state.setting.api_key_map[store.state.setting.platform];
 
     const response = await fetchEventSource(URL, {
         method: "POST",
         headers: {
             // 智谱AI平台的接口密钥
-            "Authorization": `Bearer ${store.state.setting.api_key}`,
+            "Authorization": `Bearer ${api_key}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(preProcess(model_version, prompt, history, pre_method)),

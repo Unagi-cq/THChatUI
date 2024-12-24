@@ -16,13 +16,9 @@
                                 </el-radio-group>
                             </el-form-item>
 
-                            <el-form-item label="API Key" v-if="platform !== 'Local'">
-                                <el-input v-model="api_key" />
-                            </el-form-item>
-
                             <el-form-item label="模型">
                                 <el-radio-group v-model="model_version" class="platform-radio-group">
-                                    <el-radio :value="x.version" :data-id="x.pre_group" v-for="x in model_list[platform].list">
+                                    <el-radio :value="x.version" v-for="x in model_list[platform].list">
                                         {{x.name}}
                                     </el-radio>
                                 </el-radio-group>
@@ -73,6 +69,21 @@
                             </el-form-item>
                         </el-form>
 
+                    </el-tab-pane>
+
+                    <el-tab-pane label="API Key">
+                        <el-form label-width="100" label-position="left">
+                            <el-form-item :label="x.platform_name" v-for="(x, y) in model_list" :key="y">
+                                <el-text v-if="y === 'Xunfei_Spark'" type="info">讯飞平台已经在代码里内置了key 可直接调用</el-text>
+                                <el-text v-else-if="y === 'Local'" type="info">本地模型无需配置API Key</el-text>
+                                <el-input 
+                                    v-else
+                                    v-model="api_key_map[y]" 
+                                    :placeholder="'请输入' + x.platform_name + '的API Key'" 
+                                    @change="updateApiKey(y, $event)"
+                                />
+                            </el-form-item>
+                        </el-form>
                     </el-tab-pane>
 
                 </el-tabs>
@@ -181,6 +192,10 @@ export default {
         // 当前设置的背景图片（保存在缓存内）
         currentBg() {
             return this.$store.state.setting.bg;
+        },
+        // api key map
+        api_key_map() {
+            return this.$store.state.setting.api_key_map;
         }
     },
     methods: {
@@ -256,6 +271,19 @@ export default {
                     window.location.reload();
                 }, 3000);
             }).catch(() => {});
+        },
+        /**
+         * 更新api key map缓存
+         * @param platform 平台
+         * @param value api key
+         */
+        updateApiKey(platform, value) {
+            const newApiKeys = { ...this.api_key_map };
+            newApiKeys[platform] = value;
+            this.$store.dispatch('changeSetting', {
+                key: 'api_key_map',
+                value: newApiKeys
+            });
         }
     }
 }

@@ -116,6 +116,7 @@ module.exports = {
                 { type: "llm", name: "百川（baichuan2-7b-chat-v1）", series: "baichuan", version: "baichuan2-7b-chat-v1", pre_method: "base", post_method: "base"},
                 { type: "llm", name: "智谱（chatglm3-6b）", series: "zhipu", version: "chatglm3-6b", pre_method: "base", post_method: "base"}
             ],
+            api_key: "", // 不要在配置文件中填写api key
             description: "通义千问系列模型，支持流式输出"
         },
         "Xunfei_Spark":
@@ -123,7 +124,8 @@ module.exports = {
             platform_name: "讯飞星火",
             list: [
                 { type: "llm", name: "【⭐免费】讯飞星火（Spark Lite）", series: "xunfei", version: "spark lite", pre_method: "xunfei", post_method: "add"}
-            ]
+            ],
+            api_key: "", // 不要在配置文件中填写api key
         },
         "Zhipu_BigModel":
         {
@@ -137,7 +139,8 @@ module.exports = {
                 { type: "llm", name: "智谱（glm-4-flashx）", series: "zhipu", version: "glm-4-flashx", pre_method: "simple", post_method: "delta"},
                 { type: "llm", name: "智谱（glm-4-airx）", series: "zhipu", version: "glm-4-airx", pre_method: "simple", post_method: "delta"},
                 { type: "llm", name: "智谱（glm-4）", series: "zhipu", version: "glm-4", pre_method: "simple", post_method: "delta"},
-            ]
+            ],
+            api_key: "", // 不要在配置文件中填写api key
         },
         "Baidu_QianFan":
         {
@@ -147,7 +150,8 @@ module.exports = {
                 { type: "llm", name: "文心（ernie-tiny-8k）", series: "wenxin", version: "ernie-tiny-8k", pre_method: "simple", post_method: "baidu"},
                 { type: "llm", name: "文心（ernie-lite-8k）", series: "wenxin", version: "ernie-lite-8k", pre_method: "simple", post_method: "baidu"},
                 { type: "llm", name: "零一万物（Yi-34B-Chat）", series: "yi", version: "yi_34b_chat", pre_method: "simple", post_method: "baidu"}
-            ]
+            ],
+            api_key: "", // 不要在配置文件中填写api key
         },
         "Local":
         {
@@ -155,7 +159,8 @@ module.exports = {
             list: [
                 { type: "llm", name: "本地模型", series: "local", version: "local", post_method: "local"}
             ],
-            description: "为了更强的自定义性，本地模型调用时，多轮对话数据不在前端项目作预处理，而是在本地调用时的接口里处理。"
+            api_key: "", // 不要在配置文件中填写api key
+            description: "为了更强的自定义性，本地模型调用时，多轮对话数据不在前端项目作预处理，而是在本地调用时的接口里处理；api_key依然预留传值写法。"
         }
     },
     /**
