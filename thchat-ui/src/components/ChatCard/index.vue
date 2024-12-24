@@ -64,14 +64,14 @@
 
 <script>
 import { marked } from 'marked';
-import user from '@/assets/images/user.png';
-import qwen from '@/assets/images/qwen.jpg';
-import baichuan from '@/assets/images/baichuan.png';
-import xunfei from '@/assets/images/xunfei.svg';
-import zhipu from '@/assets/images/zhipu.png';
-import wenxin from '@/assets/images/wenxin.png';
-import yi from '@/assets/images/yi.svg';
-import local from '@/assets/images/logo.png';
+import user from '../../assets/images/user.png';
+import qwen from '../../assets/images/qwen.jpg';
+import baichuan from '../../assets/images/baichuan.png';
+import xunfei from '../../assets/images/xunfei.svg';
+import zhipu from '../../assets/images/zhipu.png';
+import wenxin from '../../assets/images/wenxin.png';
+import yi from '../../assets/images/yi.svg';
+import local from '../../assets/images/logo.png';
 
 export default {
     name: 'ChatCard',
