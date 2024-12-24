@@ -105,13 +105,13 @@ module.exports = {
         "Ali_DashScope" : {
             platform_name: "阿里云百炼",
             list: [
-                { type: "llm", name: "通义千问（qwen-turbo）", series: "qwen", version: "qwen-turbo", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "通义千问（qwen-plus）", series: "qwen", version: "qwen-plus", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "通义千问（qwen-max）", series: "qwen", version: "qwen-max", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "通义千问（qwen-max-0428）", series: "qwen", version: "qwen-max-0428", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "通义千问（qwen-max-0403）", series: "qwen", version: "qwen-max-0403", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "通义千问（qwen-max-0107）", series: "qwen", version: "qwen-max-0107", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "通义千问（qwen-max-longcontext）", series: "qwen", version: "qwen-max-longcontext", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "千问（qwen-turbo）", series: "qwen", version: "qwen-turbo", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "千问（qwen-plus）", series: "qwen", version: "qwen-plus", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "千问（qwen-max）", series: "qwen", version: "qwen-max", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "千问（qwen-max-0428）", series: "qwen", version: "qwen-max-0428", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "千问（qwen-max-0403）", series: "qwen", version: "qwen-max-0403", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "千问（qwen-max-0107）", series: "qwen", version: "qwen-max-0107", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "千问（qwen-max-longcontext）", series: "qwen", version: "qwen-max-longcontext", pre_method: "base", post_method: "base"},
                 { type: "llm", name: "百川（baichuan-7b-v1）", series: "baichuan", version: "baichuan-7b-v1", pre_method: "base", post_method: "base"},
                 { type: "llm", name: "百川（baichuan2-7b-chat-v1）", series: "baichuan", version: "baichuan2-7b-chat-v1", pre_method: "base", post_method: "base"},
                 { type: "llm", name: "智谱（chatglm3-6b）", series: "zhipu", version: "chatglm3-6b", pre_method: "base", post_method: "base"}

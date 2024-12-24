@@ -9,9 +9,11 @@
                         <el-form  label-width="100" label-position="left">
 
                             <el-form-item label="平台">
-                                <el-select v-model="platform" placeholder="选择平台">
-                                    <el-option :label="x.platform_name" :value="y" v-for="(x, y) in model_list"/>
-                                </el-select>
+                                <el-radio-group v-model="platform" class="platform-radio-group">
+                                    <el-radio :value="y" v-for="(x, y) in model_list" :key="y">
+                                        {{x.platform_name}}
+                                    </el-radio>
+                                </el-radio-group>
                             </el-form-item>
 
                             <el-form-item label="API Key" v-if="platform !== 'Local'">
@@ -19,9 +21,11 @@
                             </el-form-item>
 
                             <el-form-item label="模型">
-                                <el-select v-model="model_version" placeholder="选择模型" @change="onChangeModel">
-                                    <el-option :label="x.name" :value="x.version" :data-id="x.pre_group" v-for="x in model_list[platform].list"/>
-                                </el-select>
+                                <el-radio-group v-model="model_version" class="platform-radio-group">
+                                    <el-radio :value="x.version" :data-id="x.pre_group" v-for="x in model_list[platform].list">
+                                        {{x.name}}
+                                    </el-radio>
+                                </el-radio-group>
                             </el-form-item>
 
                             <el-form-item label="多轮对话" prop="memory">
@@ -121,7 +125,7 @@ export default {
                     value: val
                 })
                 // api平台更换时 把默认模型设置为平台内的第一个
-                this.onChangeModel(this.model_list[val].list[0].version)
+                this.model_version = this.model_list[val].list[0].version
             }
         },
         // api_key
@@ -160,9 +164,19 @@ export default {
                 })
             }
         },
-        // 模型版本 以便显示在select中
-        model_version() {
-            return this.$store.state.setting.model_config.version
+        // 模型版本
+        model_version: {
+            get() {
+                return this.$store.state.setting.model_config.version;
+            },
+            set(val) {
+                // 获取选中模型的整体配置
+                const model_config = this.model_list[this.platform].list.find(option => option.version === val);
+                this.$store.dispatch('changeSetting', {
+                    key: 'model_config',
+                    value: model_config
+                });
+            }
         },
         // 当前设置的背景图片（保存在缓存内）
         currentBg() {
@@ -170,18 +184,6 @@ export default {
         }
     },
     methods: {
-        /**
-         * 模型版本改变时 更新模型配置
-         * @param e el-option传入的值
-         */
-        onChangeModel(e) {
-            // 获取选中模型的整体配置
-            const model_config = this.model_list[this.platform].list.find(option => option.version === e);
-            this.$store.dispatch('changeSetting', {
-                key: 'model_config',
-                value: model_config
-            })
-        },
         /**
          * 返回首页
          */
@@ -219,10 +221,21 @@ export default {
          * 重置背景
          */
         resetBg() {
-            this.$store.dispatch('changeSetting', {
-                key: 'bg',
-                value: bg
-            })
+            this.$confirm('确定要重置背景图片吗？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.$store.dispatch('changeSetting', {
+                    key: 'bg',
+                    value: bg
+                })
+                this.$notify({
+                    title: '成功',
+                    message: '背景已重置',
+                    type: 'success'
+                });
+            }).catch(() => {});
         },
         /**
          * 清空本地缓存
@@ -345,4 +358,15 @@ export default {
     object-fit: cover;
 }
 
+/* 单选框样式调整 */
+.platform-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    font-size: 14px;
+
+    .el-radio {
+        font-weight: 100;
+    }
+}
 </style>
