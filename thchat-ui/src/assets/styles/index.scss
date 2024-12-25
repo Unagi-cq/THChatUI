@@ -29,12 +29,21 @@ body, html {
    * 输入框 边框颜色
    */
   --common-color: black;
-  /* 用户和机器人对话卡 底部提示信息字体颜色 */
-  --answer-stats-color: #555;
+  /* 用户和机器人对话卡 底部提示信息字体颜色
+   * 侧边栏 标题栏 字体颜色
+   */
+  --answer-stats-color: #888;
   /* 布局背景 不需要 */
   --layout-common-layout-bg: none;
   /* 发送框背景 */
   --sendBox-bg-color: white;
+  /* 侧边栏选中和hover背景 */
+  --aside-active-hover-bg: rgba(98, 108, 126, 0.1);
+  /**
+   * 侧边栏 右侧边框颜色
+   * 侧边栏/工具栏 边框颜色
+   */
+   --app-small-border-color: #ccc;
 }
 
 /* 暗黑 主题样式 */
@@ -58,12 +67,21 @@ body, html {
    * 输入框 边框颜色
    */
   --common-color: white;
-  /* 用户和机器人对话卡 底部提示信息字体颜色 */
-  --answer-stats-color: #999;
+  /* 用户和机器人对话卡 底部提示信息字体颜色
+   * 侧边栏 标题栏 字体颜色
+   */
+  --answer-stats-color: #aaa;
   /* 布局背景 不需要 */
   --layout-common-layout-bg: none;
   /* 发送框背景 */
   --sendBox-bg-color: #333;
+  /* 侧边栏选中和hover背景 */
+  --aside-active-hover-bg: rgba(167, 182, 209, 0.1);
+  /**
+   * 侧边栏 右侧边框颜色
+   * 侧边栏/工具栏 边框颜色
+   */
+   --app-small-border-color: #555;
 }
 
 /* 毛玻璃 主题样式 */
@@ -90,11 +108,18 @@ body, html {
    */
   --common-color: black;
   /* 用户和机器人对话卡 底部提示信息字体颜色 */
-  --answer-stats-color: #555;
+  --answer-stats-color: #888;
   /* 布局背景 */
   --layout-common-layout-bg: var(--custom-bg, url('../images/bg.jpg')) center center;
   /* 发送框背景 */
   --sendBox-bg-color: white;
+  /* 侧边栏选中和hover背景 */
+  --aside-active-hover-bg: rgba(98, 108, 126, 0.1);
+  /**
+   * 侧边栏 右侧边框颜色
+   * 侧边栏/工具栏 边框颜色
+   */
+  --app-small-border-color: #ccc;
 }
 
 .el-row {

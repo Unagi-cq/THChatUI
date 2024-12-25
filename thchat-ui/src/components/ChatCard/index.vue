@@ -1,5 +1,5 @@
 <template>
-    <div class="container dashed-border">
+    <div class="container">
         <!-- 用户消息 -->
         <div class="user-message" v-if="query">
             <div class="avatar-header">
@@ -15,7 +15,7 @@
             </el-icon>
         </div>
 
-        <div class="bot-div" v-if="answer || responseTime && finishTime">
+        <div v-if="answer || responseTime && finishTime">
             <!-- 机器人消息 -->
             <div class="bot-message" v-if="answer">
                 <div class="avatar-header">
@@ -27,7 +27,7 @@
             </div>
             <!-- 新增的回答统计 -->
             <div class="answer-stats" v-if="chat_detail && responseTime && finishTime">
-                <span>回答耗时: {{finishTime - responseTime}} ms</span>
+                <span>{{finishTime - responseTime}} ms</span>
                 <el-tooltip content="复制 Markdown" placement="bottom">
                     <el-icon @click="copyMarkdown"><CopyDocument /></el-icon>
                 </el-tooltip>
@@ -47,7 +47,7 @@
         </div>
 
         <!-- 机器人回复消息占位 -->
-<!--        <div class="bot-div" v-if="!answer">
+<!--        <div v-if="!answer">
             <el-skeleton class="bot-message" v-if="!answer" animated :throttle="1000">
                 <template #template>
                     <el-skeleton-item class="avatar" variant="image" style="width: 40px; height: 40px;border-radius: 50%;object-fit: cover;top: 0;" />
@@ -177,10 +177,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/**
- * 变量定义
- */
-$border-radius: 15px;
 
 /**
  * 容器样式
@@ -188,8 +184,7 @@ $border-radius: 15px;
 .container {
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
-    border-radius: $border-radius;
+    margin-bottom: 20px;
 }
 
 /**
@@ -201,11 +196,7 @@ $border-radius: 15px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 0.3rem 0.8rem;
-}
-
-.bot-div {
-    border-top: 1px dashed grey;
+    padding: 0.3rem 0;
 }
 
 .user-message img,
@@ -221,6 +212,9 @@ $border-radius: 15px;
     padding: 0.4rem 0 0 0;
     margin: 0;
     text-align: left;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 :deep(.v-md-editor-preview) {
@@ -229,7 +223,7 @@ $border-radius: 15px;
 }
 
 :deep(.vuepress-markdown-body:not(.custom)) {
-    padding: 0.4rem 0;
+    padding: 0.4rem 0 0.1rem 0;
 }
 
 @media (max-width: 419px) {
@@ -271,11 +265,14 @@ $border-radius: 15px;
     font-size: 10px;
     color: var(--answer-stats-color);
     display: flex;
-    justify-content: space-between;
-    padding: 0.2rem 0.8rem;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
 
     > .el-icon {
         cursor: pointer;
+        display: flex;
+        align-items: center;
 
         &:hover {
             color: var(--el-color-primary);
@@ -289,6 +286,7 @@ $border-radius: 15px;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-height: none;
 }
 
 .collapse-icon {

@@ -6,7 +6,7 @@
                 <span>{{header_msg}}</span>
             </div>
 
-            <el-col :md="20" :sm="24" :xs="24">
+            <el-col :md="18" :sm="24" :xs="24">
                 <ChatCard :query="c['query']" :answer="c['answer']" :model_name="c['model_name']" :series="c['series']" :responseTime="c['responseTime']" :finishTime="c['finishTime']" :sessionId="c['sessionId']" @delete-chat="handleDeleteChat" v-for="c in chat"/>
 
                 <div class="title-container dashed-border" v-if="chat.length === 0">
@@ -170,7 +170,8 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+
 .main-header {
     position: fixed;
     margin-top: -18px;
