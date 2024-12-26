@@ -19,29 +19,62 @@
             <!-- 机器人消息 -->
             <div class="bot-message" v-if="answer">
                 <div class="avatar-header">
-                    <img v-if="avatar_list[series]" class="avatar" :src="avatar_list[series]" alt="Bot Avatar" >
-                    <img v-else class="avatar" :src="avatar_list.local" alt="Default Bot Avatar" >
+                    <img v-if="avatar_list[series]" class="avatar" :src="avatar_list[series]" alt="Bot Avatar">
+                    <img v-else class="avatar" :src="avatar_list.local" alt="Default Bot Avatar">
                     <span class="avatar-name">{{ model_name }}</span>
                 </div>
                 <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess"></v-md-preview>
             </div>
             <!-- 新增的回答统计 -->
             <div class="answer-stats" v-if="chat_detail && responseTime && finishTime">
-                <span>{{finishTime - responseTime}} ms</span>
                 <el-tooltip content="复制 Markdown" placement="bottom">
-                    <el-icon @click="copyMarkdown"><CopyDocument /></el-icon>
+                    <svg @click="copyMarkdown" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
+                        height="14"  fill="none">
+                        <path
+                            d="M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z"
+                            stroke="currentColor" stroke-width="1.5" />
+                        <path d="M11 7L17 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                        <path d="M7 7L8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                        <path d="M7 12L8 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                        <path d="M7 17L8 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                        <path d="M11 12L17 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                        <path d="M11 17L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
                 </el-tooltip>
                 <el-tooltip content="复制纯文本" placement="bottom">
-                    <el-icon @click="copyPlainText"><Document /></el-icon>
+                    <svg @click="copyPlainText" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
+                        height="14"  fill="none">
+                        <path
+                            d="M9 15C9 12.1716 9 10.7574 9.87868 9.87868C10.7574 9 12.1716 9 15 9L16 9C18.8284 9 20.2426 9 21.1213 9.87868C22 10.7574 22 12.1716 22 15V16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H15C12.1716 22 10.7574 22 9.87868 21.1213C9 20.2426 9 18.8284 9 16L9 15Z"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path
+                            d="M16.9999 9C16.9975 6.04291 16.9528 4.51121 16.092 3.46243C15.9258 3.25989 15.7401 3.07418 15.5376 2.90796C14.4312 2 12.7875 2 9.5 2C6.21252 2 4.56878 2 3.46243 2.90796C3.25989 3.07417 3.07418 3.25989 2.90796 3.46243C2 4.56878 2 6.21252 2 9.5C2 12.7875 2 14.4312 2.90796 15.5376C3.07417 15.7401 3.25989 15.9258 3.46243 16.092C4.51121 16.9528 6.04291 16.9975 9 16.9999"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
                 </el-tooltip>
                 <el-tooltip content="删除对话" placement="bottom">
-                    <el-icon @click="deleteChat"><Delete /></el-icon>
+                    <svg @click="deleteChat" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
+                        height="14"  fill="none">
+                        <path d="M14.9994 15L9 9M9.00064 15L15 9" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path
+                            d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z"
+                            stroke="currentColor" stroke-width="1.5" />
+                    </svg>
                 </el-tooltip>
-                <span>字数统计: {{answer.length}} 字符</span>
+                <span>字数统计: {{ answer.length }} 字符</span>
+                <span>{{ finishTime - responseTime }} ms</span>
             </div>
             <div class="answer-stats" v-else-if="chat_detail">
                 <el-tooltip content="删除对话" placement="bottom">
-                    <el-icon @click="deleteChat"><Delete /></el-icon>
+                    <svg @click="deleteChat" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
+                        height="14"  fill="none">
+                        <path d="M14.9994 15L9 9M9.00064 15L15 9" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path
+                            d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z"
+                            stroke="currentColor" stroke-width="1.5" />
+                    </svg>
                 </el-tooltip>
             </div>
         </div>
@@ -151,7 +184,7 @@ export default {
                 const div = document.createElement('div');
                 div.innerHTML = marked.parse(this.answer);
                 const plainText = div.textContent || div.innerText || '';
-                
+
                 await navigator.clipboard.writeText(plainText);
                 this.$notify({
                     title: '纯文本复制成功！',
@@ -177,7 +210,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 /**
  * 容器样式
  */
@@ -232,7 +264,8 @@ export default {
     }
 }
 
-.user-message p, :deep(.vuepress-markdown-body) {
+.user-message p,
+:deep(.vuepress-markdown-body) {
     font-size: 13px;
     color: var(--common-color);
     background: none;
@@ -247,11 +280,11 @@ export default {
     align-items: center;
     gap: 8px;
 
-    > .avatar {
+    >.avatar {
         border: 1px solid var(--common-color);
     }
 
-    > .avatar-name {
+    >.avatar-name {
         font-size: 13px;
         color: var(--common-color);
         font-weight: bold;
@@ -269,11 +302,10 @@ export default {
     align-items: center;
     gap: 10px;
 
-    > .el-icon {
+    svg {
+        vertical-align: middle;
         cursor: pointer;
-        display: flex;
-        align-items: center;
-
+        
         &:hover {
             color: var(--el-color-primary);
         }

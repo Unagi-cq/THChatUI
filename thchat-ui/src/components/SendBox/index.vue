@@ -1,33 +1,27 @@
 <template>
     <div class="search-container">
         <!--    输入框    -->
-        <el-input
-            placeholder="请输入你的问题或需求，按‘↑’可快捷复制问题"
-            v-model="query"
-            class="search-input"
-            autosize
-            resize="none"
-            @keydown.enter="onEnterKeyDown"
-            @keydown.up="onEnterKeyUp"
-            type="textarea">
+        <el-input placeholder="请输入你的问题或需求，按'↑'可快捷复制问题" v-model="query" autosize resize="none"
+            @keydown.enter="onEnterKeyDown" @keydown.up="onEnterKeyUp" type="textarea">
         </el-input>
 
         <!--    发送ICON    -->
-        <el-button
-            type="primary"
-            icon="Promotion"
-            @click="onSubmitChat"
-            v-if="controller === undefined"
-            class="search-button">
+        <el-button type="primary" @click="onSubmitChat" v-if="controller === undefined" class="search-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none">
+                <path
+                    d="M11.922 4.79004C16.6963 3.16245 19.0834 2.34866 20.3674 3.63261C21.6513 4.91656 20.8375 7.30371 19.21 12.078L18.1016 15.3292C16.8517 18.9958 16.2267 20.8291 15.1964 20.9808C14.9195 21.0216 14.6328 20.9971 14.3587 20.9091C13.3395 20.5819 12.8007 18.6489 11.7231 14.783C11.4841 13.9255 11.3646 13.4967 11.0924 13.1692C11.0134 13.0742 10.9258 12.9866 10.8308 12.9076C10.5033 12.6354 10.0745 12.5159 9.21705 12.2769C5.35111 11.1993 3.41814 10.6605 3.0909 9.64127C3.00292 9.36724 2.97837 9.08053 3.01916 8.80355C3.17088 7.77332 5.00419 7.14834 8.6708 5.89838L11.922 4.79004Z"
+                    stroke="currentColor" stroke-width="3.5" />
+            </svg>
         </el-button>
 
         <!--    停止发送ICON    -->
-        <el-button
-            type="danger"
-            icon="VideoPause"
-            @click="stopChat"
-            v-if="controller !== undefined"
-            class="search-button">
+        <el-button type="danger" @click="stopChat" v-if="controller !== undefined" class="search-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
+                fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3.5" />
+                <path d="M9.5 9L9.5 15M14.5 9V15" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
         </el-button>
 
     </div>
@@ -35,7 +29,7 @@
 </template>
 
 <script>
-import {postProcess} from "@/util/config";
+import { postProcess } from "@/util/config";
 
 export default {
     name: 'SendBox',
@@ -210,7 +204,7 @@ export default {
             if (this.query === '') {
                 return;
             }
-            
+
             let [query, uuid] = [this.query, Date.now()];
 
             // 重置输入框
@@ -235,7 +229,7 @@ export default {
                 }
                 this.tabs = [tab, ...this.tabs];
                 // 生成一个新聊天记录并缓存
-                this.chats = [{"uuid": uuid, "data": []}, ...this.chats]
+                this.chats = [{ "uuid": uuid, "data": [] }, ...this.chats]
                 // 激活当前聊天
                 this.active = uuid;
             }
@@ -342,13 +336,24 @@ export default {
 </script>
 
 <style scoped>
-
+/**
+ * 发送框容器
+ */
 .search-container {
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* 使按钮位于容器的右侧 */
+    align-items: flex-end;
     bottom: -20px;
+
+    /* 搜索按钮 */
+    .search-button {
+        z-index: 99;
+        margin: -31px 5px 0 0;
+        height: 32px;
+        width: 32px;
+        border-radius: 10px;
+    }
 }
 
 :deep(.el-textarea__inner) {
@@ -365,19 +370,11 @@ export default {
     font-weight: 100;
 }
 
-.search-button {
-    z-index: 99;
-    margin: -31px 5px 0 0;
-    height: 32px;
-    width: 32px;
-    border-radius: 10px;
-}
-
 :deep(.el-textarea__inner) {
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none;
 }
 
 :deep(.el-textarea__inner)::-webkit-scrollbar {
-    display: none; /* Chrome, Safari 和 Opera */
+    display: none;
 }
 </style>
