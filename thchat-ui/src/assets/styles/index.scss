@@ -10,8 +10,8 @@ body, html {
 
 /* 亮 主题样式 */
 .light-theme {
-  /* AppAside 背景样式 */
-  .aside-bg {
+  /* AppAside AppHeader 背景样式 */
+  .aside-bg, .header-bg {
     background-color: #fff;
     color: #333;
   }
@@ -48,8 +48,8 @@ body, html {
 
 /* 暗黑 主题样式 */
 .dark-theme {
-  /* AppAside 背景样式 */
-  .aside-bg {
+  /* AppAside AppHeader 背景样式 */
+  .aside-bg, .header-bg {
     background-color: #333;
     color: #fff;
   }
@@ -86,8 +86,8 @@ body, html {
 
 /* 毛玻璃 主题样式 */
 .glass-theme {
-  /* AppAside 背景样式 */
-  .aside-bg {
+  /* AppAside AppHeader 背景样式 */
+  .aside-bg, .header-bg {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     color: #333;

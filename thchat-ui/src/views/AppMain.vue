@@ -2,11 +2,7 @@
     <div class="home" ref="homeRef">
 
         <el-row :gutter="24" justify="center" style="margin-left: 0;margin-right: 0;">
-            <div class="main-header">
-                <span>{{header_msg}}</span>
-            </div>
-
-            <el-col :md="18" :sm="24" :xs="24">
+            <el-col :md="18" :sm="22" :xs="22">
                 <ChatCard :query="c['query']" :answer="c['answer']" :model_name="c['model_name']" :series="c['series']" :responseTime="c['responseTime']" :finishTime="c['finishTime']" :sessionId="c['sessionId']" @delete-chat="handleDeleteChat" v-for="c in chat"/>
 
                 <div class="title-container dashed-border" v-if="chat.length === 0">
@@ -67,7 +63,6 @@
                         系统文档<el-link type="primary" href="javascript:void(0)" @click="goTo('/tutorial')">文档</el-link>)</div>
                 </div>
             </el-col>
-
         </el-row>
     </div>
 </template>
@@ -87,11 +82,6 @@ export default {
             const activeChats = chats.filter(item => item.uuid === this.active);
             return activeChats.length > 0 ? activeChats[0].data : [];
         },
-        // 页眉提示
-        header_msg() {
-            const { platform, model_config, memory } = this.$store.state.setting;
-            return `${platform} ${model_config.name} ${memory ? '多轮对话' : '单轮对话'}`;
-        },
         chats: {
             // 获取所有聊天内容
             get() {
@@ -107,8 +97,8 @@ export default {
         "$store.state.app.chats":{
             deep:true, //深度监听设置为 true
             handler:function(newVal,oldVal){
-                // 检查是否滚动到底部 给100px的误差控制 这里的100px可以根据实际需求调整
-                let isAtBottom = this.$refs.homeRef.scrollTop + this.$refs.homeRef.clientHeight >= this.$refs.homeRef.scrollHeight - 100;
+                // 检查是否滚动到底部 给200px的误差控制 这里的200px可以根据实际需求调整
+                let isAtBottom = this.$refs.homeRef.scrollTop + this.$refs.homeRef.clientHeight >= this.$refs.homeRef.scrollHeight - 200;
                 if (!isAtBottom) {
                     return;
                 }
@@ -171,20 +161,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.main-header {
-    position: fixed;
-    margin-top: -18px;
-    font-size: 12px;
-    color: var(--common-color);
-}
 /* 确保容器可以滚动 */
 .home {
     height: 100%;
     overflow-y: scroll;
-}
-
-.home {
     scrollbar-width: none; /* Firefox */
 }
 

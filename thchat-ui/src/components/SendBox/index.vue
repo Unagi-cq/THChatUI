@@ -344,12 +344,11 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    bottom: -20px;
 
     /* 搜索按钮 */
     .search-button {
         z-index: 99;
-        margin: -31px 5px 0 0;
+        margin: -36px 5px 0 0;
         height: 32px;
         width: 32px;
         border-radius: 10px;
@@ -362,8 +361,6 @@ export default {
     color: var(--common-color);
     background: var(--sendBox-bg-color);
     padding: 8px 40px 8px 5px;
-    position: absolute;
-    bottom: -5px;
     border: 2px solid var(--common-color);
     border-radius: 10px;
     box-shadow: 0 0;

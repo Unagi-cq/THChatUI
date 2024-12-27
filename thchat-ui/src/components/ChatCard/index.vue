@@ -216,7 +216,7 @@ export default {
 .container {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 /**
