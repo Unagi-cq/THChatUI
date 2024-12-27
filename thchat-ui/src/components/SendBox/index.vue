@@ -345,10 +345,9 @@ export default {
     flex-direction: column;
     align-items: flex-end;
 
-    /* 搜索按钮 */
     .search-button {
         z-index: 99;
-        margin: -36px 5px 0 0;
+        margin: -36px 4px 0 0;
         height: 32px;
         width: 32px;
         border-radius: 10px;

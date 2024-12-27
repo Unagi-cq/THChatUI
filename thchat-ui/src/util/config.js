@@ -1,5 +1,5 @@
 /**
- * 前处理（入参）规则处理
+ * 前处理(入参)规则处理
  * @param model_version 模型版本
  * @param prompt 用户输入
  * @param history 历史记录
@@ -75,7 +75,7 @@ function getHistory(history) {
 }
 
 /**
- * 后处理（出参）规则处理
+ * 后处理(出参)规则处理
  * @param e 接口传递数据
  * @param post_method 后处理组索引
  */
@@ -105,16 +105,16 @@ module.exports = {
         "Ali_DashScope" : {
             platform_name: "阿里云百炼",
             list: [
-                { type: "llm", name: "千问（qwen-turbo）", series: "qwen", version: "qwen-turbo", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "千问（qwen-plus）", series: "qwen", version: "qwen-plus", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "千问（qwen-max）", series: "qwen", version: "qwen-max", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "千问（qwen-max-0428）", series: "qwen", version: "qwen-max-0428", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "千问（qwen-max-0403）", series: "qwen", version: "qwen-max-0403", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "千问（qwen-max-0107）", series: "qwen", version: "qwen-max-0107", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "千问（qwen-max-longcontext）", series: "qwen", version: "qwen-max-longcontext", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "百川（baichuan-7b-v1）", series: "baichuan", version: "baichuan-7b-v1", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "百川（baichuan2-7b-chat-v1）", series: "baichuan", version: "baichuan2-7b-chat-v1", pre_method: "base", post_method: "base"},
-                { type: "llm", name: "智谱（chatglm3-6b）", series: "zhipu", version: "chatglm3-6b", pre_method: "base", post_method: "base"}
+                { type: "llm", name: "qwen-turbo", series: "qwen", version: "qwen-turbo", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "qwen-plus", series: "qwen", version: "qwen-plus", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "qwen-max", series: "qwen", version: "qwen-max", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "qwen-max-0428", series: "qwen", version: "qwen-max-0428", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "qwen-max-0403", series: "qwen", version: "qwen-max-0403", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "qwen-max-0107", series: "qwen", version: "qwen-max-0107", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "qwen-max-longcontext", series: "qwen", version: "qwen-max-longcontext", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "baichuan-7b-v1", series: "baichuan", version: "baichuan-7b-v1", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "baichuan2-7b-chat-v1", series: "baichuan", version: "baichuan2-7b-chat-v1", pre_method: "base", post_method: "base"},
+                { type: "llm", name: "chatglm3-6b", series: "zhipu", version: "chatglm3-6b", pre_method: "base", post_method: "base"}
             ],
             api_key: "", // 不要在配置文件中填写api key
             description: "通义千问系列模型，支持流式输出"
@@ -123,7 +123,7 @@ module.exports = {
         {
             platform_name: "讯飞星火",
             list: [
-                { type: "llm", name: "【⭐免费】讯飞星火（Spark Lite）", series: "xunfei", version: "spark lite", pre_method: "xunfei", post_method: "add"}
+                { type: "llm", name: "【⭐免费】Spark Lite", series: "xunfei", version: "spark lite", pre_method: "xunfei", post_method: "add"}
             ],
             api_key: "", // 不要在配置文件中填写api key
         },
@@ -131,14 +131,14 @@ module.exports = {
         {
             platform_name: "智谱AI",
             list: [
-                { type: "llm", name: "【⭐免费】智谱（glm-4-flash）", series: "zhipu", version: "glm-4-flash", pre_method: "simple", post_method: "delta"},
-                { type: "llm", name: "智谱（glm-4-0520）", series: "zhipu", version: "glm-4-0520", pre_method: "simple", post_method: "delta"},
-                { type: "llm", name: "智谱（glm-4-air）", series: "zhipu", version: "glm-4-air", pre_method: "simple", post_method: "delta"},
-                { type: "llm", name: "智谱（glm-4-plus）", series: "zhipu", version: "glm-4-plus", pre_method: "simple", post_method: "delta"},
-                { type: "llm", name: "智谱（glm-4-long）", series: "zhipu", version: "glm-4-long", pre_method: "simple", post_method: "delta"},
-                { type: "llm", name: "智谱（glm-4-flashx）", series: "zhipu", version: "glm-4-flashx", pre_method: "simple", post_method: "delta"},
-                { type: "llm", name: "智谱（glm-4-airx）", series: "zhipu", version: "glm-4-airx", pre_method: "simple", post_method: "delta"},
-                { type: "llm", name: "智谱（glm-4）", series: "zhipu", version: "glm-4", pre_method: "simple", post_method: "delta"},
+                { type: "llm", name: "【⭐免费】glm-4-flash", series: "zhipu", version: "glm-4-flash", pre_method: "simple", post_method: "delta"},
+                { type: "llm", name: "glm-4-0520", series: "zhipu", version: "glm-4-0520", pre_method: "simple", post_method: "delta"},
+                { type: "llm", name: "glm-4-air", series: "zhipu", version: "glm-4-air", pre_method: "simple", post_method: "delta"},
+                { type: "llm", name: "glm-4-plus", series: "zhipu", version: "glm-4-plus", pre_method: "simple", post_method: "delta"},
+                { type: "llm", name: "glm-4-long", series: "zhipu", version: "glm-4-long", pre_method: "simple", post_method: "delta"},
+                { type: "llm", name: "glm-4-flashx", series: "zhipu", version: "glm-4-flashx", pre_method: "simple", post_method: "delta"},
+                { type: "llm", name: "glm-4-airx", series: "zhipu", version: "glm-4-airx", pre_method: "simple", post_method: "delta"},
+                { type: "llm", name: "glm-4", series: "zhipu", version: "glm-4", pre_method: "simple", post_method: "delta"},
             ],
             api_key: "", // 不要在配置文件中填写api key
         },
@@ -146,10 +146,10 @@ module.exports = {
         {
             platform_name: "百度千帆",
             list: [
-                { type: "llm", name: "文心（ernie-speed-128k）", series: "wenxin", version: "ernie-speed-128k", pre_method: "simple", post_method: "baidu"},
-                { type: "llm", name: "文心（ernie-tiny-8k）", series: "wenxin", version: "ernie-tiny-8k", pre_method: "simple", post_method: "baidu"},
-                { type: "llm", name: "文心（ernie-lite-8k）", series: "wenxin", version: "ernie-lite-8k", pre_method: "simple", post_method: "baidu"},
-                { type: "llm", name: "零一万物（Yi-34B-Chat）", series: "yi", version: "yi_34b_chat", pre_method: "simple", post_method: "baidu"}
+                { type: "llm", name: "ernie-speed-128k", series: "wenxin", version: "ernie-speed-128k", pre_method: "simple", post_method: "baidu"},
+                { type: "llm", name: "ernie-tiny-8k", series: "wenxin", version: "ernie-tiny-8k", pre_method: "simple", post_method: "baidu"},
+                { type: "llm", name: "ernie-lite-8k", series: "wenxin", version: "ernie-lite-8k", pre_method: "simple", post_method: "baidu"},
+                { type: "llm", name: "Yi-34B-Chat", series: "yi", version: "yi_34b_chat", pre_method: "simple", post_method: "baidu"}
             ],
             api_key: "", // 不要在配置文件中填写api key
         },
@@ -164,11 +164,11 @@ module.exports = {
         }
     },
     /**
-     * 前处理（入参）规则处理
+     * 前处理(入参)规则处理
      */
     preProcess: preProcess,
     /**
-     * 后处理（出参）规则处理
+     * 后处理(出参)规则处理
      */
     postProcess: postProcess
 }

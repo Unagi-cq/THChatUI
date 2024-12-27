@@ -145,7 +145,7 @@ $vertical-divider-width: 30px; // 竖条的宽度
 }
 
 .el-header {
-    height: 40px;
+    height: 45px;
     padding: 0;
     border-bottom: 1px solid var(--app-small-border-color);
 }
@@ -178,7 +178,7 @@ $vertical-divider-width: 30px; // 竖条的宽度
     width: $vertical-divider-width;
     cursor: pointer;
     display: flex;
-    z-index: 400;
+    z-index: 100;
     transition: all $animation-time;
 
     >svg {
