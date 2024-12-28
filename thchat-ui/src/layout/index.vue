@@ -164,7 +164,7 @@ $vertical-divider-width: 30px; // 竖条的宽度
 .el-footer {
     color: grey;
     text-align: center;
-    height: 67px;
+    height: 92px;
 }
 
 /**

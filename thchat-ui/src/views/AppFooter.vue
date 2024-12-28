@@ -33,7 +33,7 @@ export default {
 
 <style scoped>
 .el-row {
-    margin-top: 5px;
+    margin-top: 32px;
 }
 
 .copyright {
