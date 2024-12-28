@@ -444,6 +444,11 @@ $icon-length: 32px;
     font-weight: 100;
     height: calc(100% - $icon-length);
     scrollbar-width: none;
+
+    &::placeholder {
+        color: var(--common-color);
+        opacity: 0.2;
+    }
 }
 
 :deep(.el-textarea__inner)::-webkit-scrollbar {

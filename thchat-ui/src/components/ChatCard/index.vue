@@ -252,6 +252,11 @@ export default {
 :deep(.v-md-editor-preview) {
     width: 100%;
     text-align: left;
+    
+    pre {
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
 }
 
 :deep(.vuepress-markdown-body:not(.custom)) {
