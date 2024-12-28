@@ -1,93 +1,83 @@
 <template>
     <el-row :gutter="24" justify="center">
-        <el-col :md="18" :sm="24" :xs="24">
-            <div class="title-container dashed-border">
-                <el-page-header @back="onBack" title="关闭" content="系统设置" :icon="CloseBold"></el-page-header>
+        <el-col>
+            <el-tabs tab-position="left" style="margin-top: 20px;" class="demo-tabs">
+                <el-tab-pane label="模型">
+                    <el-form label-width="100" label-position="left">
 
-                <el-tabs tab-position="left" style="margin-top: 20px;" class="demo-tabs">
-                    <el-tab-pane label="模型">
-                        <el-form  label-width="100" label-position="left">
+                        <el-form-item label="平台">
+                            <el-radio-group v-model="platform" class="platform-radio-group">
+                                <el-radio :value="y" v-for="(x, y) in model_list" :key="y">
+                                    {{ x.platform_name }}
+                                </el-radio>
+                            </el-radio-group>
+                        </el-form-item>
 
-                            <el-form-item label="平台">
-                                <el-radio-group v-model="platform" class="platform-radio-group">
-                                    <el-radio :value="y" v-for="(x, y) in model_list" :key="y">
-                                        {{x.platform_name}}
-                                    </el-radio>
-                                </el-radio-group>
-                            </el-form-item>
+                        <el-form-item label="模型">
+                            <el-radio-group v-model="model_version" class="platform-radio-group">
+                                <el-radio :value="x.version" v-for="x in model_list[platform].list">
+                                    {{ x.name }}
+                                </el-radio>
+                            </el-radio-group>
+                        </el-form-item>
 
-                            <el-form-item label="模型">
-                                <el-radio-group v-model="model_version" class="platform-radio-group">
-                                    <el-radio :value="x.version" v-for="x in model_list[platform].list">
-                                        {{x.name}}
-                                    </el-radio>
-                                </el-radio-group>
-                            </el-form-item>
+                        <el-form-item label="多轮对话" prop="memory">
+                            <el-switch v-model="memory" />
+                        </el-form-item>
 
-                            <el-form-item label="多轮对话" prop="memory">
-                                <el-switch v-model="memory" />
-                            </el-form-item>
+                    </el-form>
+                </el-tab-pane>
 
-                        </el-form>
-                    </el-tab-pane>
+                <el-tab-pane label="通用">
 
-                    <el-tab-pane label="通用" >
+                    <el-form label-width="100" label-position="left">
+                        <el-form-item label="系统主题">
+                            <el-segmented v-model="theme"
+                                :options="[{ label: '毛玻璃', value: 'glass' }, { label: '暗色', value: 'dark' }, { label: '亮色', value: 'light' }]">
+                                <template #default="{ item }">
+                                    <div class="flex flex-col items-center">
+                                        <div>{{ item.label }}</div>
+                                    </div>
+                                </template>
+                            </el-segmented>
+                        </el-form-item>
 
-                        <el-form label-width="100" label-position="left">
-                            <el-form-item label="系统主题">
-                                <el-segmented v-model="theme" :options="[{label:'毛玻璃',value:'glass'},{label:'暗色',value:'dark'},{label:'亮色',value:'light'}]" >
-                                    <template #default="{ item }">
-                                        <div class="flex flex-col items-center">
-                                            <div>{{ item.label }}</div>
-                                        </div>
-                                    </template>
-                                </el-segmented>
-                            </el-form-item>
+                        <el-form-item label="背景图片" v-if="theme === 'glass'">
+                            <div class="bg-preview-container">
+                                <el-upload class="avatar-uploader" action="" :show-file-list="false"
+                                    :auto-upload="false" accept="image/*" :on-change="handleBgChange">
+                                    <img v-if="currentBg" :src="currentBg" class="preview-img">
+                                    <el-icon class="avatar-uploader-icon">
+                                        <Plus />
+                                    </el-icon>
+                                </el-upload>
+                            </div>
+                        </el-form-item>
 
-                            <el-form-item label="背景图片" v-if="theme === 'glass'">
-                                <div class="bg-preview-container">
-                                    <el-upload
-                                        class="avatar-uploader"
-                                        action=""
-                                        :show-file-list="false"
-                                        :auto-upload="false"
-                                        accept="image/*"
-                                        :on-change="handleBgChange">
-                                        <img v-if="currentBg" :src="currentBg" class="preview-img">
-                                        <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
-                                    </el-upload>
-                                </div>
-                            </el-form-item>
+                        <el-form-item label="回答统计" prop="chat_detail">
+                            <el-switch v-model="chat_detail" />
+                        </el-form-item>
 
-                            <el-form-item label="回答统计" prop="chat_detail">
-                                <el-switch v-model="chat_detail" />
-                            </el-form-item>
+                        <el-form-item>
+                            <el-button class="mt-2" type="warning" @click="clearLocalStorage">清空本地缓存</el-button>
+                            <el-button class="mt-2" type="danger" @click="resetBg"
+                                v-if="theme === 'glass'">重置背景</el-button>
+                        </el-form-item>
+                    </el-form>
 
-                            <el-form-item>
-                                <el-button class="mt-2" type="warning" @click="clearLocalStorage">清空本地缓存</el-button>
-                                <el-button class="mt-2" type="danger" @click="resetBg" v-if="theme === 'glass'">重置背景</el-button>
-                            </el-form-item>
-                        </el-form>
+                </el-tab-pane>
 
-                    </el-tab-pane>
-
-                    <el-tab-pane label="API Key">
-                        <el-form label-width="100" label-position="left">
-                            <el-form-item :label="x.platform_name" v-for="(x, y) in model_list" :key="y">
-                                <el-text v-if="y === 'Xunfei_Spark'" type="info">讯飞平台已经在代码里内置了key 可直接调用</el-text>
-                                <el-text v-else-if="y === 'Local'" type="info">本地模型无需配置API Key</el-text>
-                                <el-input 
-                                    v-else
-                                    v-model="api_key_map[y]" 
-                                    :placeholder="'请输入' + x.platform_name + '的API Key'" 
-                                    @change="updateApiKey(y, $event)"
-                                />
-                            </el-form-item>
-                        </el-form>
-                    </el-tab-pane>
-
-                </el-tabs>
-            </div>
+                <el-tab-pane label="API Key">
+                    <el-form label-width="100" label-position="left">
+                        <el-form-item :label="x.platform_name" v-for="(x, y) in model_list" :key="y">
+                            <el-text v-if="y === 'Xunfei_Spark'" type="info">讯飞平台已经在代码里内置了key 可直接调用</el-text>
+                            <el-text v-else-if="y === 'Local'" type="info">本地模型无需配置API Key</el-text>
+                            <el-input v-else v-model="api_key_map[y]"
+                                :placeholder="'请输入' + x.platform_name + '的API Key'" @change="updateApiKey(y, $event)" />
+                        </el-form-item>
+                    </el-form>
+                </el-tab-pane>
+            </el-tabs>
         </el-col>
     </el-row>
 
@@ -97,8 +87,7 @@
 </template>
 
 <script>
-import {model_list} from "@/util/config";
-import {CloseBold} from "@element-plus/icons-vue";
+import { model_list } from "@/util/config";
 import bg from '@/assets/images/bg.jpg'
 
 export default {
@@ -200,19 +189,13 @@ export default {
     },
     methods: {
         /**
-         * 返回首页
-         */
-        onBack() {
-            this.$router.push('/');
-        },
-        /**
          * 背景图片上传
          * @descripe 浏览器缓存空间有限 限制保存的图片最大只能为1M 未来考虑使用IndexedDB存储
          */
         handleBgChange(file) {
             // 添加文件大小限制检查 (1MB = 1024 * 1024 bytes)
             const isLt1M = file.raw.size / 1024 / 1024 < 1;
-            
+
             if (!isLt1M) {
                 this.$notify({
                     title: '上传失败!',
@@ -221,7 +204,7 @@ export default {
                 });
                 return;
             }
-            
+
             const reader = new FileReader()
             reader.readAsDataURL(file.raw)
             reader.onload = () => {
@@ -250,12 +233,12 @@ export default {
                     message: '背景已重置',
                     type: 'success'
                 });
-            }).catch(() => {});
+            }).catch(() => { });
         },
         /**
          * 清空本地缓存
          */
-         clearLocalStorage() {
+        clearLocalStorage() {
             this.$confirm('确定要清空所有本地缓存吗？这将会清除所有设置和聊天记录。', '警告', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -270,7 +253,7 @@ export default {
                 setTimeout(() => {
                     window.location.reload();
                 }, 3000);
-            }).catch(() => {});
+            }).catch(() => { });
         },
         /**
          * 更新api key map缓存
@@ -292,33 +275,6 @@ export default {
 <style scoped>
 .demo-tabs {
     padding-right: 10px;
-}
-
-.title-container{
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -moz-box;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: column;
-    -moz-box-orient: vertical;
-    -moz-box-direction: normal;
-    flex-direction: column;
-    gap: 4px;
-    width: 100%;
-    margin: 2vh 0;
-    text-align: center;
-    border-radius: 10px;
-    padding: 10px 0 0 0;
-
-    > .el-page-header{
-        margin-left: 20px;
-    }
-}
-
-:deep(.el-page-header__content) {
-    color: var(--common-color);
 }
 
 :deep(.el-tabs__item)[aria-selected="false"] {
@@ -366,7 +322,8 @@ export default {
     transform: translate(-50%, -50%);
     font-size: 28px;
     color: var(--common-color);
-    z-index: 2;  /* 确保图标在遮罩层上方 */
+    z-index: 2;
+    /* 确保图标在遮罩层上方 */
 }
 
 .preview-img {

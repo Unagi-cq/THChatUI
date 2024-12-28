@@ -42,7 +42,7 @@
         <!-- 工具栏 Start -->
         <div class="optionBar">
             <div class="options">
-                <div class="option" @click="goTo('/docs')">
+                <div class="option" @click="goToPage('/docs')">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
                         fill="none">
                         <path
@@ -57,7 +57,7 @@
                 <div class="divider">
                     <div class="border"></div>
                 </div>
-                <div class="option" @click="goTo('/setting')">
+                <div class="option" @click="goToDialog('/setting')">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
                         fill="none">
                         <path
@@ -72,7 +72,7 @@
                     </svg>
                     <div class="option-text">设置</div>
                 </div>
-                <div class="option" @click="goTo('/tools')">
+                <div class="option" @click="goToPage('/tools')">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
                         fill="none">
                         <path
@@ -90,13 +90,13 @@
                 <div class="divider">
                     <div class="border"></div>
                 </div>
-                <div class="option" @click="goTo('/tutorial')">
+                <div class="option" @click="goToDialog('/about')">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
                         fill="none">
                         <path
                             d="M2.5 16.5C2.5 17.4293 2.5 17.894 2.57686 18.2804C2.89249 19.8671 4.13288 21.1075 5.71964 21.4231C6.10603 21.5 6.57069 21.5 7.5 21.5M21.5 16.5C21.5 17.4293 21.5 17.894 21.4231 18.2804C21.1075 19.8671 19.8671 21.1075 18.2804 21.4231C17.894 21.5 17.4293 21.5 16.5 21.5M21.5 7.5C21.5 6.57069 21.5 6.10603 21.4231 5.71964C21.1075 4.13288 19.8671 2.89249 18.2804 2.57686C17.894 2.5 17.4293 2.5 16.5 2.5M2.5 7.5C2.5 6.57069 2.5 6.10603 2.57686 5.71964C2.89249 4.13288 4.13288 2.89249 5.71964 2.57686C6.10603 2.5 6.57069 2.5 7.5 2.5"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <path 
+                        <path
                             d="M12 8.5V6.5M10 11.5V12M14 11.5V12M11 8.5H13C14.8856 8.5 15.8284 8.5 16.4142 9.08579C17 9.67157 17 10.6144 17 12.5V12.5C17 14.3856 17 15.3284 16.4142 15.9142C15.8284 16.5 14.8856 16.5 13 16.5H11C9.11438 16.5 8.17157 16.5 7.58579 15.9142C7 15.3284 7 14.3856 7 12.5V12.5C7 10.6144 7 9.67157 7.58579 9.08579C8.17157 8.5 9.11438 8.5 11 8.5Z"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
@@ -105,15 +105,46 @@
             </div>
         </div>
         <!-- 工具栏 End -->
+
+        <!-- 弹窗 -->
+        <el-dialog v-model="dialogVisible" :show-close="false" :before-close="handleClose" :destroy-on-close="true"
+            append-to-body>
+            <template #header="{ close, titleId, titleClass }">
+                <div class="dialog-custom-header">
+                    <h4>{{ dialogTitle }}</h4>
+                    <svg class="el-icon--left" @click="close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                        width="20" height="20" fill="none">
+                        <path
+                            d="M10.2471 6.7402C11.0734 7.56657 11.4866 7.97975 12.0001 7.97975C12.5136 7.97975 12.9268 7.56658 13.7531 6.74022L13.7532 6.7402L15.5067 4.98669L15.5067 4.98668C15.9143 4.5791 16.1182 4.37524 16.3302 4.25283C17.3966 3.63716 18.2748 4.24821 19.0133 4.98669C19.7518 5.72518 20.3628 6.60345 19.7472 7.66981C19.6248 7.88183 19.421 8.08563 19.0134 8.49321L17.26 10.2466C16.4336 11.073 16.0202 11.4864 16.0202 11.9999C16.0202 12.5134 16.4334 12.9266 17.2598 13.7529L19.0133 15.5065C19.4209 15.9141 19.6248 16.1179 19.7472 16.3299C20.3628 17.3963 19.7518 18.2746 19.0133 19.013C18.2749 19.7516 17.3965 20.3626 16.3302 19.7469C16.1182 19.6246 15.9143 19.4208 15.5067 19.013L13.7534 17.2598L13.7533 17.2597C12.9272 16.4336 12.5136 16.02 12.0001 16.02C11.4867 16.02 11.073 16.4336 10.2469 17.2598L10.2469 17.2598L8.49353 19.013C8.0859 19.4208 7.88208 19.6246 7.67005 19.7469C6.60377 20.3626 5.72534 19.7516 4.98693 19.013C4.2484 18.2746 3.63744 17.3963 4.25307 16.3299C4.37549 16.1179 4.5793 15.9141 4.98693 15.5065L6.74044 13.7529C7.56681 12.9266 7.98 12.5134 7.98 11.9999C7.98 11.4864 7.5666 11.073 6.74022 10.2466L4.98685 8.49321C4.57928 8.08563 4.37548 7.88183 4.25307 7.66981C3.63741 6.60345 4.24845 5.72518 4.98693 4.98669C5.72542 4.24821 6.60369 3.63716 7.67005 4.25283C7.88207 4.37524 8.08593 4.5791 8.49352 4.98668L8.49353 4.98669L10.2471 6.7402Z"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </template>
+            <div class="dialog-container">
+
+                <component :is="currentComponent" @close="closeDialog"></component>
+            </div>
+
+        </el-dialog>
     </div>
 </template>
 
 <script>
+import Setting from './setting/index.vue'
+import About from './about/index.vue'
+
 export default {
     name: 'AppAside',
+    components: {
+        Setting,
+        About
+    },
     data() {
         return {
             isCollapsed: false,
+            dialogVisible: false,
+            dialogTitle: '',
+            currentComponent: null
         }
     },
     computed: {
@@ -178,7 +209,7 @@ export default {
         pickTab(uuid) {
             // 判断当前是否为聊天页面 如果不是那么跳转到聊天页
             if (this.$router.currentRoute.value.name !== 'index') {
-                this.goTo('/');
+                this.goToPage('/');
             }
             // 更新active
             this.active = uuid;
@@ -189,7 +220,7 @@ export default {
         startNewChat() {
             // 判断当前是否为聊天页面 如果不是那么跳转到聊天页
             if (this.$router.currentRoute.value.name !== 'index') {
-                this.goTo('/');
+                this.goToPage('/');
             }
             // 更新active
             this.active = '';
@@ -198,8 +229,38 @@ export default {
          * 跳转页面函数
          * @param path
          */
-        goTo(path) {
+        goToPage(path) {
             this.$router.push(path)
+        },
+        /**
+         * 跳转弹窗函数
+         * @param path
+         */
+        goToDialog(path) {
+            const componentMap = {
+                '/setting': {
+                    component: 'Setting',
+                    title: '系统设置'
+                },
+                '/about': {
+                    component: 'About',
+                    title: '系统文档'
+                }
+            }
+
+            if (componentMap[path]) {
+                this.dialogTitle = componentMap[path].title
+                this.currentComponent = componentMap[path].component
+                this.dialogVisible = true
+            } else {
+                this.$router.push(path)
+            }
+        },
+        handleClose(done) {
+            done()
+        },
+        closeDialog() {
+            this.dialogVisible = false
         }
     }
 }
@@ -215,6 +276,7 @@ $animation-time: 0.3s;
  * 通用的hover和active效果定义
  */
 @mixin hover-active-effect {
+
     &.active,
     &:hover {
         background: var(--aside-active-hover-bg);
@@ -381,6 +443,79 @@ $animation-time: 0.3s;
                 background-color: var(--app-small-border-color);
             }
         }
+    }
+}
+
+/**
+ * 弹窗
+ */
+:global(.el-dialog) {
+    border-radius: 15px;
+    background: var(--layout-common-layout-bg);
+    overflow: hidden;
+    position: relative;
+    width: 80% !important;
+    max-width: 800px;
+    min-width: 300px;
+    margin: 15vh auto !important;
+}
+
+:global(.el-dialog::after) {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 110%;
+    height: 110%;
+    z-index: 1;
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    pointer-events: none;
+}
+
+:global(.el-dialog__header) {
+    border-bottom: 1px solid var(--app-small-border-color);
+}
+
+:global(.el-dialog__header),
+:global(.el-dialog__body) {
+    position: relative;
+    z-index: 2;
+}
+
+.dialog-custom-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h4 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--common-color);
+    }
+
+    svg {
+        cursor: pointer;
+        color: var(--common-color);
+        opacity: 1;
+        transition: opacity 0.2s;
+
+        &:hover {
+            opacity: 0.6;
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    :global(.el-dialog) {
+        width: 95% !important;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    :global(.el-dialog) {
+        width: 60% !important;
     }
 }
 </style>

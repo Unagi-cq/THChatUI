@@ -6,7 +6,7 @@
 
         <span class="copyright">{{ new Date().getFullYear() }} © THChatUI made by HCQ.
             <el-link href="https://github.com/Unagi-cq/THChatUI" target="_blank">代码仓库</el-link>
-            <el-link href="javascript:void(0)" @click="goTo('/tutorial')">系统文档</el-link>
+            <el-link href="https://github.com/Unagi-cq/THChatUI" target="_blank">系统文档</el-link>
         </span>
     </el-row>
 </template>

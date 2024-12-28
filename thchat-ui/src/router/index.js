@@ -30,18 +30,6 @@ const routes = [
         ]
     },
     {
-        path: '/setting',
-        name: 'setting',
-        component: Layout,
-        children: [
-            {
-                path: '', // 默认子路由
-                name: 'setting',
-                component: () => import('@/views/setting/index.vue')
-            }
-        ]
-    },
-    {
         path: '/docs',
         name: 'docs',
         component: Layout,
@@ -50,18 +38,6 @@ const routes = [
                 path: '', // 默认子路由
                 name: 'docs',
                 component: () => import('@/views/docs/index.vue')
-            }
-        ]
-    },
-    {
-        path: '/tutorial',
-        name: 'tutorial',
-        component: Layout,
-        children: [
-            {
-                path: '', // 默认子路由
-                name: 'tutorial',
-                component: () => import('@/views/tutorial/index.vue')
             }
         ]
     }
