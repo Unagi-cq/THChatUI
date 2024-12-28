@@ -2,7 +2,7 @@
     <div class="container">
         <!-- 上方Logo Start -->
         <div class="logo">
-            <img src="../assets/images/logo.png" />
+            <img :src="logoSrc" alt="logo"/>
             <span>THChatUI</span>
         </div>
         <!-- 上方Logo End -->
@@ -132,6 +132,8 @@
 <script>
 import Setting from './setting/index.vue'
 import About from './about/index.vue'
+import logoDark from '../assets/images/logo_dark_2480.png'
+import logoLight from '../assets/images/logo_light_2480.png'
 
 export default {
     name: 'AppAside',
@@ -174,7 +176,10 @@ export default {
                 this.$store.dispatch('setChats', val);
             }
         },
-
+        logoSrc() {
+            const theme = this.$store.state.setting.theme
+            return theme === 'dark' ? logoLight : logoDark
+        }
     },
     created() {
 
@@ -244,7 +249,7 @@ export default {
                 },
                 '/about': {
                     component: 'About',
-                    title: '系统文档'
+                    title: '关于'
                 }
             }
 
@@ -454,10 +459,12 @@ $animation-time: 0.3s;
     background: var(--layout-common-layout-bg);
     overflow: hidden;
     position: relative;
-    width: 80% !important;
-    max-width: 800px;
+    max-width: 600px;
     min-width: 300px;
     margin: 15vh auto !important;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
 }
 
 :global(.el-dialog::after) {
@@ -473,14 +480,16 @@ $animation-time: 0.3s;
     pointer-events: none;
 }
 
-:global(.el-dialog__header) {
-    border-bottom: 1px solid var(--app-small-border-color);
-}
-
 :global(.el-dialog__header),
 :global(.el-dialog__body) {
     position: relative;
     z-index: 2;
+}
+
+:global(.el-dialog__body) {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
 }
 
 .dialog-custom-header {

@@ -1,6 +1,8 @@
 <template>
     <div class="common-layout">
         <el-container>
+            <!-- 添加遮罩层 -->
+            <div class="overlay overlay-bg" v-if="!active" @click="toggleSidebar"></div>
             <!-- 侧边导航栏 Start-->
             <el-aside class="aside-bg" :class="{ 'no-border': active }">
                 <app-aside />
@@ -200,6 +202,25 @@ $vertical-divider-width: 30px; // 竖条的宽度
         position: absolute;
         width: 100%;
         z-index: 100;
+    }
+}
+
+/* 添加遮罩层样式 */
+.overlay {
+    display: none;  // 默认隐藏
+}
+
+/* 在 xs 尺寸下 */
+@media (max-width: 767px) {
+    // 遮罩层样式
+    .overlay {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 99;  // 确保在侧边栏下面
     }
 }
 </style>

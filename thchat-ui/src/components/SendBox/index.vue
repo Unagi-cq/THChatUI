@@ -388,7 +388,7 @@ $icon-length: 32px;
     bottom: 8px;
     display: flex;
     gap: 8px;
-    z-index: 99;
+    z-index: 88;
 
     svg {
         cursor: pointer;
@@ -409,7 +409,7 @@ $icon-length: 32px;
     position: absolute;
     bottom: 4px;
     right: 2px;
-    z-index: 99;
+    z-index: 88;
 
     .right-send-stop-button {
         height: $icon-length;

@@ -5,10 +5,10 @@
 
         <!-- 右侧模型信息 -->
         <div class="model-info">
-            <el-tooltip effect="dark" placement="bottom" :content="`
-                平台：${$store.state.setting.platform}
+            <el-tooltip effect="dark" placement="bottom" :content="`平台：${$store.state.setting.platform}
                 模型：${$store.state.setting.model_config.name}
                 对话模式：${$store.state.setting.memory ? '多轮对话' : '单轮对话'}
+                回答统计：${$store.state.setting.chat_detail ? '开启' : '隐藏'}
                 `" popper-class="settings-tooltip">
                 <div class="model-info-content">
                     <span class="model-name">{{ header_msg }}</span>
@@ -111,5 +111,12 @@ export default {
             border-radius: 8px;
         }
     }
+}
+</style>
+
+<style>
+.settings-tooltip {
+    white-space: pre-line !important;
+    line-height: 1.5;
 }
 </style>

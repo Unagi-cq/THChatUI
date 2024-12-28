@@ -3,23 +3,33 @@
  */
 
 /* 设置全局字体为思源宋体 */
-body, html {
+body,
+html {
   font-family: 'Heiti SC', sans-serif;
   font-weight: lighter;
 }
 
 /* 亮 主题样式 */
 .light-theme {
+
   /* AppAside AppHeader 背景样式 */
-  .aside-bg, .header-bg {
+  .aside-bg,
+  .header-bg {
     background-color: #fff;
     color: #333;
   }
+
   /* AppMain 背景样式 */
   .main-bg {
     background-color: #efefef;
     color: #333;
   }
+
+  /* overlay 背景样式 */
+  .overlay-bg {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
   /**
    * 用户和机器人对话卡 字体颜色
    * 输入框 字体颜色
@@ -43,21 +53,30 @@ body, html {
    * 侧边栏 右侧边框颜色
    * 侧边栏/工具栏 边框颜色
    */
-   --app-small-border-color: #ccc;
+  --app-small-border-color: #ccc;
 }
 
 /* 暗黑 主题样式 */
 .dark-theme {
+
   /* AppAside AppHeader 背景样式 */
-  .aside-bg, .header-bg {
+  .aside-bg,
+  .header-bg {
     background-color: #333;
     color: #fff;
   }
+
   /* AppMain 背景样式 */
   .main-bg {
     background-color: #444;
     color: #fff;
   }
+
+  /* overlay 背景样式 */
+  .overlay-bg {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
   /**
    * 用户和机器人对话卡 字体颜色
    * 输入框 字体颜色
@@ -81,23 +100,33 @@ body, html {
    * 侧边栏 右侧边框颜色
    * 侧边栏/工具栏 边框颜色
    */
-   --app-small-border-color: #555;
+  --app-small-border-color: #555;
 }
 
 /* 毛玻璃 主题样式 */
 .glass-theme {
+
   /* AppAside AppHeader 背景样式 */
-  .aside-bg, .header-bg {
+  .aside-bg,
+  .header-bg {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     color: #333;
   }
+
   /* AppMain 背景样式 */
   .main-bg {
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     color: #333;
   }
+
+  /* overlay 背景样式 */
+  .overlay-bg {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+
   /**
    * 用户和机器人对话卡 字体颜色
    * 输入框 字体颜色

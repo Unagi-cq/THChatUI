@@ -1,89 +1,80 @@
 <template>
-    <el-row :gutter="24" justify="center">
-        <el-col>
-            <el-tabs tab-position="left" style="margin-top: 20px;" class="demo-tabs">
-                <el-tab-pane label="模型">
-                    <el-form label-width="100" label-position="left">
+    <el-tabs class="demo-tabs">
+        <el-tab-pane label="模型">
+            <el-form label-width="100" label-position="left">
 
-                        <el-form-item label="平台">
-                            <el-radio-group v-model="platform" class="platform-radio-group">
-                                <el-radio :value="y" v-for="(x, y) in model_list" :key="y">
-                                    {{ x.platform_name }}
-                                </el-radio>
-                            </el-radio-group>
-                        </el-form-item>
+                <el-form-item label="平台">
+                    <el-radio-group v-model="platform" class="platform-radio-group">
+                        <el-radio :value="y" v-for="(x, y) in model_list" :key="y">
+                            {{ x.platform_name }}
+                        </el-radio>
+                    </el-radio-group>
+                </el-form-item>
 
-                        <el-form-item label="模型">
-                            <el-radio-group v-model="model_version" class="platform-radio-group">
-                                <el-radio :value="x.version" v-for="x in model_list[platform].list">
-                                    {{ x.name }}
-                                </el-radio>
-                            </el-radio-group>
-                        </el-form-item>
+                <el-form-item label="模型">
+                    <el-radio-group v-model="model_version" class="platform-radio-group">
+                        <el-radio :value="x.version" v-for="x in model_list[platform].list">
+                            {{ x.name }}
+                        </el-radio>
+                    </el-radio-group>
+                </el-form-item>
 
-                        <el-form-item label="多轮对话" prop="memory">
-                            <el-switch v-model="memory" />
-                        </el-form-item>
+                <el-form-item label="多轮对话" prop="memory">
+                    <el-switch v-model="memory" />
+                </el-form-item>
 
-                    </el-form>
-                </el-tab-pane>
+            </el-form>
+        </el-tab-pane>
 
-                <el-tab-pane label="通用">
+        <el-tab-pane label="通用">
 
-                    <el-form label-width="100" label-position="left">
-                        <el-form-item label="系统主题">
-                            <el-segmented v-model="theme"
-                                :options="[{ label: '毛玻璃', value: 'glass' }, { label: '暗色', value: 'dark' }, { label: '亮色', value: 'light' }]">
-                                <template #default="{ item }">
-                                    <div class="flex flex-col items-center">
-                                        <div>{{ item.label }}</div>
-                                    </div>
-                                </template>
-                            </el-segmented>
-                        </el-form-item>
-
-                        <el-form-item label="背景图片" v-if="theme === 'glass'">
-                            <div class="bg-preview-container">
-                                <el-upload class="avatar-uploader" action="" :show-file-list="false"
-                                    :auto-upload="false" accept="image/*" :on-change="handleBgChange">
-                                    <img v-if="currentBg" :src="currentBg" class="preview-img">
-                                    <el-icon class="avatar-uploader-icon">
-                                        <Plus />
-                                    </el-icon>
-                                </el-upload>
+            <el-form label-width="100" label-position="left">
+                <el-form-item label="系统主题">
+                    <el-segmented v-model="theme"
+                        :options="[{ label: '毛玻璃', value: 'glass' }, { label: '暗色', value: 'dark' }, { label: '亮色', value: 'light' }]">
+                        <template #default="{ item }">
+                            <div class="flex flex-col items-center">
+                                <div>{{ item.label }}</div>
                             </div>
-                        </el-form-item>
+                        </template>
+                    </el-segmented>
+                </el-form-item>
 
-                        <el-form-item label="回答统计" prop="chat_detail">
-                            <el-switch v-model="chat_detail" />
-                        </el-form-item>
+                <el-form-item label="背景图片" v-if="theme === 'glass'">
+                    <div class="bg-preview-container">
+                        <el-upload class="avatar-uploader" action="" :show-file-list="false" :auto-upload="false"
+                            accept="image/*" :on-change="handleBgChange">
+                            <img v-if="currentBg" :src="currentBg" class="preview-img">
+                            <el-icon class="avatar-uploader-icon">
+                                <Plus />
+                            </el-icon>
+                        </el-upload>
+                    </div>
+                </el-form-item>
 
-                        <el-form-item>
-                            <el-button class="mt-2" type="warning" @click="clearLocalStorage">清空本地缓存</el-button>
-                            <el-button class="mt-2" type="danger" @click="resetBg"
-                                v-if="theme === 'glass'">重置背景</el-button>
-                        </el-form-item>
-                    </el-form>
+                <el-form-item label="回答统计" prop="chat_detail">
+                    <el-switch v-model="chat_detail" />
+                </el-form-item>
 
-                </el-tab-pane>
+                <el-form-item>
+                    <el-button class="mt-2" type="warning" @click="clearLocalStorage">清空本地缓存</el-button>
+                    <el-button class="mt-2" type="danger" @click="resetBg" v-if="theme === 'glass'">重置背景</el-button>
+                </el-form-item>
+            </el-form>
 
-                <el-tab-pane label="API Key">
-                    <el-form label-width="100" label-position="left">
-                        <el-form-item :label="x.platform_name" v-for="(x, y) in model_list" :key="y">
-                            <el-text v-if="y === 'Xunfei_Spark'" type="info">讯飞平台已经在代码里内置了key 可直接调用</el-text>
-                            <el-text v-else-if="y === 'Local'" type="info">本地模型无需配置API Key</el-text>
-                            <el-input v-else v-model="api_key_map[y]"
-                                :placeholder="'请输入' + x.platform_name + '的API Key'" @change="updateApiKey(y, $event)" />
-                        </el-form-item>
-                    </el-form>
-                </el-tab-pane>
-            </el-tabs>
-        </el-col>
-    </el-row>
+        </el-tab-pane>
 
-
-
-
+        <el-tab-pane label="API Key">
+            <el-form label-width="100" label-position="left">
+                <el-form-item :label="x.platform_name" v-for="(x, y) in model_list" :key="y">
+                    <el-text v-if="y === 'Xunfei_Spark'" type="info">讯飞平台已经在代码里内置了key 可直接调用</el-text>
+                    <el-text v-else-if="y === 'Local'" type="info">本地模型无需配置API Key</el-text>
+                    <el-input v-else v-model="api_key_map[y]" :placeholder="'请输入' + x.platform_name + '的API Key'"
+                        @change="updateApiKey(y, $event)" />
+                </el-form-item>
+            </el-form>
+        </el-tab-pane>
+    </el-tabs>
 </template>
 
 <script>
@@ -273,10 +264,6 @@ export default {
 </script>
 
 <style scoped>
-.demo-tabs {
-    padding-right: 10px;
-}
-
 :deep(.el-tabs__item)[aria-selected="false"] {
     color: var(--common-color);
 }

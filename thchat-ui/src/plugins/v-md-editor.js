@@ -8,7 +8,7 @@ import '@kangc/v-md-editor/lib/theme/style/vuepress.css'
 // import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 // import '@kangc/v-md-editor/lib/theme/style/github.css';
 // 显示代码行数
-import createLineNumbertPlugin from '@kangc/v-md-editor/lib/plugins/line-number/index';
+// import createLineNumbertPlugin from '@kangc/v-md-editor/lib/plugins/line-number/index';
 // 快速复制代码
 import createCopyCodePlugin from '@kangc/v-md-editor/lib/plugins/copy-code/index';
 import '@kangc/v-md-editor/lib/plugins/copy-code/copy-code.css';
@@ -29,6 +29,8 @@ VMdPreview.use(vuepressTheme, {
 // });
 // VMdPreview.use(createLineNumbertPlugin());
 VMdPreview.use(createCopyCodePlugin());
+
+// 常规的md公式支持 不同大模型输出的公式格式不同 需要定向解析
 VMdPreview.use(createKatexPlugin());
 
 export default VMdPreview
