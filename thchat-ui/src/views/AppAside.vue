@@ -260,6 +260,7 @@ $animation-time: 0.3s;
     padding: 2px;
     overflow-y: auto;
     scrollbar-width: none;
+    width: 240px;
 
     &::-webkit-scrollbar {
         display: none;
