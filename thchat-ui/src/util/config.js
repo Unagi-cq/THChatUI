@@ -5,7 +5,7 @@
  * @param history 历史记录
  * @param pre_method 前处理组key
  */
-function preProcess(model_version, prompt, history, pre_method) {
+function preProcess(model_version, prompt, history, pre_method, ...args) {
     let body = {};
     switch (pre_method) {
         case "base":
@@ -40,6 +40,30 @@ function preProcess(model_version, prompt, history, pre_method) {
             body = {
                 model: model_version,
                 messages: getParams(prompt, history),
+                stream: true
+            }
+            break;
+        case "vl":
+            console.log(args[0][0].base64)
+            body = {
+                model: model_version,
+                messages: [
+                    {
+                      "role": "user",
+                      "content": [
+                        {
+                          "type": "image_url",
+                          "image_url": {
+                              "url": args[0][0].base64
+                          }
+                        },
+                        {
+                          "type": "text",
+                          "text": prompt
+                        }
+                      ]
+                    }
+                ],
                 stream: true
             }
             break;
@@ -139,6 +163,7 @@ module.exports = {
                 { type: "llm", name: "glm-4-flashx", series: "zhipu", version: "glm-4-flashx", pre_method: "simple", post_method: "delta"},
                 { type: "llm", name: "glm-4-airx", series: "zhipu", version: "glm-4-airx", pre_method: "simple", post_method: "delta"},
                 { type: "llm", name: "glm-4", series: "zhipu", version: "glm-4", pre_method: "simple", post_method: "delta"},
+                { type: "vl", name: "glm-4v", series: "zhipu", version: "glm-4v", pre_method: "vl", post_method: "delta"},
             ],
             api_key: "", // 不要在配置文件中填写api key
         },

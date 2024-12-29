@@ -12,7 +12,7 @@
                         </div>
                         <p class="tool-card-description">
                             仅支持本地调用，使用前请运行tools文件夹下脚本。
-                            <p>详情请参考文档。</p>
+                            <span>详情请参考文档。</span>
                         </p>
 
                     </div>
@@ -26,7 +26,7 @@
                         </div>
                         <p class="tool-card-description">
                             仅支持本地调用，使用前请运行rag文件夹下脚本。
-                            <p>详情请参考文档。</p>
+                            <span>详情请参考文档。</span>
                         </p>
                     </div>
                 </el-col>

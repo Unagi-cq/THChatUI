@@ -44,7 +44,7 @@
                     <div class="bg-preview-container">
                         <el-upload class="avatar-uploader" action="" :show-file-list="false" :auto-upload="false"
                             accept="image/*" :on-change="handleBgChange">
-                            <img v-if="currentBg" :src="currentBg" class="preview-img">
+                            <img v-if="currentBg" :src="currentBg" class="preview-img" alt="background">
                             <el-icon class="avatar-uploader-icon">
                                 <Plus />
                             </el-icon>

@@ -40,6 +40,14 @@
             <h2>更新日志</h2>
 
             <div class="version-block">
+                <h3>v1.1.1 - 2024.12.29</h3>
+                <ul>
+                    <li>[upd]弹窗页面UI优化</li>
+                    <li>[upd]手机端体验优化：蒙版，点击后自动关闭左边栏</li>
+                </ul>
+            </div>
+
+            <div class="version-block">
                 <h3>v1.1.0 - 2024.12.29</h3>
                 <ul>
                     <li>[fix]重构第三方平台请求链路与配置架构</li>

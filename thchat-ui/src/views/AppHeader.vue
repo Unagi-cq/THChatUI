@@ -96,7 +96,7 @@ export default {
             font-size: 14px;
             font-weight: bold;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            letter-spacing: 0.3px;
+            letter-spacing: 0px;
         }
 
         .dropdown-icon {

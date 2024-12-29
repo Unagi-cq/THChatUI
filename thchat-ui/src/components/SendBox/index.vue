@@ -1,20 +1,24 @@
 <template>
     <div class="search-container">
         <!--    输入框    -->
-        <el-input placeholder="请输入你的问题或需求，按'↑'可快捷复制问题" v-model="query" :autosize="{ minRows: 1, maxRows: 8 }" resize="none"
-            @keydown.enter="onEnterKeyDown" @keydown.up="onEnterKeyUp" type="textarea">
+        <el-input placeholder="请输入你的问题或需求，按'↑'可快捷复制问题" v-model="query" :autosize="{ minRows: 1, maxRows: 8 }"
+            resize="none" @keydown.enter="onEnterKeyDown" @keydown.up="onEnterKeyUp" type="textarea"
+            :class="{ 'has-files': uploadedFiles.length > 0 }">
         </el-input>
 
-        <div class="left-icons">
+        <div class="left-icons" v-if="uploadedFiles.length == 0">
             <!-- 上传图标 -->
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none">
-                <path
-                    d="M6.93745 10C6.24652 10.0051 5.83076 10.0263 5.4996 10.114C3.99238 10.5131 2.96048 11.8639 3.00111 13.3847C3.01288 13.8252 3.18057 14.3696 3.51595 15.4585C4.32309 18.079 5.67958 20.3539 8.7184 20.8997C9.27699 21 9.90556 21 11.1627 21L12.8372 21C14.0943 21 14.7229 21 15.2815 20.8997C18.3203 20.3539 19.6768 18.079 20.4839 15.4585C20.8193 14.3696 20.987 13.8252 20.9988 13.3847C21.0394 11.8639 20.0075 10.5131 18.5003 10.114C18.1691 10.0263 17.7534 10.0051 17.0625 10"
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                <path
-                    d="M12 3L12 14M12 3C12.4683 3 12.8243 3.4381 13.5364 4.3143L14.5 5.5M12 3C11.5316 3 11.1756 3.4381 10.4635 4.3143L9.49995 5.5"
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
+            <el-upload class="upload-icon" action="" :show-file-list="false" :auto-upload="false" accept="image/*"
+                :multiple="true" :on-change="handleImageUpload" :limit="8">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none">
+                    <path
+                        d="M6.93745 10C6.24652 10.0051 5.83076 10.0263 5.4996 10.114C3.99238 10.5131 2.96048 11.8639 3.00111 13.3847C3.01288 13.8252 3.18057 14.3696 3.51595 15.4585C4.32309 18.079 5.67958 20.3539 8.7184 20.8997C9.27699 21 9.90556 21 11.1627 21L12.8372 21C14.0943 21 14.7229 21 15.2815 20.8997C18.3203 20.3539 19.6768 18.079 20.4839 15.4585C20.8193 14.3696 20.987 13.8252 20.9988 13.3847C21.0394 11.8639 20.0075 10.5131 18.5003 10.114C18.1691 10.0263 17.7534 10.0051 17.0625 10"
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    <path
+                        d="M12 3L12 14M12 3C12.4683 3 12.8243 3.4381 13.5364 4.3143L14.5 5.5M12 3C11.5316 3 11.1756 3.4381 10.4635 4.3143L9.49995 5.5"
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </el-upload>
             <!-- 知识库图标 -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none">
                 <path
@@ -51,6 +55,14 @@
                 </svg>
             </el-button>
         </div>
+
+        <!-- 修改文件预览容器 -->
+        <div class="file-preview-container" v-if="uploadedFiles.length > 0">
+            <div class="file-preview-item" v-for="(file, index) in uploadedFiles" :key="index">
+                <img :src="file.base64" alt="uploaded file" />
+                <span class="delete-icon" @click="removeFile(index)">×</span>
+            </div>
+        </div>
     </div>
 
 </template>
@@ -65,7 +77,8 @@ export default {
             // 输入框内容
             query: "",
             // 聊天控制
-            controller: undefined
+            controller: undefined,
+            uploadedFiles: [], // 存储上传的多个文件
         }
     },
     computed: {
@@ -290,7 +303,7 @@ export default {
                     fenchStream({
                         prompt: query,
                         history: chat,
-                        files: this.$store.state.app.files,
+                        files: this.uploadedFiles,
                         controller: this.controller,
                         onopen: (event) => {
                             // SSE的500错误需要在onopen中检测 https://github.com/Azure/fetch-event-source/issues/70
@@ -356,6 +369,52 @@ export default {
                 console.error(e);
             }
 
+        },
+
+        // 修改文件上传处理方法
+        handleImageUpload(file) {
+            if (this.uploadedFiles.length >= 1) {
+                this.$notify({
+                    title: '上传失败',
+                    message: '最多只能上传1个文件!',
+                    type: 'error'
+                });
+                return;
+            }
+
+            const isImage = file.raw.type.startsWith('image/');
+            const isLt2M = file.raw.size / 1024 / 1024 < 2;
+
+            if (!isImage) {
+                this.$notify({
+                    title: '上传失败',
+                    message: '只能上传图片文件!',
+                    type: 'error'
+                });
+                return;
+            }
+            if (!isLt2M) {
+                this.$notify({
+                    title: '上传失败',
+                    message: '图片大小不能超过 2MB!',
+                    type: 'error'
+                });
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file.raw);
+            reader.onload = () => {
+                this.uploadedFiles.push({
+                    base64: reader.result,
+                    file: file.raw
+                });
+            };
+        },
+
+        // 修改移除文件方法
+        removeFile(index) {
+            this.uploadedFiles.splice(index, 1);
         }
 
     }
@@ -385,7 +444,7 @@ $icon-length: 32px;
 .left-icons {
     position: absolute;
     left: 6px;
-    bottom: 8px;
+    bottom: 0;
     display: flex;
     gap: 8px;
     z-index: 88;
@@ -431,6 +490,11 @@ $icon-length: 32px;
     border: 2px solid var(--common-color);
     background: var(--sendBox-bg-color);
     padding-bottom: $icon-length;
+    transition: padding-bottom 0.2s ease;
+
+    &.has-files {
+        padding-bottom: $icon-length * 2;
+    }
 }
 
 :deep(.el-textarea__inner) {
@@ -453,5 +517,30 @@ $icon-length: 32px;
 
 :deep(.el-textarea__inner)::-webkit-scrollbar {
     display: none;
+}
+
+.file-preview-container {
+    position: absolute;
+    left: 3px;
+    top: -20px;
+    display: flex;
+    gap: 8px;
+    max-width: 100%;
+    height: 50px;
+    overflow-x: auto;
+    padding: 4px;
+
+    .file-preview-item {
+        position: relative;
+        border-radius: 4px;
+        overflow: hidden;
+        border: 1px solid var(--app-small-border-color);
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
 }
 </style>

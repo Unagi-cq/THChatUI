@@ -1,6 +1,6 @@
 <template>
     <el-row :gutter="24" justify="center">
-        <el-col :md="18" :sm="24" :xs="24" >
+        <el-col :md="18" :sm="24" :xs="24" style="padding-left: 0;padding-right: 0;">
             <SendBox v-if="isHidden"/>
         </el-col>
 
