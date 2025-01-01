@@ -7,7 +7,8 @@ import {preProcess} from "@/util/config"
 import store from '../../store';
 
 // 阿里云平台的接口地址 在项目内部设置了跨域 所以拼接了字符串"/ali/remote" 对应项目里面的代理配置 vue.config.js
-const URL = "/ali/remote/api/v1/services/aigc/text-generation/generation";
+const LLM_URL = "/ali/remote/api/v1/services/aigc/text-generation/generation";
+const VL_URL = "/ali/remote/api/v1/services/aigc/multimodal-generation/generation";
 
 
 /**
@@ -25,8 +26,9 @@ export async function fenchStream({prompt, history, files, controller, onopen, o
     let model_version = store.state.setting.model_config.version;
     let pre_method = store.state.setting.model_config.pre_method;
     let api_key = store.state.setting.api_key_map[store.state.setting.platform];
+    let url = store.state.setting.model_config.type === 'llm' ? LLM_URL : VL_URL;
 
-    const response = await fetchEventSource(URL, {
+    const response = await fetchEventSource(url, {
         method: "POST",
         headers: {
             // 阿里云平台的Key 需要去阿里云平台申请
@@ -35,7 +37,7 @@ export async function fenchStream({prompt, history, files, controller, onopen, o
             'Accept': 'text/event-stream',
             'X-DashScope-SSE': 'enable'
         },
-        body: JSON.stringify(preProcess(model_version, prompt, history, pre_method)),
+        body: JSON.stringify(preProcess(model_version, prompt, history, pre_method, files)),
         signal: controller.signal,
         // 连接成功时的处理
         onopen,

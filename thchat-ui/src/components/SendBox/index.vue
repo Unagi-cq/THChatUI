@@ -214,12 +214,18 @@ export default {
                 return;
             }
 
-            let [query, qaId] = [this.query, Date.now()];
+            // 深拷贝
+            let [query, qaId, files] = [
+                this.query, 
+                Date.now(), 
+                JSON.parse(JSON.stringify(this.uploadedFiles))
+            ];
 
-            // 重置输入框
+            // 重置输入
             this.query = ''
+            this.uploadedFiles = []
 
-            let qa = new QA(qaId, query, "", undefined, undefined, this.model_config.series, this.model_config.name, this.model_config.type);
+            let qa = new QA(qaId, query, "", files, undefined, undefined, this.model_config.series, this.model_config.name, this.model_config.type);
 
             // active为空表示现在是新建会话，否则表示是已有会话
             if (this.active === '') {
@@ -230,6 +236,9 @@ export default {
                 chatStoreHelper.addSession(session);
                 // 激活当前聊天
                 this.active = qaId;
+            } else {
+                // 更新聊天记录
+                chatStoreHelper.addQA(this.active, qa);
             }
 
             // 此处控制是否传入历史记录
@@ -247,7 +256,7 @@ export default {
                     fenchStream({
                         prompt: query,
                         history: history,
-                        files: this.uploadedFiles,
+                        files: files,
                         controller: this.controller,
                         onopen: (event) => {
                             // SSE的500错误需要在onopen中检测 https://github.com/Azure/fetch-event-source/issues/70
@@ -297,7 +306,7 @@ export default {
                                     chatStoreHelper.addQA(this.active, qa);
                                 }
                             } catch (e) {
-                                console.error("解析响应错误:", e);
+                                console.error("解析响应错误:", e, event);
                             }
                         },
                         onclose: () => {

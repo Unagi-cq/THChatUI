@@ -11,6 +11,7 @@
                     :series="c['series']"
                     :responseTime="c['responseTime']" 
                     :finishTime="c['finishTime']" 
+                    :files="c['files']"
                     v-for="c in active_session_qa_data" />
 
                 <div class="title-container dashed-border" v-if="active_session_qa_data.length === 0">
@@ -79,7 +80,6 @@
 </template>
 
 <script>
-import chatStoreHelper from '@/schema/chatStoreHelper'
 
 export default {
     name: 'AppMain',

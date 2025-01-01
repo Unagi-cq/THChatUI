@@ -5,7 +5,7 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/display.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-import { ElNotification } from 'element-plus';
+import { ElNotification, ElImageViewer } from 'element-plus';
 
 /* 导入功能性组件或方法 */
 import App from './App.vue'
@@ -25,6 +25,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 // 全局方法挂载
 app.config.globalProperties.$cache = cache;
 app.config.globalProperties.$notify = ElNotification;
+app.config.globalProperties.$imageViewer = ElImageViewer;
 
 app.use(plugins)
     .use(components)

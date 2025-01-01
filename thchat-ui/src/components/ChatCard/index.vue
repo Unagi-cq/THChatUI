@@ -3,12 +3,24 @@
         <!-- 用户消息 -->
         <div class="user-message" v-if="query">
             <div class="avatar-header">
-                <img class="avatar" :src="avatar_list.user" alt="User">
+                <img class="avatar" :src="avatar_list.user" alt="User Avatar">
                 <span class="avatar-name">用户</span>
             </div>
             <p :class="{ 'collapse-p': !isExpanded }" ref="queryText">
                 {{ query }}
             </p>
+            <div v-if="files && files.length > 0" class="uploaded-files">
+                <el-image 
+                v-for="x in files"
+                style="width: 100px; height: 100px" 
+                :src="x.base64" 
+                :zoom-rate="1.2" 
+                :max-scale="7"
+                :min-scale="0.2" 
+                :preview-src-list="files.map(file => file.base64)" 
+                :initial-index="0"
+                fit="cover" />
+            </div>
             <el-icon v-if="isTruncatable" @click="toggleExpand" class="collapse-icon">
                 <ArrowDown v-if="!isExpanded" />
                 <ArrowUp v-else />
@@ -29,7 +41,7 @@
             <div class="answer-stats" v-if="chat_detail && responseTime && finishTime">
                 <el-tooltip content="复制 Markdown" placement="bottom">
                     <svg @click="copyMarkdown" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
-                        height="14"  fill="none">
+                        height="14" fill="none">
                         <path
                             d="M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z"
                             stroke="currentColor" stroke-width="1.5" />
@@ -43,7 +55,7 @@
                 </el-tooltip>
                 <el-tooltip content="复制纯文本" placement="bottom">
                     <svg @click="copyPlainText" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
-                        height="14"  fill="none">
+                        height="14" fill="none">
                         <path
                             d="M9 15C9 12.1716 9 10.7574 9.87868 9.87868C10.7574 9 12.1716 9 15 9L16 9C18.8284 9 20.2426 9 21.1213 9.87868C22 10.7574 22 12.1716 22 15V16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H15C12.1716 22 10.7574 22 9.87868 21.1213C9 20.2426 9 18.8284 9 16L9 15Z"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -53,8 +65,8 @@
                     </svg>
                 </el-tooltip>
                 <el-tooltip content="删除对话" placement="bottom">
-                    <svg @click="deleteQA" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
-                        height="14"  fill="none">
+                    <svg @click="deleteQA" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"
+                        fill="none">
                         <path d="M14.9994 15L9 9M9.00064 15L15 9" stroke="currentColor" stroke-width="1.5"
                             stroke-linecap="round" stroke-linejoin="round" />
                         <path
@@ -67,8 +79,8 @@
             </div>
             <div class="answer-stats" v-else-if="chat_detail">
                 <el-tooltip content="删除对话" placement="bottom">
-                    <svg @click="deleteQA" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
-                        height="14"  fill="none">
+                    <svg @click="deleteQA" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"
+                        fill="none">
                         <path d="M14.9994 15L9 9M9.00064 15L15 9" stroke="currentColor" stroke-width="1.5"
                             stroke-linecap="round" stroke-linejoin="round" />
                         <path
@@ -80,7 +92,7 @@
         </div>
 
         <!-- 机器人回复消息占位 -->
-<!--        <div v-if="!answer">
+        <!--        <div v-if="!answer">
             <el-skeleton class="bot-message" v-if="!answer" animated :throttle="1000">
                 <template #template>
                     <el-skeleton-item class="avatar" variant="image" style="width: 40px; height: 40px;border-radius: 50%;object-fit: cover;top: 0;" />
@@ -89,8 +101,8 @@
                         <el-skeleton-item variant="text" style="width: 100%" />
                     </div>
                 </template>
-            </el-skeleton>
-        </div>-->
+</el-skeleton>
+</div>-->
 
     </div>
 </template>
@@ -125,7 +137,9 @@ export default {
         // 结束时间
         finishTime: Number,
         // 模型名称
-        modelName: String
+        modelName: String,
+        // 文件
+        files: Array
     },
     computed: {
         active() {
@@ -256,7 +270,7 @@ export default {
 :deep(.v-md-editor-preview) {
     width: 100%;
     text-align: left;
-    
+
     pre {
         overflow-x: auto;
         scrollbar-width: none;
@@ -314,7 +328,7 @@ export default {
     svg {
         vertical-align: middle;
         cursor: pointer;
-        
+
         &:hover {
             color: var(--el-color-primary);
         }
@@ -338,4 +352,9 @@ export default {
     color: var(--common-color);
     cursor: pointer;
 }
+
+.uploaded-files {
+    margin-top: 8px;
+}
+
 </style>

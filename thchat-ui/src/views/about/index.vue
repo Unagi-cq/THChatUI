@@ -40,6 +40,15 @@
             <h2>更新日志</h2>
 
             <div class="version-block">
+                <h3>v1.1.3 - 2025.01.01</h3>
+                <ul>
+                    <li>[fix] 重构会话预处理 适配不同平台并支持图片输入</li>
+                    <li>[add] 会话卡可以查看图片</li>
+                    <li>[add] 接入阿里云百炼平台视觉模型</li>
+                </ul>
+            </div>
+
+            <div class="version-block">
                 <h3>v1.1.2 - 2025.01.01</h3>
                 <ul>
                     <li>[fix] 重构缓存数据的数据格式，便于直接将数据缓存改为接后端db接口</li>
