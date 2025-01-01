@@ -1,4 +1,6 @@
 import cache from '@/util/cache'
+import { Tab } from '@/schema/tab'
+import { Chat } from '@/schema/chat'
 
 /**
  * Store存放整个Vue项目的状态数据 全局公用
@@ -8,10 +10,10 @@ const app = {
     state: {
         // 当前处于激活状态的会话uuid
         active: Number(cache.local.get('active')) || '',
-        // 所有会话列表
-        tabs: (cache.local.get('tabStorage') && cache.local.getJSON('tabStorage')['tabs']) || [],
+        // 所有标签页
+        tab: new Tab((cache.local.get('tabStorage') && cache.local.getJSON('tabStorage')) || {list: []}),
         // 所有会话的聊天记录
-        chats: (cache.local.get('chatStorage') && cache.local.getJSON('chatStorage')['chats']) || [],
+        chat: new Chat((cache.local.get('chatStorage') && cache.local.getJSON('chatStorage')) || {list: []}),
         // 所有的上传文件
         files: (cache.local.get('fileStorage') && cache.local.getJSON('fileStorage')['files']) || []
     },
@@ -21,13 +23,13 @@ const app = {
             state.active = active
             cache.local.set('active', active)
         },
-        SET_TABS: (state, tabs) => {
-            state.tabs = tabs
-            cache.local.setJSON('tabStorage', {"tabs": tabs})
+        SET_TAB: (state, ins) => {
+            state.tab = ins instanceof Tab ? ins : new Tab(ins);
+            cache.local.setJSON('tabStorage', state.tab.toJSON())
         },
-        SET_CHATS: (state, chats) => {
-            state.chats = chats
-            cache.local.setJSON('chatStorage', {"chats": chats})
+        SET_CHAT: (state, ins) => {
+            state.chat = ins instanceof Chat ? ins : new Chat(ins);
+            cache.local.setJSON('chatStorage', state.chat.toJSON())
         },
         SET_FILES: (state, files) => {
             state.files = files
@@ -39,11 +41,11 @@ const app = {
         setActive({commit}, active) {
             commit('SET_ACTIVE', active)
         },
-        setTabs({commit}, tabs) {
-            commit('SET_TABS', tabs)
+        setTab({commit}, ins) {
+            commit('SET_TAB', ins)
         },
-        setChats({commit}, chats) {
-            commit('SET_CHATS', chats)
+        setChat({commit}, ins) {
+            commit('SET_CHAT', ins)
         },
         setFiles({commit}, files) {
             commit('SET_FILES', files)
@@ -52,8 +54,8 @@ const app = {
 
     getters: {
         active: state => state.active,
-        history: state => state.tabs,
-        chat: state => state.chats,
+        tab: state => state.tab,
+        chat: state => state.chat,
         file: state => state.files
     }
 }

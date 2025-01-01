@@ -4,29 +4,26 @@
             <el-form label-width="100" label-position="left">
 
                 <el-form-item label="平台">
-                    <el-radio-group v-model="platform" class="platform-radio-group">
-                        <el-radio :value="y" v-for="(x, y) in model_list" :key="y">
+                    <el-radio-group v-model="platform" class="platform-radio-group" size="small">
+                        <el-radio :value="y" v-for="(x, y) in model_list" :key="y" border>
                             {{ x.platform_name }}
                         </el-radio>
                     </el-radio-group>
                 </el-form-item>
 
                 <el-form-item label="模型">
-                    <el-radio-group v-model="model_version" class="platform-radio-group">
-                        <el-radio :value="x.version" v-for="x in model_list[platform].list">
+                    <el-radio-group v-model="model_version" class="platform-radio-group" size="small">
+                        <el-radio :value="x.version" v-for="x in model_list[platform].list" border
+                            :class="{ 'vl-model': x.type === 'vl' }">
                             {{ x.name }}
                         </el-radio>
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item label="多轮对话" prop="memory">
-                    <el-switch v-model="memory" />
-                </el-form-item>
-
             </el-form>
         </el-tab-pane>
 
-        <el-tab-pane label="通用">
+        <el-tab-pane label="通用" class="flex-form-item">
 
             <el-form label-width="100" label-position="left">
                 <el-form-item label="系统主题">
@@ -38,6 +35,13 @@
                             </div>
                         </template>
                     </el-segmented>
+                </el-form-item>
+
+                <el-form-item label="系统语言">
+                    <el-select v-model="locale" placeholder="请选择语言">
+                        <el-option label="简体中文" value="zh-CN" />
+                        <el-option label="English" value="en-US" />
+                    </el-select>
                 </el-form-item>
 
                 <el-form-item label="背景图片" v-if="theme === 'glass'">
@@ -52,6 +56,10 @@
                     </div>
                 </el-form-item>
 
+                <el-form-item label="多轮对话" prop="memory">
+                    <el-switch v-model="memory" />
+                </el-form-item>
+
                 <el-form-item label="回答统计" prop="chat_detail">
                     <el-switch v-model="chat_detail" />
                 </el-form-item>
@@ -64,7 +72,7 @@
 
         </el-tab-pane>
 
-        <el-tab-pane label="API Key">
+        <el-tab-pane label="key" class="flex-form-item">
             <el-form label-width="100" label-position="left">
                 <el-form-item :label="x.platform_name" v-for="(x, y) in model_list" :key="y">
                     <el-text v-if="y === 'Xunfei_Spark'" type="info">讯飞平台已经在代码里内置了key 可直接调用</el-text>
@@ -169,6 +177,18 @@ export default {
                 });
             }
         },
+        // 系统语言
+        locale: {
+            get() {
+                return this.$store.state.setting.locale;
+            },
+            set(val) {
+                this.$store.dispatch('changeSetting', {
+                    key: 'locale',
+                    value: val
+                })
+            }
+        },
         // 当前设置的背景图片（保存在缓存内）
         currentBg() {
             return this.$store.state.setting.bg;
@@ -264,7 +284,12 @@ export default {
 </script>
 
 <style scoped>
-:deep(.el-tabs__item)[aria-selected="false"] {
+:deep(.el-tabs__item, .el-tabs__item label)[aria-selected="false"] {
+    color: var(--common-color);
+    font-weight: bold;
+}
+
+:deep(.el-form-item__label) {
     color: var(--common-color);
 }
 
@@ -332,13 +357,33 @@ export default {
 
 /* 单选框样式调整 */
 .platform-radio-group {
-    display: flex;
-    flex-wrap: wrap;
     gap: 5px;
-    font-size: 14px;
 
     .el-radio {
         font-weight: 100;
+        color: var(--common-color);
+        margin-right: 10px;
+
+        &.vl-model {
+            border-color: var(--el-color-danger);
+        }
+    }
+}
+
+.flex-form-item {
+    :deep(.el-form-item) {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    :deep(.el-form-item__content) {
+        margin-left: auto !important;
+        flex: none;
+    }
+
+    :deep(.el-select) {
+        width: 100px;
     }
 }
 </style>

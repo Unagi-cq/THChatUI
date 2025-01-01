@@ -2,7 +2,7 @@
     <div class="container">
         <!-- 上方Logo Start -->
         <div class="logo">
-            <img :src="logoSrc" alt="logo"/>
+            <img :src="logoSrc" alt="logo" />
             <span>THChatUI</span>
         </div>
         <!-- 上方Logo End -->
@@ -11,11 +11,11 @@
         <div class="chats">
             <div class="chats-header">
                 <span>对话</span>
-                <el-icon class="header-icon" @click="startNewChat">
+                <el-icon class="header-icon" @click="startNewSession">
                     <Plus />
                 </el-icon>
             </div>
-            <div class="session flex" v-for="x in tabs" key="x.uuid" :class="{ active: x.uuid === active }"
+            <div class="session flex" v-for="x in tab.getAllTabs()" key="x.uuid" :class="{ active: x.uuid === active }"
                 @click="pickTab(x.uuid)">
                 <div class="title">
                     <span>{{ x.title }}</span>
@@ -134,6 +134,8 @@ import Setting from './setting/index.vue'
 import About from './about/index.vue'
 import logoDark from '../assets/images/logo_dark_2480.png'
 import logoLight from '../assets/images/logo_light_2480.png'
+import tabStoreHelper from '@/schema/tabStoreHelper'
+import chatStoreHelper from '@/schema/chatStoreHelper'
 
 export default {
     name: 'AppAside',
@@ -158,23 +160,8 @@ export default {
                 this.$store.dispatch('setActive', val);
             }
         },
-        tabs: {
-            // 获取历史聊天选项卡列表
-            get() {
-                return this.$store.state.app.tabs;
-            },
-            set(val) {
-                this.$store.dispatch('setTabs', val);
-            }
-        },
-        chats: {
-            // 获取所有聊天内容
-            get() {
-                return this.$store.state.app.chats;
-            },
-            set(val) {
-                this.$store.dispatch('setChats', val);
-            }
+        tab() {
+            return this.$store.state.app.tab;
         },
         logoSrc() {
             const theme = this.$store.state.setting.theme
@@ -190,21 +177,13 @@ export default {
          * @param uuid 要删除的选项卡uuid
          */
         delTab(uuid) {
-            // 查询要删除的选项卡索引
-            let index = this.tabs.findIndex(item => item.uuid === uuid);
-            // 设置后续激活的选项卡uuid
-            let active = '';
-
-            if (this.tabs.length > 1) {
-                let newIndex = index === (this.tabs.length - 1) ? index - 1 : index + 1;
-                active = this.tabs[newIndex].uuid;
-            }
-
-            // 使用filter方法删除具有指定uuid的数据项 此时会触发get函数
-            this.tabs = this.tabs.filter(item => item.uuid !== uuid);
-            // 同时要删除对应的聊天数据 此时会触发get函数
-            this.chats = this.chats.filter(item => item.uuid !== uuid);
-
+            // 获取前一个选项卡的uuid
+            let active = this.tab.getPrevUuid(uuid);
+            // 删除选项卡
+            tabStoreHelper.del(uuid);
+            // 同时要删除对应的聊天数据
+            chatStoreHelper.delSession(uuid);
+            // 更新active
             this.active = active;
         },
         /**
@@ -218,23 +197,42 @@ export default {
             }
             // 更新active
             this.active = uuid;
+            // 在手机模式下,触发收起侧边栏
+            if (this.isMobileDevice()) {
+                this.$emit('toggle-sidebar');
+            }
         },
         /**
          * 新页面
          */
-        startNewChat() {
+        isMobileDevice() {
+            return window.innerWidth <= 767;
+        },
+        /**
+         * 开始新的会话
+         */
+        startNewSession() {
             // 判断当前是否为聊天页面 如果不是那么跳转到聊天页
             if (this.$router.currentRoute.value.name !== 'index') {
                 this.goToPage('/');
             }
             // 更新active
             this.active = '';
+
+            // 在手机模式下,触发收起侧边栏
+            if (this.isMobileDevice()) {
+                this.$emit('toggle-sidebar');
+            }
         },
         /**
          * 跳转页面函数
          * @param path
          */
         goToPage(path) {
+            // 在手机模式下,触发收起侧边栏
+            if (this.isMobileDevice()) {
+                this.$emit('toggle-sidebar');
+            }
             this.$router.push(path)
         },
         /**
@@ -254,11 +252,15 @@ export default {
             }
 
             if (componentMap[path]) {
+                // 在手机模式下,触发收起侧边栏
+                if (this.isMobileDevice()) {
+                    this.$emit('toggle-sidebar');
+                }
                 this.dialogTitle = componentMap[path].title
                 this.currentComponent = componentMap[path].component
                 this.dialogVisible = true
             } else {
-                this.$router.push(path)
+                this.goToPage(path)
             }
         },
         handleClose(done) {

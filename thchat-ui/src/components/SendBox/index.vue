@@ -9,7 +9,7 @@
         <div class="left-icons" v-if="uploadedFiles.length == 0">
             <!-- 上传图标 -->
             <el-upload class="upload-icon" action="" :show-file-list="false" :auto-upload="false" accept="image/*"
-                :multiple="true" :on-change="handleImageUpload" :limit="8">
+                :multiple="false" :on-change="handleImageUpload" :limit="upload_limit" :disabled="uploadedFiles.length >= upload_limit">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none">
                     <path
                         d="M6.93745 10C6.24652 10.0051 5.83076 10.0263 5.4996 10.114C3.99238 10.5131 2.96048 11.8639 3.00111 13.3847C3.01288 13.8252 3.18057 14.3696 3.51595 15.4585C4.32309 18.079 5.67958 20.3539 8.7184 20.8997C9.27699 21 9.90556 21 11.1627 21L12.8372 21C14.0943 21 14.7229 21 15.2815 20.8997C18.3203 20.3539 19.6768 18.079 20.4839 15.4585C20.8193 14.3696 20.987 13.8252 20.9988 13.3847C21.0394 11.8639 20.0075 10.5131 18.5003 10.114C18.1691 10.0263 17.7534 10.0051 17.0625 10"
@@ -60,7 +60,12 @@
         <div class="file-preview-container" v-if="uploadedFiles.length > 0">
             <div class="file-preview-item" v-for="(file, index) in uploadedFiles" :key="index">
                 <img :src="file.base64" alt="uploaded file" />
-                <span class="delete-icon" @click="removeFile(index)">×</span>
+                <div class="delete-icon" @click="removeFile(index)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none">
+                        <path d="M19.0005 4.99988L5.00049 18.9999M5.00049 4.99988L19.0005 18.9999" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
             </div>
         </div>
     </div>
@@ -69,6 +74,9 @@
 
 <script>
 import { postProcess } from "@/util/config";
+import tabStoreHelper from "@/schema/tabStoreHelper";
+import chatStoreHelper from "@/schema/chatStoreHelper";
+import { QA, Session } from "@/schema/chat";
 
 export default {
     name: 'SendBox',
@@ -78,8 +86,17 @@ export default {
             query: "",
             // 聊天控制
             controller: undefined,
-            uploadedFiles: [], // 存储上传的多个文件
+            // 存储上传的多个文件
+            uploadedFiles: [],
         }
+    },
+    mounted() {
+        // 添加粘贴事件监听
+        document.addEventListener('paste', this.handlePaste);
+    },
+    beforeDestroy() {
+        // 移除粘贴事件监听
+        document.removeEventListener('paste', this.handlePaste);
     },
     computed: {
         // 当前激活的聊天选项卡uuid
@@ -91,34 +108,19 @@ export default {
                 this.$store.dispatch('setActive', val);
             }
         },
-        // 获取历史聊天选项卡列表
-        tabs: {
-            get() {
-                return this.$store.state.app.tabs;
-            },
-            set(val) {
-                this.$store.dispatch('setTabs', val);
-            }
-        },
         // 获取所有聊天内容
-        chats: {
-            get() {
-                return this.$store.state.app.chats;
-            },
-            set(val) {
-                this.$store.dispatch('setChats', val);
-            }
+        chat() {
+            return this.$store.state.app.chat;
+        },
+        // 激活会话的QA对
+        active_session_qa_data() {
+            const activeSession = this.chat.findSession(this.active);
+            return activeSession?.data || [];
         },
         // 平台标识
         platform: {
             get() {
                 return this.$store.state.setting.platform;
-            }
-        },
-        // API Key
-        api_key: {
-            get() {
-                return this.$store.state.setting.api_key;
             }
         },
         // 模型配置
@@ -131,6 +133,24 @@ export default {
         memory: {
             get() {
                 return this.$store.state.setting.memory;
+            }
+        },
+        // 单次上传的文件数量
+        upload_limit: {
+            get() {
+                return this.$store.state.setting.upload_limit;
+            }
+        },
+        // 可上传的文件类型
+        upload_type: {
+            get() {
+                return this.$store.state.setting.upload_type;
+            }
+        },
+        // 限制文件大小
+        upload_size: {
+            get() {
+                return this.$store.state.setting.upload_size;
             }
         }
     },
@@ -153,60 +173,9 @@ export default {
          */
         onEnterKeyUp() {
             if (this.query === '') {
-                if (this.chats.length > 0) {
-                    // 使用解构赋值创建chatList的副本，以避免直接修改原始数组
-                    let chats = [...this.chats];
-                    // 查找当前激活选项卡的索引
-                    const index = chats.findIndex(item => item.uuid === this.active);
-                    if (index === -1) {
-                        console.log('未找到聊天记录');
-                        return;
-                    }
-                    // 使用解构赋值创建data数组的副本
-                    let chat = [...chats[index]['data']];
-
-                    if (chat.length > 0) {
-                        this.query = chat[chat.length - 1].query;
-                    }
+                if (this.active_session_qa_data.length > 0) {
+                    this.query = this.active_session_qa_data[this.active_session_qa_data.length - 1].query;
                 }
-            }
-        },
-
-        /**
-         * 更新聊天记录
-         * 先根据目前激活的聊天选项卡id active查询指定的聊天记录
-         * 然后将聊天记录添加/覆盖到聊天记录列表中
-         * @param sessionId
-         * @param session
-         */
-        updateChats(sessionId, session) {
-            try {
-                // 使用解构赋值创建chatList的副本，以避免直接修改原始数组
-                let chats = [...this.chats];
-                // 查找当前激活选项卡的索引
-                const index = chats.findIndex(item => item.uuid === this.active);
-
-                if (index === -1) {
-                    return;
-                }
-
-                // 使用解构赋值创建data数组的副本
-                let chat = [...chats[index]['data']];
-                let sessionIndex = chat.findIndex(item => item.sessionId === sessionId);
-
-                if (sessionIndex > -1) {
-                    // 如果找到了，先移除旧记录
-                    chat.splice(sessionIndex, 1);
-                }
-                // 添加或更新聊天记录
-                chat.push(session);
-
-                chats[index]['data'] = chat;
-
-                this.chats = chats;
-
-            } catch (error) {
-                console.log("更新聊天记录error:", error);
             }
         },
 
@@ -245,56 +214,31 @@ export default {
                 return;
             }
 
-            let [query, uuid] = [this.query, Date.now()];
+            let [query, qaId] = [this.query, Date.now()];
 
             // 重置输入框
             this.query = ''
 
-            let session = {
-                "sessionId": uuid,
-                "query": query,
-                "responseTime": undefined,
-                "answer": "",
-                "finishTime": undefined,
-                "series": this.model_config.series,
-                "model_name": this.model_config.name
-            }
+            let qa = new QA(qaId, query, "", undefined, undefined, this.model_config.series, this.model_config.name, this.model_config.type);
 
             // active为空表示现在是新建会话，否则表示是已有会话
             if (this.active === '') {
                 // 生成一个新Tab并缓存
-                let tab = {
-                    "title": query,
-                    "uuid": uuid
-                }
-                this.tabs = [tab, ...this.tabs];
+                tabStoreHelper.add(query, qaId);
                 // 生成一个新聊天记录并缓存
-                this.chats = [{ "uuid": uuid, "data": [] }, ...this.chats]
+                let session = new Session(qaId, [qa]);
+                chatStoreHelper.addSession(session);
                 // 激活当前聊天
-                this.active = uuid;
-            }
-
-            // 更新chatList
-            this.updateChats(uuid, session);
-
-            const index = this.chats.findIndex(item => item.uuid === this.active);
-
-            if (index === -1) {
-                this.$notify({
-                    title: '找不到聊天记录!',
-                    message: '请新建聊天或清空缓存后重试',
-                    type: 'error',
-                });
-                return;
+                this.active = qaId;
             }
 
             // 此处控制是否传入历史记录
-            let chat = [];
+            let history = [];
             if (this.memory) {
-                chat = this.chats[index]['data'];
-                chat = chat.slice(-4);
-                // 除了最后一个聊天记录 如果answer为空则过滤掉
-                chat = chat.filter(item => item.answer !== '');
+                // 只保留最近4条有效对话
+                history = this.active_session_qa_data
+                    .slice(-4)
+                    .filter(item => item.answer && item.answer.trim());
             }
 
             try {
@@ -302,7 +246,7 @@ export default {
                 this.getDynamicCall().then(fenchStream => {
                     fenchStream({
                         prompt: query,
-                        history: chat,
+                        history: history,
                         files: this.uploadedFiles,
                         controller: this.controller,
                         onopen: (event) => {
@@ -328,9 +272,9 @@ export default {
                                     type: 'error',
                                 })
                             }
-                            session.responseTime = new Date().getTime();
+                            qa.responseTime = new Date().getTime();
                             // 更新聊天记录
-                            this.updateChats(uuid, session);
+                            chatStoreHelper.addQA(this.active, qa);
                         },
                         onmessage: (event) => {
                             // 过滤接口内部错误消息
@@ -340,23 +284,28 @@ export default {
                                     message: '请检测接口内部是否发生错误或异常',
                                     type: 'error',
                                 });
-                                session.finishTime = new Date().getTime();
+                                qa.finishTime = new Date().getTime();
                                 this.stopChat()
+                                return;
                             }
+                            
+                            // 批量更新优化
                             try {
-                                session.answer += postProcess(event, this.model_config.post_method);
+                                const newContent = postProcess(event, this.model_config.post_method);
+                                if(newContent) {
+                                    qa.answer = (qa.answer || '') + newContent;
+                                    chatStoreHelper.addQA(this.active, qa);
+                                }
                             } catch (e) {
-                                console.log("本地模型解析响应error:", e)
+                                console.error("解析响应错误:", e);
                             }
-                            // 更新聊天记录
-                            this.updateChats(uuid, session);
                         },
                         onclose: () => {
                             console.log("连接关闭")
-                            session.finishTime = new Date().getTime();
+                            qa.finishTime = new Date().getTime();
                             this.stopChat()
                             // 更新聊天记录
-                            this.updateChats(uuid, session);
+                            chatStoreHelper.addQA(this.active, qa);
                         },
                         onerror: (error) => {
                             console.log('close', error)
@@ -368,22 +317,21 @@ export default {
             } catch (e) {
                 console.error(e);
             }
-
         },
 
-        // 修改文件上传处理方法
-        handleImageUpload(file) {
-            if (this.uploadedFiles.length >= 1) {
+        // 图片处理
+        processImage(file) {
+            if (this.uploadedFiles.length >= this.upload_limit) {
                 this.$notify({
                     title: '上传失败',
-                    message: '最多只能上传1个文件!',
+                    message: `最多只能上传${this.upload_limit}个文件!`,
                     type: 'error'
                 });
-                return;
+                return false;
             }
 
-            const isImage = file.raw.type.startsWith('image/');
-            const isLt2M = file.raw.size / 1024 / 1024 < 2;
+            const isImage = file.type.startsWith(this.upload_type);
+            const isLt2M = file.size / 1024 / 1024 <= this.upload_size;
 
             if (!isImage) {
                 this.$notify({
@@ -391,32 +339,49 @@ export default {
                     message: '只能上传图片文件!',
                     type: 'error'
                 });
-                return;
+                return false;
             }
             if (!isLt2M) {
                 this.$notify({
                     title: '上传失败',
-                    message: '图片大小不能超过 2MB!',
+                    message: `图片大小不能超过 ${this.upload_size}MB!`,
                     type: 'error'
                 });
-                return;
+                return false;
             }
 
             const reader = new FileReader();
-            reader.readAsDataURL(file.raw);
+            reader.readAsDataURL(file);
             reader.onload = () => {
                 this.uploadedFiles.push({
                     base64: reader.result,
-                    file: file.raw
+                    file: file
                 });
             };
+            return true;
         },
 
-        // 修改移除文件方法
+        // 修改文件上传处理方法
+        handleImageUpload(file) {
+            this.processImage(file.raw);
+        },
+
+        // 修改处理粘贴事件的方法
+        handlePaste(event) {
+            const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            for (const item of items) {
+                if (item.type.indexOf('image') !== -1) {
+                    const file = item.getAsFile();
+                    this.processImage(file);
+                    break;
+                }
+            }
+        },
+
+        // 移除文件
         removeFile(index) {
             this.uploadedFiles.splice(index, 1);
         }
-
     }
 }
 </script>
@@ -535,11 +500,38 @@ $icon-length: 32px;
         border-radius: 4px;
         overflow: hidden;
         border: 1px solid var(--app-small-border-color);
+        width: 50px;
 
         img {
-            width: 100%;
-            height: 100%;
+            width: 300%;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
             object-fit: cover;
+            object-position: center;
+        }
+
+        .delete-icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10%;
+            padding: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+
+            svg {
+                color: white;
+            }
+
+            &:hover {
+                background: rgba(0, 0, 0, 0.7);
+            }
         }
     }
 }

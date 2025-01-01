@@ -14,10 +14,13 @@ const apiKeyMap = Object.fromEntries(
 );
 
 const defaultSettings = {
+    /******************************** 系统设置弹窗对应的参数 ********************************/
     // 系统主题
-    "theme": 'glass',
+    "theme": 'light',
     // 背景图片
     "bg": bg,
+    // 系统语言
+    "locale": 'zh-CN',
     // 是否显示回答统计
     "chat_detail": true,
     // api_key 从配置文件中初始化
@@ -42,7 +45,14 @@ const defaultSettings = {
         post_method: "add"
     },
     // 聊天类型
-    "chat_type": 'chat'
+    "chat_type": 'chat',
+    /******************************** 系统默认参数 ********************************/
+    // 单次上传的文件数量
+    "upload_limit": 1,
+    // 可上传的文件类型
+    "upload_type": "image/",
+    // 限制文件大小 2MB
+    "upload_size": 2
 }
 
 const setting = {

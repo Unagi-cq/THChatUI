@@ -21,7 +21,7 @@
                 <div class="avatar-header">
                     <img v-if="avatar_list[series]" class="avatar" :src="avatar_list[series]" alt="Bot Avatar">
                     <img v-else class="avatar" :src="avatar_list.local" alt="Default Bot Avatar">
-                    <span class="avatar-name">{{ model_name }}</span>
+                    <span class="avatar-name">{{ modelName }}</span>
                 </div>
                 <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess"></v-md-preview>
             </div>
@@ -53,7 +53,7 @@
                     </svg>
                 </el-tooltip>
                 <el-tooltip content="删除对话" placement="bottom">
-                    <svg @click="deleteChat" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
+                    <svg @click="deleteQA" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
                         height="14"  fill="none">
                         <path d="M14.9994 15L9 9M9.00064 15L15 9" stroke="currentColor" stroke-width="1.5"
                             stroke-linecap="round" stroke-linejoin="round" />
@@ -67,7 +67,7 @@
             </div>
             <div class="answer-stats" v-else-if="chat_detail">
                 <el-tooltip content="删除对话" placement="bottom">
-                    <svg @click="deleteChat" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
+                    <svg @click="deleteQA" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
                         height="14"  fill="none">
                         <path d="M14.9994 15L9 9M9.00064 15L15 9" stroke="currentColor" stroke-width="1.5"
                             stroke-linecap="round" stroke-linejoin="round" />
@@ -97,6 +97,7 @@
 
 <script>
 import { marked } from 'marked';
+import chatStoreHelper from '@/schema/chatStoreHelper';
 
 export default {
     name: 'ChatCard',
@@ -111,6 +112,8 @@ export default {
         }
     },
     props: {
+        // QA的id
+        qaId: Number,
         // AI回答
         answer: String,
         // 用户提问
@@ -121,12 +124,13 @@ export default {
         responseTime: Number,
         // 结束时间
         finishTime: Number,
-        // 用于标识对话
-        sessionId: Number,
         // 模型名称
-        model_name: String
+        modelName: String
     },
     computed: {
+        active() {
+            return this.$store.state.app.active;
+        },
         // 是否开启回答统计
         chat_detail() {
             return this.$store.state.setting.chat_detail;
@@ -199,8 +203,8 @@ export default {
             }
         },
         // 删除对话
-        deleteChat() {
-            this.$emit('delete-chat', this.sessionId);
+        deleteQA() {
+            chatStoreHelper.delQA(this.active, this.qaId);
         },
         toggleExpand() {
             this.isExpanded = !this.isExpanded;

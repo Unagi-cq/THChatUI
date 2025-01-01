@@ -5,7 +5,7 @@
             <div class="overlay overlay-bg" v-if="!active" @click="toggleSidebar"></div>
             <!-- 侧边导航栏 Start-->
             <el-aside class="aside-bg" :class="{ 'no-border': active }">
-                <app-aside />
+                <app-aside @toggle-sidebar="toggleSidebar"/>
             </el-aside>
             <!-- 侧边导航栏 End-->
 

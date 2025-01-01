@@ -5,27 +5,28 @@
 
         <!-- 右侧模型信息 -->
         <div class="model-info">
-            <el-tooltip effect="dark" placement="bottom" :content="`平台：${$store.state.setting.platform}
-                模型：${$store.state.setting.model_config.name}
-                对话模式：${$store.state.setting.memory ? '多轮对话' : '单轮对话'}
-                回答统计：${$store.state.setting.chat_detail ? '开启' : '隐藏'}
-                `" popper-class="settings-tooltip">
+            <el-tooltip effect="dark" placement="bottom" :content="tooltip_content" popper-class="settings-tooltip">
                 <div class="model-info-content">
                     <span class="model-name">{{ header_msg }}</span>
                     <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20"
-                        height="20" fill="none">
+                        v-if="model_type === 'vl'" height="20" fill="none">
                         <path
-                            d="M15.0014 9.98894C15.0014 11.6432 13.6596 12.9841 12.0043 12.9841C10.349 12.9841 9.0072 11.6432 9.0072 9.98894C9.0072 8.33474 10.349 6.99374 12.0043 6.99374C13.6596 6.99374 15.0014 8.33474 15.0014 9.98894Z"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                        <path d="M11.9945 16.9777H12.0035" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            d="M14 3.5H10C6.22876 3.5 4.34315 3.5 3.17157 4.67157C2 5.84315 2 7.72876 2 11.5V13.5C2 17.2712 2 19.1569 3.17157 20.3284C4.34315 21.5 6.22876 21.5 10 21.5H14C17.7712 21.5 19.6569 21.5 20.8284 20.3284C22 19.1569 22 17.2712 22 13.5V11.5C22 7.72876 22 5.84315 20.8284 4.67157C19.6569 3.5 17.7712 3.5 14 3.5Z"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <circle cx="8.5" cy="9" r="1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
                             stroke-linejoin="round" />
-                        <path d="M20.496 2.00174C20.3294 2.9003 19.497 4.75732 17.4989 4.99693" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" />
-                        <path d="M3.51257 2.00174C3.67908 2.9003 4.5116 4.75732 6.50965 4.99693" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" />
                         <path
-                            d="M8.84021 3.69349C5.58633 5.14195 4.44413 8.62401 4.52092 10.4658C3.3979 10.389 2.0227 10.5148 2.00157 11.9509C1.98043 13.387 3.46509 13.6409 4.52092 13.4682V19.8759C4.53861 20.4063 4.58624 21.1002 5.13522 21.3436C6.41182 21.9095 7.48685 20.1925 8.6549 20.2712C9.56297 20.3324 10.8774 22.0907 12.0332 21.9945C13.3719 21.883 14.4022 20.2767 15.4258 20.2767C16.6397 20.2767 16.8523 21.2774 18.314 21.4367C19.4042 21.5556 19.515 20.516 19.515 19.9564V13.4802C21.4043 13.7145 22.1531 12.8775 21.9725 11.6986C21.7595 10.3074 20.1259 10.4067 19.4757 10.4956C19.5768 9.46112 19.1104 8.15549 18.909 7.64373C18.6122 6.73267 17.3925 4.57907 14.7721 3.51122C12.1516 2.44338 9.71367 3.23306 8.84021 3.69349Z"
-                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                            d="M21.5 17.5L16.348 11.8797C16.1263 11.6377 15.8131 11.5 15.485 11.5C15.1744 11.5 14.8766 11.6234 14.6571 11.8429L10 16.5L7.83928 14.3393C7.62204 14.122 7.32741 14 7.02019 14C6.68931 14 6.37423 14.1415 6.15441 14.3888L2.5 18.5"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20"
+                        height="20" v-if="model_type === 'llm'" fill="none">
+                        <path
+                            d="M6.99892 9.5C6.75828 7.50503 7.91475 7.09687 11.9989 7M11.9989 7C16.1223 7.10058 17.3402 7.59829 16.9989 9.5M11.9989 7V17M9.99892 17H13.9989"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path
+                            d="M3.89124 3.89124C2.5 5.28249 2.5 7.52166 2.5 12C2.5 16.4783 2.5 18.7175 3.89124 20.1088C5.28249 21.5 7.52166 21.5 12 21.5C16.4783 21.5 18.7175 21.5 20.1088 20.1088C21.5 18.7175 21.5 16.4783 21.5 12C21.5 7.52166 21.5 5.28249 20.1088 3.89124C18.7175 2.5 16.4783 2.5 12 2.5C7.52166 2.5 5.28249 2.5 3.89124 3.89124Z"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
             </el-tooltip>
@@ -42,20 +43,32 @@ export default {
         }
     },
     computed: {
+        tooltip_content() {
+            const { platform, model_config, memory, chat_detail } = this.$store.state.setting;
+            return `平台：${platform}
+                    模型：${model_config.name}
+                    对话模式：${memory ? '多轮对话' : '单轮对话'}
+                    回答统计：${chat_detail ? '开启' : '隐藏'} 
+                    模型类型：${this.model_type === 'vl' ? '视觉模型' : '语言模型'}`;
+        },
         header_msg() {
             const { model_config } = this.$store.state.setting;
             return model_config.name;
         },
         header_title() {
             const active = this.$store.state.app.active;
-            const tabs = this.$store.state.app.tabs;
-            if (!active || !tabs.length) {
-                return 'AI Assistant';
+            const tab = this.$store.state.app.tab;
+            if (!active) {
+                return 'THChatUI';
             }
-            const currentTab = tabs.find(tab => tab.uuid === active);
-            const title = currentTab ? currentTab.title : 'AI Assistant';
+            const currentTab = tab.findTab(active);
+            const title = currentTab ? currentTab.title : 'THChatUI';
             // 如果标题长度超过10，截取前10个字符并添加省略号
             return title.length > 10 ? title.slice(0, 10) + '...' : title;
+        },
+        model_type() {
+            const { model_config } = this.$store.state.setting;
+            return model_config.type;
         }
     },
     methods: {

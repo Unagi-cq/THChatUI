@@ -40,6 +40,17 @@
             <h2>更新日志</h2>
 
             <div class="version-block">
+                <h3>v1.1.2 - 2025.01.01</h3>
+                <ul>
+                    <li>[fix] 重构缓存数据的数据格式，便于直接将数据缓存改为接后端db接口</li>
+                    <li>[fix] 手机版侧边栏体验优化</li>
+                    <li>[add] 接入视觉模型</li>
+                    <li>[add] 对话框图片上传</li>
+                    <li>[add] 图片粘贴上传</li>
+                </ul>
+            </div>
+
+            <div class="version-block">
                 <h3>v1.1.1 - 2024.12.29</h3>
                 <ul>
                     <li>[upd]弹窗页面UI优化</li>
