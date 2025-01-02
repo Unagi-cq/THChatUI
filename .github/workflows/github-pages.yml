@@ -26,8 +26,8 @@ jobs:
       working-directory: ./thchat-ui
       run: npm run build
       
-    - name: 部署
-      uses: JamesIves/github-pages-deploy-action@v4.3.3
-        with:
-          branch: gh-pages
-          folder: ./thchat-ui/dist
+    - name: 部署到 GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./thchat-ui/dist 

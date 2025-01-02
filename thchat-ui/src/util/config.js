@@ -229,20 +229,41 @@ module.exports = {
         "Ali_DashScope": {
             platform_name: "阿里云百炼",
             list: [
-                { type: "llm", name: "qwen-turbo", series: "qwen", version: "qwen-turbo", pre_method: "base", post_method: "base" },
-                { type: "llm", name: "qwen-plus", series: "qwen", version: "qwen-plus", pre_method: "base", post_method: "base" },
-                { type: "llm", name: "qwen-max", series: "qwen", version: "qwen-max", pre_method: "base", post_method: "base" },
-                { type: "llm", name: "qwen-max-0428", series: "qwen", version: "qwen-max-0428", pre_method: "base", post_method: "base" },
-                { type: "llm", name: "qwen-max-0403", series: "qwen", version: "qwen-max-0403", pre_method: "base", post_method: "base" },
-                { type: "llm", name: "qwen-max-0107", series: "qwen", version: "qwen-max-0107", pre_method: "base", post_method: "base" },
-                { type: "llm", name: "qwen-max-longcontext", series: "qwen", version: "qwen-max-longcontext", pre_method: "base", post_method: "base" },
+                { type: "llm", name: "qwen-turbo-latest", series: "qwen", version: "qwen-turbo-latest", pre_method: "base", post_method: "base" },
+                { type: "llm", name: "qwen-plus-latest", series: "qwen", version: "qwen-plus-latest", pre_method: "base", post_method: "base" },
+                { type: "llm", name: "qwen-max-latest", series: "qwen", version: "qwen-max-latest", pre_method: "base", post_method: "base" },
+                { type: "llm", name: "qwen-math-turbo-latest", series: "qwen", version: "qwen-math-turbo-latest", pre_method: "base", post_method: "base" },
+                { type: "llm", name: "qwen-coder-plus-latest", series: "qwen", version: "qwen-coder-plus-latest", pre_method: "base", post_method: "base" },
                 { type: "llm", name: "baichuan-7b-v1", series: "baichuan", version: "baichuan-7b-v1", pre_method: "base", post_method: "base" },
                 { type: "llm", name: "baichuan2-7b-chat-v1", series: "baichuan", version: "baichuan2-7b-chat-v1", pre_method: "base", post_method: "base" },
                 { type: "llm", name: "chatglm3-6b", series: "zhipu", version: "chatglm3-6b", pre_method: "base", post_method: "base" },
                 { type: "vl", name: "qwen-vl-max-latest", series: "qwen", version: "qwen-vl-max-latest", pre_method: "ali_vl", post_method: "text" },
+                { type: "vl", name: "qwen-vl-plus-latest", series: "qwen", version: "qwen-vl-plus-latest", pre_method: "ali_vl", post_method: "text" },
+                { type: "vl", name: "qwen-vl-ocr-latest", series: "qwen", version: "qwen-vl-ocr-latest", pre_method: "ali_vl", post_method: "text" },
             ],
             api_key: "", // 不要在配置文件中填写api key
             description: "通义千问系列模型，支持流式输出"
+        },
+        "Baidu_QianFan":
+        {
+            platform_name: "百度千帆",
+            list: [
+                { type: "llm", name: "ernie-speed-128k", series: "wenxin", version: "ernie-speed-128k", pre_method: "simple", post_method: "baidu" },
+                { type: "llm", name: "ernie-tiny-8k", series: "wenxin", version: "ernie-tiny-8k", pre_method: "simple", post_method: "baidu" },
+                { type: "llm", name: "ernie-lite-8k", series: "wenxin", version: "ernie-lite-8k", pre_method: "simple", post_method: "baidu" },
+                { type: "llm", name: "Yi-34B-Chat", series: "yi", version: "yi_34b_chat", pre_method: "simple", post_method: "baidu" }
+            ],
+            api_key: "", // 不要在配置文件中填写api key
+        },
+        "Moonshot_AI":
+        {
+            platform_name: "月之暗面",
+            list: [
+                { type: "llm", name: "moonshot-v1-8k", series: "moonshot", version: "moonshot-v1-8k", pre_method: "simple", post_method: "delta" },
+                { type: "llm", name: "moonshot-v1-32k", series: "moonshot", version: "moonshot-v1-32k", pre_method: "simple", post_method: "delta" },
+                { type: "llm", name: "moonshot-v1-128k", series: "moonshot", version: "moonshot-v1-128k", pre_method: "simple", post_method: "delta" }
+            ],
+            api_key: "", // 不要在配置文件中填写api key
         },
         "Xunfei_Spark":
         {
@@ -265,17 +286,6 @@ module.exports = {
                 { type: "llm", name: "glm-4-airx", series: "zhipu", version: "glm-4-airx", pre_method: "simple", post_method: "delta" },
                 { type: "llm", name: "glm-4", series: "zhipu", version: "glm-4", pre_method: "simple", post_method: "delta" },
                 { type: "vl", name: "glm-4v", series: "zhipu", version: "glm-4v", pre_method: "zhipu_vl", post_method: "delta" },
-            ],
-            api_key: "", // 不要在配置文件中填写api key
-        },
-        "Baidu_QianFan":
-        {
-            platform_name: "百度千帆",
-            list: [
-                { type: "llm", name: "ernie-speed-128k", series: "wenxin", version: "ernie-speed-128k", pre_method: "simple", post_method: "baidu" },
-                { type: "llm", name: "ernie-tiny-8k", series: "wenxin", version: "ernie-tiny-8k", pre_method: "simple", post_method: "baidu" },
-                { type: "llm", name: "ernie-lite-8k", series: "wenxin", version: "ernie-lite-8k", pre_method: "simple", post_method: "baidu" },
-                { type: "llm", name: "Yi-34B-Chat", series: "yi", version: "yi_34b_chat", pre_method: "simple", post_method: "baidu" }
             ],
             api_key: "", // 不要在配置文件中填写api key
         },

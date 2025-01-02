@@ -203,6 +203,8 @@ export default {
                 return import("@/api/Baidu_QianFan").then(module => module.fenchStream);
             } else if (this.platform === 'Local') {
                 return import("@/api/Local").then(module => module.fenchStream);
+            } else if (this.platform === 'Moonshot_AI') {
+                return import("@/api/Moonshot_AI").then(module => module.fenchStream);
             }
         },
 

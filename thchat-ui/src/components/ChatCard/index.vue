@@ -27,9 +27,9 @@
             </el-icon>
         </div>
 
-        <div v-if="answer || responseTime && finishTime">
+        <div>
             <!-- 机器人消息 -->
-            <div class="bot-message" v-if="answer">
+            <div class="bot-message">
                 <div class="avatar-header">
                     <img v-if="avatar_list[series]" class="avatar" :src="avatar_list[series]" alt="Bot Avatar">
                     <img v-else class="avatar" :src="avatar_list.local" alt="Default Bot Avatar">
@@ -159,6 +159,7 @@ export default {
                 zhipu: new URL('@/assets/images/zhipu.png', import.meta.url).href,
                 wenxin: new URL('@/assets/images/wenxin.png', import.meta.url).href,
                 yi: new URL('@/assets/images/yi.svg', import.meta.url).href,
+                moonshot: new URL('@/assets/images/moonshot.svg', import.meta.url).href,
                 local: new URL('@/assets/images/logo.png', import.meta.url).href
             }
         }

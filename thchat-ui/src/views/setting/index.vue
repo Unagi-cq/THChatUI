@@ -11,10 +11,17 @@
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item label="模型">
+                <el-form-item label="文本生成模型">
                     <el-radio-group v-model="model_version" class="platform-radio-group" size="small">
-                        <el-radio :value="x.version" v-for="x in model_list[platform].list" border
-                            :class="{ 'vl-model': x.type === 'vl' }">
+                        <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'llm')" border>
+                            {{ x.name }}
+                        </el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+                <el-form-item label="图片理解模型" v-if="model_list[platform].list.some(m => m.type === 'vl')">
+                    <el-radio-group v-model="model_version" class="platform-radio-group" size="small">
+                        <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'vl')" border class="vl-model">
                             {{ x.name }}
                         </el-radio>
                     </el-radio-group>
