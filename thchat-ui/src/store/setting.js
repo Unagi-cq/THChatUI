@@ -1,12 +1,8 @@
-import cache from '@/util/cache'
+import cache from '@/util/cache'; 
 import { model_list } from '@/util/config'
 import bg from '@/assets/images/bg2.jpg'
 
-// 从 IndexDB 获取设置
-const getSettingStorage = async () => {
-  const settings = await cache.local.get('settingStorage', 'value')
-  return settings || ''
-}
+const settingStorage = JSON.parse(localStorage.getItem('settingStorage')) || ''
 
 /**
  * defaultSettings 是项目初次运行时的默认配置
@@ -59,37 +55,30 @@ const defaultSettings = {
     "upload_size": 2
 }
 
-// 初始化 store
 const setting = {
-  state: defaultSettings, // 先用默认值初始化
+  state: Object.keys(defaultSettings).reduce((acc, key) => {
+      acc[key] = settingStorage?.[key] ?? defaultSettings[key];
+      return acc;
+  }, {}),
 
   mutations: {
-    CHANGE_SETTING: (state, { key, value }) => {
-      if (state.hasOwnProperty(key)) {
-        state[key] = value;
-        cache.local.set('settingStorage', 'value', state);
+      CHANGE_SETTING: (state, { key, value }) => {
+          if (state.hasOwnProperty(key)) {
+              state[key] = value;
+              cache.local.setJSON('settingStorage', state);
+          }
       }
-    }
   },
 
   actions: {
-    // 初始化状态
-    async initializeSettings({ commit, state }) {
-      const settings = await getSettingStorage()
-      if (settings) {
-        Object.keys(defaultSettings).forEach(key => {
-          commit('CHANGE_SETTING', {
-            key,
-            value: settings[key] ?? defaultSettings[key]
-          })
-        })
+      changeSetting({ commit }, data) {
+          commit('CHANGE_SETTING', data)
       }
-    },
-    
-    changeSetting({ commit }, data) {
-      commit('CHANGE_SETTING', data)
-    }
   }
+}
+
+if (!settingStorage) {
+  cache.local.setJSON('settingStorage', defaultSettings)
 }
 
 export default setting

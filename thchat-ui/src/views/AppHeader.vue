@@ -56,15 +56,24 @@ export default {
             return model_config.name;
         },
         header_title() {
-            const active = this.$store.state.app.active;
-            const tab = this.$store.state.app.tab;
-            if (!active) {
-                return 'THChatUI';
+            const { ready, active, tab } = this.$store.state.app;
+            const DEFAULT_TITLE = 'THChatUI';
+            const MAX_LENGTH = 10;
+
+            // 等app数据加载之后再执行逻辑 否则会闪屏
+            if (!ready || !active) {
+                return DEFAULT_TITLE;
             }
+
             const currentTab = tab.findTab(active);
-            const title = currentTab ? currentTab.title : 'THChatUI';
-            // 如果标题长度超过10，截取前10个字符并添加省略号
-            return title.length > 10 ? title.slice(0, 10) + '...' : title;
+            if (!currentTab) {
+                return DEFAULT_TITLE;
+            }
+
+            const { title } = currentTab;
+            return title.length > MAX_LENGTH ? 
+                   `${title.slice(0, MAX_LENGTH)}...` : 
+                   title;
         },
         model_type() {
             const { model_config } = this.$store.state.setting;

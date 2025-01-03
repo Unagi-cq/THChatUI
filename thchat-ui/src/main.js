@@ -13,7 +13,6 @@ import router from './router'
 import store from './store'
 import plugins from './plugins' // 引入第三方的插件或组件
 import components from "@/components"  // 引入自定义的组件
-import cache from "@/util/cache";
 import '@/assets/styles/index.scss' // 全局css
 
 const app = createApp(App)
@@ -23,7 +22,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 // 全局方法挂载
-app.config.globalProperties.$cache = cache;
 app.config.globalProperties.$notify = ElNotification;
 app.config.globalProperties.$imageViewer = ElImageViewer;
 
@@ -39,11 +37,4 @@ store.dispatch('initializeState').then(() => {
     console.log('应用IndexDB数据库初始化成功')
 }).catch(error => {
     console.error('应用IndexDB数据库初始化失败:', error)
-})
-
-// 初始化系统设置
-store.dispatch('initializeSettings').then(() => {
-    console.log('系统设置初始化成功')
-}).catch(error => {
-    console.error('系统设置初始化失败:', error)
 })

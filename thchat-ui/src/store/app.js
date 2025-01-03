@@ -1,4 +1,4 @@
-import cache from '@/util/cache'
+import indexDBUtil from '@/util/indexdb'
 import { Tab } from '@/schema/tab'
 import { Chat } from '@/schema/chat'
 
@@ -8,6 +8,8 @@ import { Chat } from '@/schema/chat'
  * */
 const app = {
     state: {
+        // 数据加载状态
+        ready: false,
         // 当前处于激活状态的会话uuid
         active: '',
         // 所有标签页
@@ -21,34 +23,38 @@ const app = {
     mutations: {
         SET_ACTIVE: (state, active) => {
             state.active = active
-            cache.local.set('active', 'value', active)
+            indexDBUtil.set('active', 'value', active)
         },
         SET_TAB: (state, ins) => {
             state.tab = ins instanceof Tab ? ins : new Tab(ins);
-            cache.local.set('tabStorage', 'value', state.tab)
+            indexDBUtil.set('tabStorage', 'value', state.tab)
         },
         SET_CHAT: (state, ins) => {
             state.chat = ins instanceof Chat ? ins : new Chat(ins);
-            cache.local.set('chatStorage', 'value', state.chat)
+            indexDBUtil.set('chatStorage', 'value', state.chat)
         },
         SET_FILES: (state, files) => {
             state.files = files
-            cache.local.set('fileStorage', 'value', {files: files})
+            indexDBUtil.set('fileStorage', 'value', {files: files})
+        },
+        SET_READY: (state, ready) => {
+            state.ready = ready
         }
     },
 
     actions: {
         async initializeState({commit}) {
             try {
-                const active = await cache.local.get('active', 'value') || ''
-                const tabData = await cache.local.get('tabStorage', 'value') || {list: []}
-                const chatData = await cache.local.get('chatStorage', 'value') || {list: []}
-                const fileData = (await cache.local.get('fileStorage', 'value') || {files: []})
+                const active = await indexDBUtil.get('active', 'value') || ''
+                const tabData = await indexDBUtil.get('tabStorage', 'value') || {list: []}
+                const chatData = await indexDBUtil.get('chatStorage', 'value') || {list: []}
+                const fileData = (await indexDBUtil.get('fileStorage', 'value') || {files: []})
 
                 commit('SET_ACTIVE', active)
                 commit('SET_TAB', tabData)
                 commit('SET_CHAT', chatData)
                 commit('SET_FILES', fileData.files)
+                commit('SET_READY', true)
             } catch (error) {
                 console.error('初始化状态失败:', error)
             }
@@ -82,7 +88,8 @@ const app = {
         active: state => state.active,
         tab: state => state.tab,
         chat: state => state.chat,
-        file: state => state.files
+        file: state => state.files,
+        ready: state => state.ready
     }
 }
 

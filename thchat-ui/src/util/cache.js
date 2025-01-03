@@ -1,23 +1,81 @@
-import indexDBUtil from './indexdb'
-
-class Cache {
-    constructor() {
-        this.db = indexDBUtil;
+/**
+ * 缓存管理 只用来存用户Setting 
+ * 会话记录&对话选项卡&知识库 这样的大数据量存储用IndexDB 方便各位迁移DB
+ */
+const sessionCache = {
+    set (key, value) {
+        if (!sessionStorage) {
+            return
+        }
+        if (key != null && value != null) {
+            sessionStorage.setItem(key, value)
+        }
+    },
+    get (key) {
+        if (!sessionStorage) {
+            return null
+        }
+        if (key == null) {
+            return null
+        }
+        return sessionStorage.getItem(key)
+    },
+    setJSON (key, jsonValue) {
+        if (jsonValue != null) {
+            this.set(key, JSON.stringify(jsonValue))
+        }
+    },
+    getJSON (key) {
+        const value = this.get(key)
+        if (value != null) {
+            return JSON.parse(value)
+        }
+    },
+    remove (key) {
+        sessionStorage.removeItem(key);
     }
-
-    async set(storeName, key, value) {
-        await this.db.set(storeName, key, value);
-    }
-
-    async get(storeName, key) {
-        return await this.db.get(storeName, key);
-    }
-
-    async remove(storeName, key) {
-        await this.db.delete(storeName, key);
+}
+const localCache = {
+    set (key, value) {
+        if (!localStorage) {
+            return
+        }
+        if (key != null && value != null) {
+            localStorage.setItem(key, value)
+        }
+    },
+    get (key) {
+        if (!localStorage) {
+            return null
+        }
+        if (key == null) {
+            return null
+        }
+        return localStorage.getItem(key)
+    },
+    setJSON (key, jsonValue) {
+        if (jsonValue != null) {
+            this.set(key, JSON.stringify(jsonValue))
+        }
+    },
+    getJSON (key) {
+        const value = this.get(key)
+        if (value != null) {
+            return JSON.parse(value)
+        }
+    },
+    remove (key) {
+        localStorage.removeItem(key);
     }
 }
 
 export default {
-    local: new Cache()
-};
+    /**
+     * 会话级缓存
+     */
+    session: sessionCache,
+    /**
+     * 本地缓存
+     */
+    local: localCache
+}
