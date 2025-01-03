@@ -457,6 +457,7 @@ $icon-length: 32px;
  * elementui输入框
  */
 :deep(.el-textarea) {
+    z-index: 2;
     position: absolute;
     bottom: 0;
     left: 0;
