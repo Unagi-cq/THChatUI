@@ -6,17 +6,6 @@ class TabAtom {
 		this.title = title;
 		this.uuid = uuid;
 	}
-
-	updateTitle(newTitle) {
-		this.title = newTitle;
-	}
-
-	toJSON() {
-		return {
-			title: this.title,
-			uuid: this.uuid
-		};
-	}
 }
 
 /**
@@ -46,8 +35,7 @@ class Tab {
 	 * @param {string} uuid - 标签页唯一标识符
 	 */
 	addTab(title, uuid) {
-		const tab = new TabAtom(title, uuid);
-		this.list.unshift(tab);
+		this.list.unshift(new TabAtom(title, uuid));
 	}
 
 	/**
@@ -97,25 +85,6 @@ class Tab {
 	 */
 	getCount() {
 		return this.list.length;
-	}
-
-	/**
-	 * 将标签页列表转换为JSON格式
-	 * @returns {Object} 包含标签页列表的对象
-	 */
-	toJSON() {
-		return {
-			list: this.list.map(tab => tab.toJSON())
-		};
-	}
-
-	/**
-	 * 从JSON数据创建Tab实例
-	 * @param {Object} json - JSON格式的标签页数据
-	 * @returns {Tab} 新的Tab实例
-	 */
-	static fromJSON(json) {
-		return new Tab(json);
 	}
 }
 

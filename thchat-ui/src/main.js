@@ -33,3 +33,17 @@ app.use(plugins)
     .use(store)
     .use(router)
     .mount('#app')
+
+// 初始化app数据
+store.dispatch('initializeState').then(() => {
+    console.log('应用IndexDB数据库初始化成功')
+}).catch(error => {
+    console.error('应用IndexDB数据库初始化失败:', error)
+})
+
+// 初始化系统设置
+store.dispatch('initializeSettings').then(() => {
+    console.log('系统设置初始化成功')
+}).catch(error => {
+    console.error('系统设置初始化失败:', error)
+})

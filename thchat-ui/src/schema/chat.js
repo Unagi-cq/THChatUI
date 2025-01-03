@@ -25,20 +25,6 @@ class QA {
     setFinish(time) {
         this.finishTime = time;
     }
-
-    toJSON() {
-        return {
-            qaId: this.qaId,
-            query: this.query,
-            responseTime: this.responseTime,
-            answer: this.answer, 
-            files: this.files,
-            finishTime: this.finishTime,
-            modelName: this.modelName,
-            series: this.series,
-            modelType: this.modelType
-        };
-    }
 }
 
 /**
@@ -101,13 +87,6 @@ class Session {
     removeQA(qaId) {
         this.data = this.data.filter(qa => qa.qaId !== qaId);
     }
-
-    toJSON() {
-        return {
-            sessionId: this.sessionId,
-            data: this.data.map(qa => qa.toJSON())
-        };
-    }
 }
 
 /**
@@ -154,23 +133,6 @@ class Chat {
      */
     findSession(sessionId) {
         return this.list.find(session => session.sessionId === sessionId);
-    }
-
-    /**
-     * 将聊天数据转换为JSON格式
-     * @returns {Object} JSON格式的聊天数据
-     */
-    toJSON() {
-        return {list: this.list.map(session => session.toJSON())};
-    }
-
-    /**
-     * 从JSON数据创建Chat实例
-     * @param {Object} json - JSON格式的聊天数据
-     * @returns {Chat} 新的Chat实例
-     */
-    static fromJSON(json) {
-        return new Chat(json);
     }
 }
 

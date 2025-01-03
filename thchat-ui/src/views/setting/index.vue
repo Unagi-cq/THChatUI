@@ -51,18 +51,6 @@
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="背景图片" v-if="theme === 'glass'">
-                    <div class="bg-preview-container">
-                        <el-upload class="avatar-uploader" action="" :show-file-list="false" :auto-upload="false"
-                            accept="image/*" :on-change="handleBgChange">
-                            <img v-if="currentBg" :src="currentBg" class="preview-img" alt="background">
-                            <el-icon class="avatar-uploader-icon">
-                                <Plus />
-                            </el-icon>
-                        </el-upload>
-                    </div>
-                </el-form-item>
-
                 <el-form-item label="多轮对话" prop="memory">
                     <el-switch v-model="memory" />
                 </el-form-item>
@@ -71,9 +59,36 @@
                     <el-switch v-model="chat_detail" />
                 </el-form-item>
 
+                <el-form-item label="背景图片" v-if="theme === 'glass'">
+                    <div class="preset-bg-container">
+                        <div 
+                            v-for="(bgImage, index) in presetBgs" 
+                            :key="index"
+                            class="preset-bg-item"
+                            :class="{ active: currentBg === bgImage }"
+                            @click="selectPresetBg(bgImage)"
+                        >
+                            <img :src="bgImage" alt="preset background" />
+                        </div>
+                        
+                        <el-upload 
+                            class="preset-bg-item avatar-uploader" 
+                            action="" 
+                            :show-file-list="false" 
+                            :auto-upload="false"
+                            accept="image/*" 
+                            :on-change="handleBgChange"
+                        >
+                            <img v-if="currentBg && !presetBgs.includes(currentBg)" :src="currentBg" class="preview-img" alt="background">
+                            <el-icon v-else class="avatar-uploader-icon">
+                                <Plus />
+                            </el-icon>
+                        </el-upload>
+                    </div>
+                </el-form-item>
+
                 <el-form-item>
                     <el-button class="mt-2" type="warning" @click="clearLocalStorage">清空本地缓存</el-button>
-                    <el-button class="mt-2" type="danger" @click="resetBg" v-if="theme === 'glass'">重置背景</el-button>
                 </el-form-item>
             </el-form>
 
@@ -95,12 +110,14 @@
 <script>
 import { model_list } from "@/util/config";
 import bg from '@/assets/images/bg.jpg'
+import bg2 from '@/assets/images/bg2.jpg'
 
 export default {
     name: 'Setting',
     data() {
         return {
             model_list: model_list,
+            presetBgs: [bg, bg2]
         };
     },
     computed: {
@@ -208,16 +225,16 @@ export default {
     methods: {
         /**
          * 背景图片上传
-         * @descripe 浏览器缓存空间有限 限制保存的图片最大只能为1M 未来考虑使用IndexedDB存储
+         * @descripe 限制保存的图片最大只能为3M
          */
         handleBgChange(file) {
             // 添加文件大小限制检查 (1MB = 1024 * 1024 bytes)
-            const isLt1M = file.raw.size / 1024 / 1024 < 1;
+            const isLt1M = file.raw.size / 1024 / 1024 < 3;
 
             if (!isLt1M) {
                 this.$notify({
                     title: '上传失败!',
-                    message: '上传图片大小不能超过 1MB!',
+                    message: '上传图片大小不能超过 3MB!',
                     type: 'warning',
                 });
                 return;
@@ -234,43 +251,21 @@ export default {
             }
         },
         /**
-         * 重置背景
-         */
-        resetBg() {
-            this.$confirm('确定要重置背景图片吗？', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                this.$store.dispatch('changeSetting', {
-                    key: 'bg',
-                    value: bg
-                })
-                this.$notify({
-                    title: '成功',
-                    message: '背景已重置',
-                    type: 'success'
-                });
-            }).catch(() => { });
-        },
-        /**
          * 清空本地缓存
          */
         clearLocalStorage() {
-            this.$confirm('确定要清空所有本地缓存吗？这将会清除所有设置和聊天记录。', '警告', {
+            this.$confirm('确定要清空所有本地缓存吗？这将会清除所有聊天记录。', '警告', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                localStorage.clear();
+                this.$store.dispatch('clearAll');
                 this.$notify({
                     title: '成功',
-                    message: '本地缓存已清空，页面将在3秒后刷新',
+                    message: '本地缓存已清空',
                     type: 'success'
                 });
-                setTimeout(() => {
-                    window.location.reload();
-                }, 3000);
+                window.location.reload();
             }).catch(() => { });
         },
         /**
@@ -284,6 +279,12 @@ export default {
             this.$store.dispatch('changeSetting', {
                 key: 'api_key_map',
                 value: newApiKeys
+            });
+        },
+        selectPresetBg(bgImage) {
+            this.$store.dispatch('changeSetting', {
+                key: 'bg',
+                value: bgImage
             });
         }
     }
@@ -391,6 +392,36 @@ export default {
 
     :deep(.el-select) {
         width: 100px;
+    }
+}
+
+.preset-bg-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.preset-bg-item {
+    width: 70px;
+    height: 45px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+
+    &.active {
+        border-color: var(--el-color-primary);
+    }
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 }
 </style>

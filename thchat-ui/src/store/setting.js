@@ -1,8 +1,12 @@
 import cache from '@/util/cache'
 import { model_list } from '@/util/config'
-import bg from '@/assets/images/bg.jpg'
+import bg from '@/assets/images/bg2.jpg'
 
-const settingStorage = JSON.parse(localStorage.getItem('settingStorage')) || ''
+// 从 IndexDB 获取设置
+const getSettingStorage = async () => {
+  const settings = await cache.local.get('settingStorage', 'value')
+  return settings || ''
+}
 
 /**
  * defaultSettings 是项目初次运行时的默认配置
@@ -16,7 +20,7 @@ const apiKeyMap = Object.fromEntries(
 const defaultSettings = {
     /******************************** 系统设置弹窗对应的参数 ********************************/
     // 系统主题
-    "theme": 'light',
+    "theme": 'glass',
     // 背景图片
     "bg": bg,
     // 系统语言
@@ -55,30 +59,37 @@ const defaultSettings = {
     "upload_size": 2
 }
 
+// 初始化 store
 const setting = {
-    state: Object.keys(defaultSettings).reduce((acc, key) => {
-        acc[key] = settingStorage?.[key] ?? defaultSettings[key];
-        return acc;
-    }, {}),
+  state: defaultSettings, // 先用默认值初始化
 
-    mutations: {
-        CHANGE_SETTING: (state, { key, value }) => {
-            if (state.hasOwnProperty(key)) {
-                state[key] = value;
-                cache.local.setJSON('settingStorage', state);
-            }
-        }
-    },
-
-    actions: {
-        changeSetting({ commit }, data) {
-            commit('CHANGE_SETTING', data)
-        }
+  mutations: {
+    CHANGE_SETTING: (state, { key, value }) => {
+      if (state.hasOwnProperty(key)) {
+        state[key] = value;
+        cache.local.set('settingStorage', 'value', state);
+      }
     }
-}
+  },
 
-if (!settingStorage) {
-    cache.local.setJSON('settingStorage', defaultSettings)
+  actions: {
+    // 初始化状态
+    async initializeSettings({ commit, state }) {
+      const settings = await getSettingStorage()
+      if (settings) {
+        Object.keys(defaultSettings).forEach(key => {
+          commit('CHANGE_SETTING', {
+            key,
+            value: settings[key] ?? defaultSettings[key]
+          })
+        })
+      }
+    },
+    
+    changeSetting({ commit }, data) {
+      commit('CHANGE_SETTING', data)
+    }
+  }
 }
 
 export default setting
