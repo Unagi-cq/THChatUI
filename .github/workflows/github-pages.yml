@@ -24,7 +24,7 @@ jobs:
       
     - name: 构建项目
       working-directory: ./thchat-ui
-      run: npm run build
+      run: npm run build:github
       
     - name: 部署到 GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
