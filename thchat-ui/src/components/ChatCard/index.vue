@@ -180,42 +180,57 @@ export default {
                 type: 'success',
             });
         },
+        // 通用复制函数
+        async copyToClipboard(text) {
+            try {
+                // 首先尝试使用 navigator.clipboard API
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                    return true;
+                }
+                
+                // 后备方案：使用传统的 document.execCommand
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    textArea.remove();
+                    return true;
+                } catch (err) {
+                    textArea.remove();
+                    return false;
+                }
+            } catch (error) {
+                console.error('复制失败:', error);
+                return false;
+            }
+        },
         // md复制
         async copyMarkdown() {
-            try {
-                await navigator.clipboard.writeText(this.answer);
-                this.$notify({
-                    title: 'Markdown复制成功！',
-                    type: 'success',
-                });
-            } catch (error) {
-                console.log('Markdown内容复制error:', error)
-                this.$notify({
-                    title: '复制失败！',
-                    type: 'error',
-                });
-            }
+            const success = await this.copyToClipboard(this.answer);
+            this.$notify({
+                title: success ? 'Markdown复制成功！' : '复制失败！',
+                type: success ? 'success' : 'error',
+            });
         },
         // 纯文本复制
         async copyPlainText() {
-            try {
-                // 创建临时DOM元素来解析Markdown
-                const div = document.createElement('div');
-                div.innerHTML = marked.parse(this.answer);
-                const plainText = div.textContent || div.innerText || '';
-
-                await navigator.clipboard.writeText(plainText);
-                this.$notify({
-                    title: '纯文本复制成功！',
-                    type: 'success',
-                });
-            } catch (error) {
-                console.log('纯文本复制error:', error)
-                this.$notify({
-                    title: '复制失败！',
-                    type: 'error',
-                });
-            }
+            const div = document.createElement('div');
+            div.innerHTML = marked.parse(this.answer);
+            const plainText = div.textContent || div.innerText || '';
+            
+            const success = await this.copyToClipboard(plainText);
+            this.$notify({
+                title: success ? '纯文本复制成功！' : '复制失败！',
+                type: success ? 'success' : 'error',
+            });
         },
         // 删除对话
         deleteQA() {
