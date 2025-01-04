@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <!-- 用户消息 -->
-        <div class="user-message" v-if="query">
+        <div class="user-message" v-show="query">
             <div class="avatar-header">
                 <img class="avatar" :src="avatar_list.user" alt="User Avatar">
                 <span class="avatar-name">{{ $t('ChatCard.user_name') }}</span>
@@ -38,7 +38,8 @@
                     </template>
                     <el-skeleton animated variant="image" v-else>
                         <template #template>
-                            <el-skeleton-item class="avatar" variant="image" style="width: 100px; height: 100px; border-radius: 4px;" />
+                            <el-skeleton-item class="avatar" variant="image"
+                                style="width: 100px; height: 100px; border-radius: 4px;" />
                         </template>
                     </el-skeleton>
                 </div>
@@ -96,20 +97,6 @@
                 </el-tooltip>
             </div>
         </div>
-
-        <!-- 机器人回复消息占位 -->
-        <!--        <div v-if="!answer">
-            <el-skeleton class="bot-message" v-if="!answer" animated :throttle="1000">
-                <template #template>
-                    <el-skeleton-item class="avatar" variant="image" style="width: 40px; height: 40px;border-radius: 50%;object-fit: cover;top: 0;" />
-                    <div style="padding: 14px;width: 300px">
-                        <el-skeleton-item variant="p" style="width: 70%" />
-                        <el-skeleton-item variant="text" style="width: 100%" />
-                    </div>
-                </template>
-</el-skeleton>
-</div>-->
-
     </div>
 </template>
 
@@ -150,6 +137,7 @@ export default {
         modelType: String
     },
     computed: {
+        // 当前激活的对话uuid
         active() {
             return this.$store.state.app.active;
         },
@@ -181,23 +169,28 @@ export default {
         });
     },
     methods: {
-        // 复制代码成功
-        handleCopyCodeSuccess(code) {
+        /**
+         * 复制代码成功
+         */
+        handleCopyCodeSuccess() {
             this.$notify({
                 title: this.$t('ChatCard.notifications.codeCopySuccess'),
                 type: 'success',
             });
         },
-        // 通用复制函数
+
+        /**
+         * 通用复制函数
+         */
         async copyToClipboard(text) {
             try {
-                // 首先尝试使用 navigator.clipboard API
+                // 尝试使用 navigator.clipboard API
                 if (navigator.clipboard && window.isSecureContext) {
                     await navigator.clipboard.writeText(text);
                     return true;
                 }
 
-                // 后备方案：使用传统的 document.execCommand
+                // 后备方案：用传统的 document.execCommand
                 const textArea = document.createElement('textarea');
                 textArea.value = text;
                 textArea.style.position = 'fixed';
@@ -220,7 +213,10 @@ export default {
                 return false;
             }
         },
-        // md复制
+
+        /**
+         * md复制
+         */
         async copyMarkdown() {
             const success = await this.copyToClipboard(this.answer);
             this.$notify({
@@ -230,7 +226,10 @@ export default {
                 type: success ? 'success' : 'error',
             });
         },
-        // 纯文本复制
+
+        /**
+         * 纯文本复制
+         */
         async copyPlainText() {
             const div = document.createElement('div');
             div.innerHTML = marked.parse(this.answer);
@@ -244,14 +243,21 @@ export default {
                 type: success ? 'success' : 'error',
             });
         },
-        // 删除对话
+
+        /**
+         * 删除对话
+         */
         deleteQA() {
             chatStoreHelper.delQA(this.active, this.qaId);
         },
+
+        /**
+         * 展开折叠
+         */
         toggleExpand() {
             this.isExpanded = !this.isExpanded;
         }
-    },
+    }
 }
 </script>
 

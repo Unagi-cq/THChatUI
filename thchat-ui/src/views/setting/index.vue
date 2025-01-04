@@ -1,5 +1,6 @@
 <template>
     <el-tabs class="demo-tabs">
+        <!-- 模型设置标签页 -->
         <el-tab-pane :label="$t('Setting.tabs.model')">
             <el-form label-width="100" label-position="left">
 
@@ -39,6 +40,7 @@
             </el-form>
         </el-tab-pane>
 
+        <!-- 通用设置标签页 -->
         <el-tab-pane :label="$t('Setting.tabs.general')" class="flex-form-item">
 
             <el-form label-width="130" label-position="left">
@@ -112,6 +114,7 @@
 
         </el-tab-pane>
 
+        <!-- API密钥设置标签页 -->
         <el-tab-pane :label="$t('Setting.tabs.key')" class="flex-form-item">
             <el-form label-width="100" label-position="left">
                 <el-form-item :label="x.platform_name" v-for="(x, y) in model_list" :key="y">
@@ -123,6 +126,7 @@
                 </el-form-item>
             </el-form>
         </el-tab-pane>
+
     </el-tabs>
 </template>
 
@@ -140,10 +144,7 @@ export default {
         };
     },
     computed: {
-        CloseBold() {
-            return CloseBold
-        },
-        // 系统主题
+        // 系统主题设置，支持 glass/dark/light 三种模式
         theme: {
             get() {
                 return this.$store.state.setting.theme;
@@ -156,7 +157,7 @@ export default {
                 })
             }
         },
-        // 调用平台
+        // AI平台选择，切换时会自动选择该平台的第一个可用模型
         platform: {
             get() {
                 return this.$store.state.setting.platform;
@@ -182,7 +183,7 @@ export default {
                 })
             }
         },
-        // 是否多轮对话
+        // 多轮对话开关，控制是否保持对话上下文
         memory: {
             get() {
                 return this.$store.state.setting.memory;
@@ -194,7 +195,7 @@ export default {
                 })
             }
         },
-        // 是否显示回答统计
+        // 聊天统计信息显示开关
         chat_detail: {
             get() {
                 return this.$store.state.setting.chat_detail;
@@ -206,7 +207,7 @@ export default {
                 })
             }
         },
-        // 模型版本
+        // 当前选择的模型版本
         model_version: {
             get() {
                 return this.$store.state.setting.model_config.version;
@@ -220,7 +221,7 @@ export default {
                 });
             }
         },
-        // 系统语言
+        // 系统界面语言设置
         locale: {
             get() {
                 return this.$i18n.locale
@@ -241,8 +242,9 @@ export default {
     },
     methods: {
         /**
-         * 背景图片上传
-         * @descripe 限制保存的图片最大只能为3M
+         * 处理背景图片上传
+         * @param {File} file - 上传的图片文件
+         * @description 限制图片大小不超过3MB，支持预览
          */
         handleBgChange(file) {
             // 添加文件大小限制检查 (1MB = 1024 * 1024 bytes)
@@ -267,8 +269,10 @@ export default {
                 })
             }
         },
+
         /**
-         * 清空本地缓存
+         * 清空本地存储的所有设置
+         * @description 会弹出确认框，确认后刷新页面
          */
         clearLocalStorage() {
             this.$confirm(
@@ -289,10 +293,11 @@ export default {
                 window.location.reload();
             }).catch(() => { });
         },
+
         /**
-         * 更新api key map缓存
-         * @param platform 平台
-         * @param value api key
+         * 更新指定平台的API密钥
+         * @param {string} platform - 平台标识
+         * @param {string} value - API密钥值
          */
         updateApiKey(platform, value) {
             const newApiKeys = { ...this.api_key_map };
@@ -302,6 +307,11 @@ export default {
                 value: newApiKeys
             });
         },
+
+        /**
+         * 选择预设背景图片
+         * @param {string} bgImage - 背景图片路径
+         */
         selectPresetBg(bgImage) {
             this.$store.dispatch('changeSetting', {
                 key: 'bg',

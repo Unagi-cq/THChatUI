@@ -168,9 +168,6 @@ export default {
             return theme === 'dark' ? logoLight : logoDark
         }
     },
-    created() {
-
-    },
     methods: {
         /**
          * 删除历史聊天选项卡
@@ -186,6 +183,7 @@ export default {
             // 更新active
             this.active = active;
         },
+
         /**
          * 选择聊天选项卡
          * @param uuid
@@ -202,12 +200,14 @@ export default {
                 this.$emit('toggle-sidebar');
             }
         },
+
         /**
          * 新页面
          */
         isMobileDevice() {
             return window.innerWidth <= 767;
         },
+
         /**
          * 开始新的会话
          */
@@ -224,6 +224,7 @@ export default {
                 this.$emit('toggle-sidebar');
             }
         },
+
         /**
          * 跳转页面函数
          * @param path
@@ -235,6 +236,7 @@ export default {
             }
             this.$router.push(path)
         },
+
         /**
          * 跳转弹窗函数
          * @param path
@@ -263,9 +265,11 @@ export default {
                 this.goToPage(path)
             }
         },
+
         handleClose(done) {
             done()
         },
+
         closeDialog() {
             this.dialogVisible = false
         }

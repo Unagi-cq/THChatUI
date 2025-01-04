@@ -115,19 +115,29 @@ export default {
     name: "About",
     data() {
         return {
+            // 二维码显示
             qrCodeVisible: false
         }
     },
     computed: {
+        // 根据当前主题返回对应的logo图片
         logoSrc() {
             const theme = this.$store.state.setting.theme
             return theme === 'dark' ? logoLight : logoDark
         }
     },
     methods: {
+        /**
+         * 在新标签页中打开指定链接
+         * @param {string} url - 要打开的URL地址
+         */
         openLink(url) {
             window.open(url, '_blank');
         },
+        
+        /**
+         * 切换二维码显示状态
+         */
         showQrCode() {
             this.qrCodeVisible = !this.qrCodeVisible;
         }

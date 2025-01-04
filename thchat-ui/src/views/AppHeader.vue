@@ -72,9 +72,9 @@ export default {
             }
 
             const { title } = currentTab;
-            return title.length > MAX_LENGTH ? 
-                   `${title.slice(0, MAX_LENGTH)}...` : 
-                   title;
+            return title.length > MAX_LENGTH ?
+                `${title.slice(0, MAX_LENGTH)}...` :
+                title;
         },
         model_type() {
             const { model_config } = this.$store.state.setting;

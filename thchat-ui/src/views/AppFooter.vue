@@ -1,11 +1,12 @@
 <template>
     <el-row :gutter="24" justify="center">
         <el-col :md="18" :sm="24" :xs="24" style="padding-left: 0;padding-right: 0;">
-            <SendBox v-if="isHidden"/>
+            <SendBox v-if="isHidden" />
         </el-col>
 
         <span class="copyright">{{ new Date().getFullYear() }} © THChatUI made by HCQ.
-            <el-link href="https://github.com/Unagi-cq/THChatUI" target="_blank">{{ $t('AppFooter.repository') }}</el-link>
+            <el-link href="https://github.com/Unagi-cq/THChatUI" target="_blank">{{ $t('AppFooter.repository')
+                }}</el-link>
             <el-link href="https://github.com/Unagi-cq/THChatUI" target="_blank">{{ $t('AppFooter.docs') }}</el-link>
         </span>
     </el-row>
@@ -15,9 +16,9 @@
 export default {
     name: 'AppFooter',
     computed: {
-      isHidden() {
-        return this.$router.currentRoute.value.name === 'index';
-      }
+        isHidden() {
+            return this.$router.currentRoute.value.name === 'index';
+        }
     },
     methods: {
         /**
@@ -55,4 +56,3 @@ export default {
     margin-right: 8px;
 }
 </style>
-

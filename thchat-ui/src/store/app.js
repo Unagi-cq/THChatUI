@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Vuex应用状态管理模块
+ * 该模块管理整个应用的核心状态，包括：
+ * - 活动会话状态
+ * - 标签页管理
+ * - 聊天记录
+ * - 文件存储
+ * 并通过 IndexDB 实现状态持久化
+ */
 import indexDBUtil from '@/util/indexdb'
 import { Tab } from '@/schema/tab'
 import { Chat } from '@/schema/chat'

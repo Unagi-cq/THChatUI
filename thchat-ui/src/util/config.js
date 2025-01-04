@@ -1,11 +1,17 @@
 /**
+ * @fileoverview 聊天应用的配置文件
+ * 包含模型配置、消息预处理和后处理的相关功能
+ * 支持多个AI平台的接入，包括阿里云、百度、讯飞、智谱AI等
+ */
+
+/**
  * 前处理(入参)规则处理
- * @param model_version 模型版本
- * @param prompt 用户输入
- * @param history 历史记录
- * @param pre_method 前处理组key
- * @param files 上传的文件
- * @param is_search 是否开启web搜索
+ * @param {string} model_version - 模型版本标识
+ * @param {string} prompt - 用户当前的输入内容
+ * @param {Array} history - 历史对话记录数组
+ * @param {string} pre_method - 预处理方法标识
+ * @param {Array} files - 上传的文件数组，主要用于图像处理
+ * @param {boolean} is_search - 是否启用网络搜索功能
  */
 function preProcess(model_version, prompt, history, pre_method, files, is_search) {
     let body = {};
@@ -98,10 +104,9 @@ function preProcess(model_version, prompt, history, pre_method, files, is_search
 }
 
 /**
- * 构建LLM消息
- * @param prompt 用户输入
- * @param history 历史记录
- * @returns {*[]}
+ * 构建LLM文本对话消息
+ * @param {string} prompt - 用户当前的输入内容
+ * @param {Array} history - 历史对话记录数组
  */
 function buildLlmMessage(prompt, history) {
     function getHistory(history) {
@@ -129,11 +134,10 @@ function buildLlmMessage(prompt, history) {
 }
 
 /**
- * 构建多模态消息
- * @param prompt 用户输入
- * @param history 历史记录
- * @param files 上传的文件
- * @returns {*[]} 
+ * 构建智谱AI平台的多模态消息
+ * @param {string} prompt - 用户当前的输入内容
+ * @param {Array} history - 历史对话记录数组
+ * @param {Array} files - 上传的文件数组，主要包含图片的base64数据
  */
 function buildZhipuVLMessage(prompt, history, files) {
     function getHistory(history) {
@@ -178,11 +182,10 @@ function buildZhipuVLMessage(prompt, history, files) {
 }
 
 /**
- * 构建阿里云多模态消息
- * @param prompt 用户输入
- * @param history 历史记录
- * @param files 上传的文件
- * @returns {*[]} 
+ * 构建阿里云平台的多模态消息
+ * @param {string} prompt - 用户当前的输入内容
+ * @param {Array} history - 历史对话记录数组
+ * @param {Array} files - 上传的文件数组，主要包含图片的base64数据
  */
 function buildAliVLMessage(prompt, history, files) {
     function getHistory(history) {
@@ -222,12 +225,10 @@ function buildAliVLMessage(prompt, history, files) {
     return arr;
 }
 
-
-
 /**
  * 后处理(出参)规则处理
- * @param e 接口传递数据
- * @param post_method 后处理组索引
+ * @param {Object} e - API返回的原始数据
+ * @param {string} post_method - 后处理方法标识
  */
 function postProcess(e, post_method) {
     switch (post_method) {

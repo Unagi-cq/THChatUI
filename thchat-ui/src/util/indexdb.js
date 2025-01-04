@@ -1,13 +1,25 @@
+/**
+ * @fileoverview IndexDB 数据库工具类
+ * 提供对 IndexDB 数据库的基础操作封装，包括数据的存储、读取和删除
+ * 支持多个存储对象库：active、tabStorage、chatStorage、fileStorage
+ */
+
 const DB_NAME = 'thchat-db';
 const DB_VERSION = 1;
 const STORE_NAMES = ['active', 'tabStorage', 'chatStorage', 'fileStorage'];
 
 class IndexDBUtil {
+    /**
+     * 创建 IndexDBUtil 实例并初始化数据库连接
+     */
     constructor() {
         this.db = null;
         this.dbReady = this.init();
     }
 
+    /**
+     * 初始化 IndexDB 数据库连接
+     */
     init() {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -34,6 +46,12 @@ class IndexDBUtil {
         });
     }
 
+    /**
+     * 向指定的存储对象库中存储数据
+     * @param {string} storeName - 存储对象库名称
+     * @param {string} key - 存储键名
+     * @param {any} value - 要存储的数据值
+     */
     async set(storeName, key, value) {
         await this.dbReady;
         return new Promise((resolve, reject) => {
@@ -47,6 +65,11 @@ class IndexDBUtil {
         });
     }
 
+    /**
+     * 从指定的存储对象库中获取数据
+     * @param {string} storeName - 存储对象库名称
+     * @param {string} key - 要获取的数据键名
+     */
     async get(storeName, key) {
         await this.dbReady;
         return new Promise((resolve, reject) => {
@@ -59,6 +82,11 @@ class IndexDBUtil {
         });
     }
 
+    /**
+     * 从指定的存储对象库中删除数据
+     * @param {string} storeName - 存储对象库名称
+     * @param {string} key - 要删除的数据键名
+     */
     async delete(storeName, key) {
         await this.dbReady;
         return new Promise((resolve, reject) => {

@@ -92,6 +92,7 @@ export default {
             controller: undefined,
             // 存储上传的多个文件
             uploadedFiles: [],
+            // 是否开启联网搜索 用于样式显示
             isWebSearchEnabled: false,
         }
     },
@@ -123,10 +124,8 @@ export default {
             return activeSession?.data || [];
         },
         // 平台标识
-        platform: {
-            get() {
-                return this.$store.state.setting.platform;
-            }
+        platform() {
+            return this.$store.state.setting.platform;
         },
         // 聊天类型
         chat_type: {
@@ -141,39 +140,30 @@ export default {
             }
         },
         // 模型配置
-        model_config: {
-            get() {
-                return this.$store.state.setting.model_config;
-            }
+        model_config() {
+            return this.$store.state.setting.model_config;
         },
         // 是否开启多轮对话
-        memory: {
-            get() {
-                return this.$store.state.setting.memory;
-            }
+        memory() {
+            return this.$store.state.setting.memory;
         },
         // 单次上传的文件数量
-        upload_limit: {
-            get() {
-                return this.$store.state.setting.upload_limit;
-            }
+        upload_limit() {
+            return this.$store.state.setting.upload_limit;
         },
         // 可上传的文件类型
-        upload_type: {
-            get() {
-                return this.$store.state.setting.upload_type;
-            }
+        upload_type() {
+            return this.$store.state.setting.upload_type;
         },
         // 限制文件大小
-        upload_size: {
-            get() {
-                return this.$store.state.setting.upload_size;
-            }
+        upload_size() {
+            return this.$store.state.setting.upload_size;
         }
     },
     methods: {
         /**
          * 控制Shift+Enter不触发发送请求事件
+         * @param {KeyboardEvent} e - 键盘事件对象
          */
         onEnterKeyDown(e) {
             // 按下Shift时 e.shiftKey = true
@@ -226,9 +216,11 @@ export default {
         },
 
         /**
-         * 提交聊天请求
+         * 提交聊天请求并处理响应
          */
         async onSubmitChat() {
+            this.query = this.query.trim();
+            
             if (this.query === '') {
                 return;
             }
@@ -347,7 +339,10 @@ export default {
             }
         },
 
-        // 图片处理
+        /**
+         * 处理图片文件,验证大小和类型限制
+         * @param {File} file - 要处理的图片文件
+         */
         processImage(file) {
             if (this.uploadedFiles.length >= this.upload_limit) {
                 this.$notify({
@@ -389,12 +384,18 @@ export default {
             return true;
         },
 
-        // 文件上传处理方法
+        /**
+         * 处理图片上传
+         * @param {Object} file - 上传的文件对象
+         */
         handleImageUpload(file) {
             this.processImage(file.raw);
         },
 
-        // 处理粘贴事件的方法
+        /**
+         * 处理粘贴事件,支持粘贴图片
+         * @param {ClipboardEvent} event - 剪贴板事件对象
+         */
         handlePaste(event) {
             const items = (event.clipboardData || event.originalEvent.clipboardData).items;
             for (const item of items) {
@@ -406,12 +407,17 @@ export default {
             }
         },
 
-        // 移除文件
+        /**
+         * 移除已上传的文件
+         * @param {number} index - 要移除文件的索引
+         */
         removeFile(index) {
             this.uploadedFiles.splice(index, 1);
         },
 
-        // 切换聊天类型
+        /**
+         * 切换聊天类型(普通聊天/网络搜索)
+         */
         toggleWebSearch() {
             if (this.chat_type === 'web') {
                 this.chat_type = 'chat'

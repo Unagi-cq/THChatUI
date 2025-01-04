@@ -1,3 +1,8 @@
+/**
+ * @fileoverview 系统设置状态管理模块
+ * 该模块负责管理和持久化系统的全局设置，包括主题、API密钥、模型配置等
+ * 使用 Vuex 进行状态管理，并通过 localStorage 实现数据持久化
+ */
 import cache from '@/util/cache'; 
 import { model_list } from '@/util/config'
 import bg from '@/assets/images/bg2.jpg'

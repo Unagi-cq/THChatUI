@@ -75,7 +75,8 @@ export default {
     },
     methods: {
         /**
-         * 切换侧边栏
+         * 切换侧边栏的显示/隐藏状态
+         * 会同时更新 active 状态和侧边栏宽度
          */
         toggleSidebar() {
             this.active = !this.active;
@@ -83,6 +84,12 @@ export default {
             // 更新CSS变量以改变竖条的位置
             document.documentElement.style.setProperty('--sidebar-width', this.asideWidth);
         },
+
+        /**
+         * 处理窗口大小变化事件
+         * 根据屏幕宽度自动调整侧边栏的显示状态
+         * 在小屏幕(<=767px)时自动隐藏侧边栏,大屏幕时显示
+         */
         handleResize() {
             // 检查当前屏幕尺寸是否为XS
             if (window.matchMedia('(max-width: 767px)').matches) {
@@ -93,7 +100,6 @@ export default {
                 this.active = false
                 this.asideWidth = '250px'
             }
-
             document.documentElement.style.setProperty('--sidebar-width', this.asideWidth);
         }
     }
