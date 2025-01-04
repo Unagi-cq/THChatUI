@@ -70,7 +70,7 @@ function preProcess(model_version, prompt, history, pre_method, files, is_search
             body = {
                 model: model_version,
                 input: {
-                    messages: buildAliVLMessage(prompt, history, files[0])
+                    messages: buildAliVLMessage(prompt, history, files)
                 },
                 parameters: {
                     result_format: "message",
@@ -82,7 +82,7 @@ function preProcess(model_version, prompt, history, pre_method, files, is_search
         case "img_zhipu":
             body = {
                 model: model_version,
-                messages: buildZhipuVLMessage(prompt, history, files[0]),
+                messages: buildZhipuVLMessage(prompt, history, files),
                 stream: true
             }
             break;
