@@ -269,7 +269,7 @@ module.exports = {
         {
             platform_name: "讯飞星火",
             list: [
-                { type: "llm", name: "【免费】Spark Lite", series: "xunfei", version: "spark lite", pre_method: "xunfei", post_method: "add" }
+                { type: "llm", name: "Spark Lite 🆓", series: "xunfei", version: "spark lite", pre_method: "xunfei", post_method: "add" }
             ],
             api_key: "", // 不要在配置文件中填写api key
         },
@@ -277,7 +277,7 @@ module.exports = {
         {
             platform_name: "智谱AI",
             list: [
-                { type: "llm", name: "【免费】glm-4-flash", series: "zhipu", version: "glm-4-flash", pre_method: "simple", post_method: "delta" },
+                { type: "llm", name: "glm-4-flash 🆓", series: "zhipu", version: "glm-4-flash", pre_method: "simple", post_method: "delta" },
                 { type: "llm", name: "glm-4-0520", series: "zhipu", version: "glm-4-0520", pre_method: "simple", post_method: "delta" },
                 { type: "llm", name: "glm-4-air", series: "zhipu", version: "glm-4-air", pre_method: "simple", post_method: "delta" },
                 { type: "llm", name: "glm-4-plus", series: "zhipu", version: "glm-4-plus", pre_method: "simple", post_method: "delta" },

@@ -45,11 +45,11 @@ export default {
     computed: {
         tooltip_content() {
             const { platform, model_config, memory, chat_detail } = this.$store.state.setting;
-            return `平台：${platform}
-                    模型：${model_config.name}
-                    对话模式：${memory ? '多轮对话' : '单轮对话'}
-                    回答统计：${chat_detail ? '开启' : '隐藏'} 
-                    模型类型：${this.model_type === 'vl' ? '视觉模型' : '语言模型'}`;
+            return `${this.$t('AppHeader.platform')}：${platform}
+                    ${this.$t('AppHeader.model')}：${model_config.name}
+                    ${this.$t('AppHeader.chatMode')}：${memory ? this.$t('AppHeader.multiRound') : this.$t('AppHeader.singleRound')}
+                    ${this.$t('AppHeader.statistics')}：${chat_detail ? this.$t('AppHeader.show') : this.$t('AppHeader.hide')} 
+                    ${this.$t('AppHeader.modelType')}：${this.model_type === 'vl' ? this.$t('AppHeader.visionModel') : this.$t('AppHeader.languageModel')}`;
         },
         header_msg() {
             const { model_config } = this.$store.state.setting;

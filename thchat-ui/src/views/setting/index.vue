@@ -1,9 +1,9 @@
 <template>
     <el-tabs class="demo-tabs">
-        <el-tab-pane label="模型">
+        <el-tab-pane :label="$t('Setting.tabs.model')">
             <el-form label-width="100" label-position="left">
 
-                <el-form-item label="平台">
+                <el-form-item :label="$t('Setting.model.platform')">
                     <el-radio-group v-model="platform" class="platform-radio-group" size="small">
                         <el-radio :value="y" v-for="(x, y) in model_list" :key="y" border>
                             {{ x.platform_name }}
@@ -11,7 +11,7 @@
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item label="文本生成模型">
+                <el-form-item :label="$t('Setting.model.textModel')">
                     <el-radio-group v-model="model_version" class="platform-radio-group" size="small">
                         <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'llm')" border>
                             {{ x.name }}
@@ -19,7 +19,7 @@
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item label="图片理解模型" v-if="model_list[platform].list.some(m => m.type === 'vl')">
+                <el-form-item :label="$t('Setting.model.imageModel')" v-if="model_list[platform].list.some(m => m.type === 'vl')">
                     <el-radio-group v-model="model_version" class="platform-radio-group" size="small">
                         <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'vl')" border class="vl-model">
                             {{ x.name }}
@@ -30,12 +30,16 @@
             </el-form>
         </el-tab-pane>
 
-        <el-tab-pane label="通用" class="flex-form-item">
+        <el-tab-pane :label="$t('Setting.tabs.general')" class="flex-form-item">
 
-            <el-form label-width="100" label-position="left">
-                <el-form-item label="系统主题">
+            <el-form label-width="130" label-position="left">
+                <el-form-item :label="$t('Setting.general.theme')">
                     <el-segmented v-model="theme"
-                        :options="[{ label: '毛玻璃', value: 'glass' }, { label: '暗色', value: 'dark' }, { label: '亮色', value: 'light' }]">
+                        :options="[
+                            { label: $t('Setting.general.themeOptions.glass'), value: 'glass' },
+                            { label: $t('Setting.general.themeOptions.dark'), value: 'dark' },
+                            { label: $t('Setting.general.themeOptions.light'), value: 'light' }
+                        ]">
                         <template #default="{ item }">
                             <div class="flex flex-col items-center">
                                 <div>{{ item.label }}</div>
@@ -44,22 +48,25 @@
                     </el-segmented>
                 </el-form-item>
 
-                <el-form-item label="系统语言">
-                    <el-select v-model="locale" placeholder="请选择语言">
+                <el-form-item :label="$t('Setting.general.language')">
+                    <el-select v-model="locale">
                         <el-option label="简体中文" value="zh-CN" />
+                        <el-option label="繁体中文" value="zh-HK" />
                         <el-option label="English" value="en-US" />
+                        <el-option label="日本語" value="ja-JP" />
+                        <el-option label="한국어" value="ko-KR" />
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="多轮对话" prop="memory">
+                <el-form-item :label="$t('Setting.general.multiRound')" prop="memory">
                     <el-switch v-model="memory" />
                 </el-form-item>
 
-                <el-form-item label="回答统计" prop="chat_detail">
+                <el-form-item :label="$t('Setting.general.chatStats')" prop="chat_detail">
                     <el-switch v-model="chat_detail" />
                 </el-form-item>
 
-                <el-form-item label="背景图片" v-if="theme === 'glass'">
+                <el-form-item :label="$t('Setting.general.background')" v-if="theme === 'glass'">
                     <div class="preset-bg-container">
                         <div 
                             v-for="(bgImage, index) in presetBgs" 
@@ -88,18 +95,21 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button class="mt-2" type="warning" @click="clearLocalStorage">清空本地缓存</el-button>
+                    <el-button class="mt-2" type="warning" @click="clearLocalStorage">
+                        {{ $t('Setting.general.clearCache') }}
+                    </el-button>
                 </el-form-item>
             </el-form>
 
         </el-tab-pane>
 
-        <el-tab-pane label="key" class="flex-form-item">
+        <el-tab-pane :label="$t('Setting.tabs.key')" class="flex-form-item">
             <el-form label-width="100" label-position="left">
                 <el-form-item :label="x.platform_name" v-for="(x, y) in model_list" :key="y">
-                    <el-text v-if="y === 'Xunfei_Spark'" type="info">讯飞平台已经在代码里内置了key 可直接调用</el-text>
-                    <el-text v-else-if="y === 'Local'" type="info">本地模型无需配置API Key</el-text>
-                    <el-input v-else v-model="api_key_map[y]" :placeholder="'请输入' + x.platform_name + '的API Key'"
+                    <el-text v-if="y === 'Xunfei_Spark'" type="info">{{ $t('Setting.key.xunfeiTip') }}</el-text>
+                    <el-text v-else-if="y === 'Local'" type="info">{{ $t('Setting.key.localTip') }}</el-text>
+                    <el-input v-else v-model="api_key_map[y]" 
+                        :placeholder="$t('Setting.key.placeholder', { platform: x.platform_name })"
                         @change="updateApiKey(y, $event)" />
                 </el-form-item>
             </el-form>
@@ -204,13 +214,11 @@ export default {
         // 系统语言
         locale: {
             get() {
-                return this.$store.state.setting.locale;
+                return this.$i18n.locale
             },
-            set(val) {
-                this.$store.dispatch('changeSetting', {
-                    key: 'locale',
-                    value: val
-                })
+            set(value) {
+                this.$i18n.locale = value
+                localStorage.setItem('locale', value)
             }
         },
         // 当前设置的背景图片（保存在缓存内）
@@ -233,8 +241,8 @@ export default {
 
             if (!isLt1M) {
                 this.$notify({
-                    title: '上传失败!',
-                    message: '上传图片大小不能超过 3MB!',
+                    title: this.$t('Setting.upload.failed'),
+                    message: this.$t('Setting.upload.sizeLimit'),
                     type: 'warning',
                 });
                 return;
@@ -254,15 +262,19 @@ export default {
          * 清空本地缓存
          */
         clearLocalStorage() {
-            this.$confirm('确定要清空所有本地缓存吗？这将会清除所有聊天记录。', '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
+            this.$confirm(
+                this.$t('Setting.general.clearCacheConfirm'), 
+                this.$t('Common.warn'), 
+                {
+                    confirmButtonText: this.$t('Common.confirm'),
+                    cancelButtonText: this.$t('Common.cancel'),
+                    type: 'warning'
+                }
+            ).then(() => {
                 this.$store.dispatch('clearAll');
                 this.$notify({
-                    title: '成功',
-                    message: '本地缓存已清空',
+                    title: this.$t('Common.success'),
+                    message: this.$t('Setting.general.clearCacheSuccess'),
                     type: 'success'
                 });
                 window.location.reload();

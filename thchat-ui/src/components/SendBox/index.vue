@@ -1,7 +1,7 @@
 <template>
     <div class="search-container">
         <!--    输入框    -->
-        <el-input placeholder="请输入你的问题或需求，按'↑'可快捷复制问题" v-model="query" :autosize="{ minRows: 1, maxRows: 8 }"
+        <el-input :placeholder="$t('SendBox.placeholder')" v-model="query" :autosize="{ minRows: 1, maxRows: 8 }"
             resize="none" @keydown.enter="onEnterKeyDown" @keydown.up="onEnterKeyUp" type="textarea"
             :class="{ 'has-files': uploadedFiles.length > 0 }">
         </el-input>
@@ -265,21 +265,21 @@ export default {
                             console.log('连接成功')
                             if (event !== undefined && event.status === 401) {
                                 this.$notify({
-                                    title: '远程调用失败!',
-                                    message: '请检查API KEY是否填写或过期',
+                                    title: this.$t('SendBox.notifications.remoteFailed'),
+                                    message: this.$t('SendBox.errors.apiKey'),
                                     type: 'error',
                                 });
                             }
                             if (event !== undefined && (event.status === 500 || event.status === 404)) {
                                 this.$notify({
-                                    title: '无法连接本地接口!',
-                                    message: '请检测网络或接口是否开启',
+                                    title: this.$t('SendBox.notifications.connectionFailed'),
+                                    message: this.$t('SendBox.errors.connection'),
                                     type: 'error',
                                 });
                             } else if (event !== undefined && event.status === 422) {
                                 this.$notify({
-                                    title: '本地接口错误!',
-                                    message: '请检测接口是否正常',
+                                    title: this.$t('SendBox.notifications.interfaceError'),
+                                    message: this.$t('SendBox.errors.interface'),
                                     type: 'error',
                                 })
                             }
@@ -291,8 +291,8 @@ export default {
                             // 过滤接口内部错误消息
                             if (event.event === 'error') {
                                 this.$notify({
-                                    title: '本地接口错误!',
-                                    message: '请检测接口内部是否发生错误或异常',
+                                    title: this.$t('SendBox.notifications.interfaceError'),
+                                    message: this.$t('SendBox.errors.internalError'),
                                     type: 'error',
                                 });
                                 qa.finishTime = new Date().getTime();
@@ -321,7 +321,7 @@ export default {
                         onerror: (error) => {
                             console.log('close', error)
                             this.stopChat()
-                            this.$message.error(`系统错误：${error}`)
+                            this.$message.error(this.$t('SendBox.errors.system', { error }))
                         }
                     });
                 });
@@ -334,8 +334,8 @@ export default {
         processImage(file) {
             if (this.uploadedFiles.length >= this.upload_limit) {
                 this.$notify({
-                    title: '上传失败',
-                    message: `最多只能上传${this.upload_limit}个文件!`,
+                    title: this.$t('SendBox.notifications.uploadFailed'),
+                    message: this.$t('SendBox.uploadLimit.error', { limit: this.upload_limit }),
                     type: 'error'
                 });
                 return false;
@@ -346,16 +346,16 @@ export default {
 
             if (!isImage) {
                 this.$notify({
-                    title: '上传失败',
-                    message: '只能上传图片文件!',
+                    title: this.$t('SendBox.notifications.uploadFailed'),
+                    message: this.$t('SendBox.uploadType.error'),
                     type: 'error'
                 });
                 return false;
             }
             if (!isLt2M) {
                 this.$notify({
-                    title: '上传失败',
-                    message: `图片大小不能超过 ${this.upload_size}MB!`,
+                    title: this.$t('SendBox.notifications.uploadFailed'),
+                    message: this.$t('SendBox.uploadSize.error', { size: this.upload_size }),
                     type: 'error'
                 });
                 return false;

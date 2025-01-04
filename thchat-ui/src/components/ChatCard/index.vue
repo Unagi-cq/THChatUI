@@ -4,7 +4,7 @@
         <div class="user-message" v-if="query">
             <div class="avatar-header">
                 <img class="avatar" :src="avatar_list.user" alt="User Avatar">
-                <span class="avatar-name">用户</span>
+                <span class="avatar-name">{{ $t('ChatCard.user_name') }}</span>
             </div>
             <p :class="{ 'collapse-p': !isExpanded }" ref="queryText">
                 {{ query }}
@@ -39,7 +39,7 @@
             </div>
             <!-- 新增的回答统计 -->
             <div class="answer-stats" v-if="chat_detail && responseTime && finishTime">
-                <el-tooltip content="复制 Markdown" placement="bottom">
+                <el-tooltip :content="$t('ChatCard.copyMarkdownTooltip')" placement="bottom">
                     <svg @click="copyMarkdown" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
                         height="14" fill="none">
                         <path
@@ -53,7 +53,7 @@
                         <path d="M11 17L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
                     </svg>
                 </el-tooltip>
-                <el-tooltip content="复制纯文本" placement="bottom">
+                <el-tooltip :content="$t('ChatCard.copyPlainTextTooltip')" placement="bottom">
                     <svg @click="copyPlainText" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
                         height="14" fill="none">
                         <path
@@ -64,7 +64,7 @@
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </el-tooltip>
-                <el-tooltip content="删除对话" placement="bottom">
+                <el-tooltip :content="$t('ChatCard.deleteConversationTooltip')" placement="bottom">
                     <svg @click="deleteQA" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"
                         fill="none">
                         <path d="M14.9994 15L9 9M9.00064 15L15 9" stroke="currentColor" stroke-width="1.5"
@@ -74,11 +74,11 @@
                             stroke="currentColor" stroke-width="1.5" />
                     </svg>
                 </el-tooltip>
-                <span>字数统计: {{ answer.length }} 字符</span>
+                <span>{{ $t('ChatCard.characterCount', { count: answer.length }) }}</span>
                 <span>{{ finishTime - responseTime }} ms</span>
             </div>
             <div class="answer-stats" v-else-if="chat_detail">
-                <el-tooltip content="删除对话" placement="bottom">
+                <el-tooltip :content="$t('ChatCard.deleteConversationTooltip')" placement="bottom">
                     <svg @click="deleteQA" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"
                         fill="none">
                         <path d="M14.9994 15L9 9M9.00064 15L15 9" stroke="currentColor" stroke-width="1.5"
@@ -176,7 +176,7 @@ export default {
         // 复制代码成功
         handleCopyCodeSuccess(code) {
             this.$notify({
-                title: '代码复制成功！',
+                title: this.$t('ChatCard.notifications.codeCopySuccess'),
                 type: 'success',
             });
         },
@@ -216,7 +216,9 @@ export default {
         async copyMarkdown() {
             const success = await this.copyToClipboard(this.answer);
             this.$notify({
-                title: success ? 'Markdown复制成功！' : '复制失败！',
+                title: success 
+                    ? this.$t('ChatCard.notifications.markdownCopySuccess')
+                    : this.$t('ChatCard.notifications.markdownCopyFailed'),
                 type: success ? 'success' : 'error',
             });
         },
@@ -228,7 +230,9 @@ export default {
             
             const success = await this.copyToClipboard(plainText);
             this.$notify({
-                title: success ? '纯文本复制成功！' : '复制失败！',
+                title: success 
+                    ? this.$t('ChatCard.notifications.plainTextCopySuccess')
+                    : this.$t('ChatCard.notifications.plainTextCopyFailed'),
                 type: success ? 'success' : 'error',
             });
         },

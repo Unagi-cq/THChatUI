@@ -19,8 +19,6 @@ const defaultSettings = {
     "theme": 'glass',
     // 背景图片
     "bg": bg,
-    // 系统语言
-    "locale": 'zh-CN',
     // 是否显示回答统计
     "chat_detail": true,
     // api_key 从配置文件中初始化

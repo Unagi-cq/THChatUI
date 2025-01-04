@@ -10,7 +10,7 @@
         <!-- 聊天选项卡 Start -->
         <div class="chats">
             <div class="chats-header">
-                <span>对话</span>
+                <span>{{ $t('AppAside.chat_header_title') }}</span>
                 <el-icon class="header-icon" @click="startNewSession">
                     <Plus />
                 </el-icon>
@@ -52,7 +52,7 @@
                             d="M10.4499 12.0009V13.9799M6.96289 15.5012H9.01487M14.986 15.5012H17.0379M14.986 18.4745H17.0379M6.96289 18.4745H9.01487M10.4499 20.0201V21.9991M13.4754 20.0201V21.9991M13.4646 12.0009V13.9799M10.0149 19.9684H13.986C14.5382 19.9684 14.986 19.5207 14.986 18.9684V14.9799C14.986 14.4276 14.5382 13.9799 13.986 13.9799H10.0149C9.46258 13.9799 9.01487 14.4276 9.01487 14.9799V18.9684C9.01487 19.5207 9.46258 19.9684 10.0149 19.9684Z"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
                     </svg>
-                    <div class="option-text red-dot-wrapper">知识库</div>
+                    <div class="option-text red-dot-wrapper">{{ $t('AppAside.tool_kb_name') }}</div>
                 </div>
                 <div class="divider">
                     <div class="border"></div>
@@ -70,7 +70,7 @@
                             d="M18.5 15L18.7579 15.697C19.0961 16.611 19.2652 17.068 19.5986 17.4014C19.932 17.7348 20.389 17.9039 21.303 18.2421L22 18.5L21.303 18.7579C20.389 19.0961 19.932 19.2652 19.5986 19.5986C19.2652 19.932 19.0961 20.389 18.7579 21.303L18.5 22L18.2421 21.303C17.9039 20.389 17.7348 19.932 17.4014 19.5986C17.068 19.2652 16.611 19.0961 15.697 18.7579L15 18.5L15.697 18.2421C16.611 17.9039 17.068 17.7348 17.4014 17.4014C17.7348 17.068 17.9039 16.611 18.2421 15.697L18.5 15Z"
                             stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
                     </svg>
-                    <div class="option-text">设置</div>
+                    <div class="option-text">{{ $t('AppAside.tool_setting_name') }}</div>
                 </div>
                 <div class="option" @click="goToPage('/tools')">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
@@ -85,7 +85,7 @@
                             d="M9.14426 2.5C6.48724 2.56075 4.93529 2.81456 3.87493 3.87493C2.81456 4.93529 2.56075 6.48724 2.5 9.14426M14.8557 2.5C17.5128 2.56075 19.0647 2.81456 20.1251 3.87493C21.1854 4.93529 21.4392 6.48724 21.5 9.14426M14.8557 21.5C17.5128 21.4392 19.0647 21.1854 20.1251 20.1251C21.1854 19.0647 21.4392 17.5128 21.5 14.8557M9.14426 21.5C6.48724 21.4392 4.93529 21.1854 3.87493 20.1251C2.81456 19.0647 2.56075 17.5128 2.5 14.8557"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <div class="option-text">工具箱</div>
+                    <div class="option-text">{{ $t('AppAside.tool_agent_name') }}</div>
                 </div>
                 <div class="divider">
                     <div class="border"></div>
@@ -100,7 +100,7 @@
                             d="M12 8.5V6.5M10 11.5V12M14 11.5V12M11 8.5H13C14.8856 8.5 15.8284 8.5 16.4142 9.08579C17 9.67157 17 10.6144 17 12.5V12.5C17 14.3856 17 15.3284 16.4142 15.9142C15.8284 16.5 14.8856 16.5 13 16.5H11C9.11438 16.5 8.17157 16.5 7.58579 15.9142C7 15.3284 7 14.3856 7 12.5V12.5C7 10.6144 7 9.67157 7.58579 9.08579C8.17157 8.5 9.11438 8.5 11 8.5Z"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <div class="option-text">关于</div>
+                    <div class="option-text">{{ $t('AppAside.tool_about_name') }}</div>
                 </div>
             </div>
         </div>
@@ -243,11 +243,11 @@ export default {
             const componentMap = {
                 '/setting': {
                     component: 'Setting',
-                    title: '系统设置'
+                    title: this.$t('AppAside.tool_setting_name')
                 },
                 '/about': {
                     component: 'About',
-                    title: '关于'
+                    title: this.$t('AppAside.tool_about_name')
                 }
             }
 
@@ -432,8 +432,7 @@ $animation-time: 0.3s;
                 font-size: 13px;
                 font-weight: 600;
                 line-height: 16px;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                width: 40px;
             }
         }
 
