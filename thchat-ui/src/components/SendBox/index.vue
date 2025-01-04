@@ -60,7 +60,7 @@
             </el-button>
         </div>
 
-        <!-- 修改文件预览容器 -->
+        <!-- 文件预览容器 -->
         <div class="file-preview-container" v-if="uploadedFiles.length > 0">
             <div class="file-preview-item" v-for="(file, index) in uploadedFiles" :key="index">
                 <img :src="file.base64" alt="uploaded file" />
@@ -389,12 +389,12 @@ export default {
             return true;
         },
 
-        // 修改文件上传处理方法
+        // 文件上传处理方法
         handleImageUpload(file) {
             this.processImage(file.raw);
         },
 
-        // 修改处理粘贴事件的方法
+        // 处理粘贴事件的方法
         handlePaste(event) {
             const items = (event.clipboardData || event.originalEvent.clipboardData).items;
             for (const item of items) {
@@ -582,6 +582,7 @@ $icon-length: 32px;
 }
 
 .file-preview-container {
+    z-index: 3;
     position: absolute;
     left: 3px;
     top: -20px;
