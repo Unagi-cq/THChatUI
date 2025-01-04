@@ -20,5 +20,19 @@ export default {
         let tab = store.state.app.tab;
         tab.addTab(title, uuid);
         store.dispatch('setTab', tab);
+    },
+
+    /**
+     * 更新聊天选项卡
+     * @param {string} uuid 要更新的选项卡uuid
+     * @param {string} title 新的选项卡标题
+     */
+    upd(uuid, title) {
+        let tab = store.state.app.tab;
+        let targetTab = tab.findTab(uuid);
+        if (targetTab) {
+            targetTab.title = title;
+            store.dispatch('setTab', tab);
+        }
     }
 }

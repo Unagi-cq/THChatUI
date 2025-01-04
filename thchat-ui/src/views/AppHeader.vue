@@ -1,7 +1,10 @@
 <template>
     <div class="header-content">
         <!-- 左侧标题 -->
-        <span class="header-title">{{ header_title }}</span>
+        <span class="header-title" :contenteditable="header_title !== 'THChatUI'" @blur="updateTitle"
+            @keydown.enter.prevent="$event.target.blur()" @input="limitTitleLength($event)">
+            {{ header_title }}
+        </span>
 
         <!-- 右侧模型信息 -->
         <div class="model-info">
@@ -35,14 +38,20 @@
 </template>
 
 <script>
+import tabStoreHelper from '@/schema/tabStoreHelper'
+
 export default {
     name: 'AppHeader',
     data() {
         return {
-            showSettings: false
+            max_title_length: 15,
+            default_title: 'THChatUI'
         }
     },
     computed: {
+        active() {
+            return this.$store.state.app.active;
+        },
         tooltip_content() {
             const { platform, model_config, memory, chat_detail } = this.$store.state.setting;
             return `${this.$t('AppHeader.platform')}：${platform}
@@ -58,22 +67,20 @@ export default {
         },
         header_title() {
             const { ready, active, tab } = this.$store.state.app;
-            const DEFAULT_TITLE = 'THChatUI';
-            const MAX_LENGTH = 10;
 
             // 等app数据加载之后再执行逻辑 否则会闪屏
-            if (!ready || !active) {
-                return DEFAULT_TITLE;
+            if (!ready) {
+                return '';
             }
 
             const currentTab = tab.findTab(active);
             if (!currentTab) {
-                return DEFAULT_TITLE;
+                return this.default_title;
             }
 
             const { title } = currentTab;
-            return title.length > MAX_LENGTH ?
-                `${title.slice(0, MAX_LENGTH)}...` :
+            return title.length > this.max_title_length ?
+                `${title.slice(0, this.max_title_length)}...` :
                 title;
         },
         model_type() {
@@ -82,8 +89,28 @@ export default {
         }
     },
     methods: {
-        toggleSettings() {
-            this.showSettings = !this.showSettings;
+        /**
+         * 更新聊天选项卡标题
+         * @param event 编辑标题的事件对象
+         */
+        updateTitle(event) {
+            const newTitle = event.target.innerText.trim();
+            if (newTitle && this.header_title !== this.default_title) {
+                tabStoreHelper.upd(this.active, newTitle);
+            }
+        },
+        limitTitleLength(event) {
+            const text = event.target.innerText;
+            if (text.length > this.max_title_length) {
+                event.target.innerText = text.slice(0, this.max_title_length);
+                // 将光标移到末尾
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.selectNodeContents(event.target);
+                range.collapse(false);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
         }
     }
 }
@@ -100,6 +127,17 @@ export default {
     .header-title {
         font-size: 14px;
         color: var(--common-color);
+        outline: none;
+        padding: 2px 4px;
+        border-radius: 4px;
+    }
+
+    .header-title[contenteditable="true"]:hover {
+        background: var(--aside-active-hover-bg);
+    }
+
+    .header-title[contenteditable="true"]:focus {
+        background: var(--aside-active-hover-bg);
     }
 
     .model-info {
