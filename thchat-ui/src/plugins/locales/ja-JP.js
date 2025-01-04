@@ -4,7 +4,9 @@ export default {
     confirm: "確認",
     cancel: "キャンセル",
     success: "成功",
-    failed: "失敗"
+    failed: "失敗",
+    is_true: "はい",
+    is_false: "いいえ"
   },
   Setting: {
     tabs: {
@@ -64,7 +66,8 @@ export default {
     hide: "非表示",
     modelType: "モデルタイプ",
     visionModel: "ビジョンモデル",
-    languageModel: "言語モデル"
+    languageModel: "言語モデル",
+    canWebSearch: "ウェブ検索をサポート"
   },
   ChatCard: {
     user_name: "ユーザー",

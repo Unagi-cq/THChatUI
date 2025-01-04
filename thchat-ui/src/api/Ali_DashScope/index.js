@@ -27,6 +27,7 @@ export async function fenchStream({prompt, history, files, controller, onopen, o
     let pre_method = store.state.setting.model_config.pre_method;
     let api_key = store.state.setting.api_key_map[store.state.setting.platform];
     let url = store.state.setting.model_config.type === 'llm' ? LLM_URL : VL_URL;
+    let is_search = store.state.setting.model_config.can_web_search && store.state.setting.chat_type === 'web';
 
     const response = await fetchEventSource(url, {
         method: "POST",
@@ -37,7 +38,7 @@ export async function fenchStream({prompt, history, files, controller, onopen, o
             'Accept': 'text/event-stream',
             'X-DashScope-SSE': 'enable'
         },
-        body: JSON.stringify(preProcess(model_version, prompt, history, pre_method, files)),
+        body: JSON.stringify(preProcess(model_version, prompt, history, pre_method, files, is_search)),
         signal: controller.signal,
         // 连接成功时的处理
         onopen,

@@ -6,7 +6,9 @@ export default {
     confirm: "確定",
     cancel: "取消",
     success: "成功",
-    failed: "失敗"
+    failed: "失敗",
+    is_true: "是",
+    is_false: "否"
   },
   Setting: {
     tabs: {
@@ -66,7 +68,8 @@ export default {
     hide: "隱藏",
     modelType: "模型類型",
     visionModel: "視覺模型",
-    languageModel: "語言模型"
+    languageModel: "語言模型",
+    canWebSearch: "支持聯網搜索"
   },
   ChatCard: {
     user_name: "用戶",

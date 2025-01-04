@@ -49,7 +49,8 @@ export default {
                     ${this.$t('AppHeader.model')}：${model_config.name}
                     ${this.$t('AppHeader.chatMode')}：${memory ? this.$t('AppHeader.multiRound') : this.$t('AppHeader.singleRound')}
                     ${this.$t('AppHeader.statistics')}：${chat_detail ? this.$t('AppHeader.show') : this.$t('AppHeader.hide')} 
-                    ${this.$t('AppHeader.modelType')}：${this.model_type === 'vl' ? this.$t('AppHeader.visionModel') : this.$t('AppHeader.languageModel')}`;
+                    ${this.$t('AppHeader.modelType')}：${this.model_type === 'vl' ? this.$t('AppHeader.visionModel') : this.$t('AppHeader.languageModel')}
+                    ${this.$t('AppHeader.canWebSearch')}：${model_config.can_web_search ? this.$t('Common.is_true') : this.$t('Common.is_false')}`
         },
         header_msg() {
             const { model_config } = this.$store.state.setting;

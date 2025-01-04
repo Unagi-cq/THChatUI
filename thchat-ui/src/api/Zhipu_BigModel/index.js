@@ -31,7 +31,7 @@ export async function fenchStream({prompt, history, files, controller, onopen, o
             "Authorization": `Bearer ${api_key}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(preProcess(model_version, prompt, history, pre_method, files)),
+        body: JSON.stringify(preProcess(model_version, prompt, history, pre_method, files, false)),
         signal: controller.signal,
         // 连接成功时的处理
         onopen,

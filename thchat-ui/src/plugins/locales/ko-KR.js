@@ -4,7 +4,9 @@ export default {
     confirm: "확인",
     cancel: "취소",
     success: "성공",
-    failed: "실패"
+    failed: "실패",
+    is_true: "예",
+    is_false: "아니오"
   },
   Setting: {
     tabs: {
@@ -64,7 +66,8 @@ export default {
     hide: "숨기기",
     modelType: "모델 유형",
     visionModel: "비전 모델",
-    languageModel: "언어 모델"
+    languageModel: "언어 모델",
+    canWebSearch: "웹 검색 지원"
   },
   ChatCard: {
     user_name: "사용자",

@@ -5,7 +5,7 @@
 
                 <el-form-item :label="$t('Setting.model.platform')">
                     <el-radio-group v-model="platform" class="platform-radio-group" size="small">
-                        <el-radio :value="y" v-for="(x, y) in model_list" :key="y" border>
+                        <el-radio :value="y" v-for="(x, y) in model_list" :key="y" >
                             {{ x.platform_name }}
                         </el-radio>
                     </el-radio-group>
@@ -13,15 +13,16 @@
 
                 <el-form-item :label="$t('Setting.model.textModel')">
                     <el-radio-group v-model="model_version" class="platform-radio-group" size="small">
-                        <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'llm')" border>
+                        <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'llm')" >
                             {{ x.name }}
+                            <el-tag v-if="x.can_web_search" size="small" class="web-tag">Web</el-tag>
                         </el-radio>
                     </el-radio-group>
                 </el-form-item>
 
                 <el-form-item :label="$t('Setting.model.imageModel')" v-if="model_list[platform].list.some(m => m.type === 'vl')">
                     <el-radio-group v-model="model_version" class="platform-radio-group" size="small">
-                        <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'vl')" border class="vl-model">
+                        <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'vl')" class="vl-model">
                             {{ x.name }}
                         </el-radio>
                     </el-radio-group>
@@ -435,5 +436,11 @@ export default {
         height: 100%;
         object-fit: cover;
     }
+}
+
+.web-tag {
+    background-color: transparent !important;
+    border: none !important;
+    color: var(--el-color-warning);
 }
 </style>

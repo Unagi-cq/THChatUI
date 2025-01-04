@@ -4,7 +4,9 @@ export default {
     confirm: "Confirm",
     cancel: "Cancel",
     success: "Success",
-    failed: "Failed"
+    failed: "Failed",
+    is_true: "Yes",
+    is_false: "No"
   },
   Setting: {
     tabs: {
@@ -64,7 +66,8 @@ export default {
     hide: "Hide",
     modelType: "Model Type",
     visionModel: "Vision Model",
-    languageModel: "Language Model"
+    languageModel: "Language Model",
+    canWebSearch: "Web Search Supported"
   },
   ChatCard: {
     user_name: "User",
