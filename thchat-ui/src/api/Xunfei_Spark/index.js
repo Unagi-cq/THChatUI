@@ -1,9 +1,9 @@
 /**
- * @description 讯飞平台的接口采用WebSocket请求方式
+ * @fileoverview 讯飞平台的HTTP调用。
+ * 接口采用WebSocket请求方式，不需要跨域配置
  */
 import CryptoJS from "crypto-js";
 import {preProcess} from "@/util/config";
-// 引入 store
 import store from '../../store';
 
 // 四个必要参数 这里的是spark lite模型 官方已经完全免费 可无限调用
@@ -14,16 +14,16 @@ const API_KEY = "414d88c1dadf5c3abb761766d5be1f14";
 
 /**
  * 调用讯飞平台的接口
- * @param prompt 用户输入的问题
- * @param history 历史对话消息 在SendBox中限制最多三轮
- * @param controller 控制请求的取消
- * @param onopen 连接成功时的回调函数
- * @param onmessage 接收到消息时的回调函数
- * @param onclose 连接关闭时的回调函数
- * @param onerror 处理错误时的回调函数
- * @returns {Promise<void>}
+ * @param {string} prompt - 用户输入的问题
+ * @param {Array} history - 历史对话消息
+ * @param {Array} files - 文件列表
+ * @param {AbortController} controller - 控制请求的取消
+ * @param {Function} onopen - 连接成功回调
+ * @param {Function} onmessage - 接收消息回调
+ * @param {Function} onclose - 连接关闭回调
+ * @param {Function} onerror - 错误处理回调
  */
-export async function fenchStream({prompt, history, files, controller, onopen, onmessage, onclose, onerror}) {
+export async function fetchAPI({prompt, history, files, controller, onopen, onmessage, onclose, onerror}) {
     let model_version = store.state.setting.model_config.version;
     let pre_method = store.state.setting.model_config.pre_method;
 

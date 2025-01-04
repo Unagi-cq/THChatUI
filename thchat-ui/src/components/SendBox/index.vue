@@ -211,17 +211,17 @@ export default {
          */
         getDynamicCall() {
             if (this.platform === 'Ali_DashScope') {
-                return import("@/api/Ali_DashScope").then(module => module.fenchStream);
+                return import("@/api/Ali_DashScope").then(module => module.fetchAPI);
             } else if (this.platform === 'Xunfei_Spark') {
-                return import("@/api/Xunfei_Spark").then(module => module.fenchStream);
+                return import("@/api/Xunfei_Spark").then(module => module.fetchAPI);
             } else if (this.platform === 'Zhipu_BigModel') {
-                return import("@/api/Zhipu_BigModel").then(module => module.fenchStream);
+                return import("@/api/Zhipu_BigModel").then(module => module.fetchAPI);
             } else if (this.platform === 'Baidu_QianFan') {
-                return import("@/api/Baidu_QianFan").then(module => module.fenchStream);
+                return import("@/api/Baidu_QianFan").then(module => module.fetchAPI);
             } else if (this.platform === 'Local') {
-                return import("@/api/Local").then(module => module.fenchStream);
+                return import("@/api/Local").then(module => module.fetchAPI);
             } else if (this.platform === 'Moonshot_AI') {
-                return import("@/api/Moonshot_AI").then(module => module.fenchStream);
+                return import("@/api/Moonshot_AI").then(module => module.fetchAPI);
             }
         },
 
@@ -271,8 +271,8 @@ export default {
 
             try {
                 this.controller = new AbortController();
-                this.getDynamicCall().then(fenchStream => {
-                    fenchStream({
+                this.getDynamicCall().then(fetchAPI => {
+                    fetchAPI({
                         prompt: query,
                         history: history,
                         files: files,
