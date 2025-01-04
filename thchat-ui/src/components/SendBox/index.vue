@@ -9,7 +9,8 @@
         <div class="left-icons" v-if="uploadedFiles.length == 0">
             <!-- 上传图标 -->
             <el-upload class="upload-icon" action="" :show-file-list="false" :auto-upload="false" accept="image/*"
-                :multiple="false" :on-change="handleImageUpload" :limit="upload_limit" :disabled="uploadedFiles.length >= upload_limit">
+                :multiple="false" :on-change="handleImageUpload" :limit="upload_limit"
+                :disabled="uploadedFiles.length >= upload_limit">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none">
                     <path
                         d="M6.93745 10C6.24652 10.0051 5.83076 10.0263 5.4996 10.114C3.99238 10.5131 2.96048 11.8639 3.00111 13.3847C3.01288 13.8252 3.18057 14.3696 3.51595 15.4585C4.32309 18.079 5.67958 20.3539 8.7184 20.8997C9.27699 21 9.90556 21 11.1627 21L12.8372 21C14.0943 21 14.7229 21 15.2815 20.8997C18.3203 20.3539 19.6768 18.079 20.4839 15.4585C20.8193 14.3696 20.987 13.8252 20.9988 13.3847C21.0394 11.8639 20.0075 10.5131 18.5003 10.114C18.1691 10.0263 17.7534 10.0051 17.0625 10"
@@ -26,14 +27,17 @@
                     stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
             <!-- 联网图标 -->
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none">
-                <path
-                    d="M8.9835 1.99998C6.17689 2.06393 4.53758 2.33109 3.41752 3.44727C2.43723 4.42416 2.10954 5.79742 2 7.99998M15.0165 1.99998C17.8231 2.06393 19.4624 2.33109 20.5825 3.44727C21.5628 4.42416 21.8905 5.79742 22 7.99998M15.0165 22C17.8231 21.9361 19.4624 21.6689 20.5825 20.5527C21.5628 19.5758 21.8905 18.2026 22 16M8.9835 22C6.17689 21.9361 4.53758 21.6689 3.41752 20.5527C2.43723 19.5758 2.10954 18.2026 2 16"
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <path
-                    d="M15 15L17 17M16 11.5C16 9.01468 13.9853 6.99998 11.5 6.99998C9.01469 6.99998 7 9.01468 7 11.5C7 13.9853 9.01469 16 11.5 16C13.9853 16 16 13.9853 16 11.5Z"
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
+            <div class="web-search-icon-wrapper" :class="{ 'selected': chat_type === 'web' }" @click="toggleWebSearch">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none">
+                    <path
+                        d="M8.9835 1.99998C6.17689 2.06393 4.53758 2.33109 3.41752 3.44727C2.43723 4.42416 2.10954 5.79742 2 7.99998M15.0165 1.99998C17.8231 2.06393 19.4624 2.33109 20.5825 3.44727C21.5628 4.42416 21.8905 5.79742 22 7.99998M15.0165 22C17.8231 21.9361 19.4624 21.6689 20.5825 20.5527C21.5628 19.5758 21.8905 18.2026 22 16M8.9835 22C6.17689 21.9361 4.53758 21.6689 3.41752 20.5527C2.43723 19.5758 2.10954 18.2026 2 16"
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <path
+                        d="M15 15L17 17M16 11.5C16 9.01468 13.9853 6.99998 11.5 6.99998C9.01469 6.99998 7 9.01468 7 11.5C7 13.9853 9.01469 16 11.5 16C13.9853 16 16 13.9853 16 11.5Z"
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span v-if="chat_type === 'web'" class="search-text">{{ $t('SendBox.webSearch') }}</span>
+            </div>
         </div>
 
         <div class="right-icons">
@@ -88,6 +92,7 @@ export default {
             controller: undefined,
             // 存储上传的多个文件
             uploadedFiles: [],
+            isWebSearchEnabled: false,
         }
     },
     mounted() {
@@ -121,6 +126,18 @@ export default {
         platform: {
             get() {
                 return this.$store.state.setting.platform;
+            }
+        },
+        // 聊天类型
+        chat_type: {
+            get() {
+                return this.$store.state.setting.chat_type;
+            },
+            set(val) {
+                this.$store.dispatch('changeSetting', {
+                    key: 'chat_type',
+                    value: val
+                })
             }
         },
         // 模型配置
@@ -218,8 +235,8 @@ export default {
 
             // 深拷贝
             let [query, qaId, files] = [
-                this.query, 
-                Date.now(), 
+                this.query,
+                Date.now(),
                 JSON.parse(JSON.stringify(this.uploadedFiles))
             ];
 
@@ -299,11 +316,11 @@ export default {
                                 this.stopChat()
                                 return;
                             }
-                            
+
                             // 批量更新优化
                             try {
                                 const newContent = postProcess(event, this.model_config.post_method);
-                                if(newContent) {
+                                if (newContent) {
                                     qa.answer = (qa.answer || '') + newContent;
                                     chatStoreHelper.addQA(this.active, qa);
                                 }
@@ -392,6 +409,15 @@ export default {
         // 移除文件
         removeFile(index) {
             this.uploadedFiles.splice(index, 1);
+        },
+
+        // 切换聊天类型
+        toggleWebSearch() {
+            if (this.chat_type === 'web') {
+                this.chat_type = 'chat'
+            } else {
+                this.chat_type = 'web'
+            }
         }
     }
 }
@@ -402,6 +428,18 @@ export default {
  * 变量定义
  */
 $icon-length: 32px;
+
+/**
+ * 通用的hover效果定义
+ */
+@mixin hover-effect {
+
+    &.active,
+    &:hover {
+        background: var(--aside-active-hover-bg);
+        border-radius: 4px;
+    }
+}
 
 /**
  * 发送框容器
@@ -426,6 +464,7 @@ $icon-length: 32px;
     z-index: 88;
 
     svg {
+        padding: 2px;
         cursor: pointer;
         color: var(--common-color);
         opacity: 0.6;
@@ -433,6 +472,52 @@ $icon-length: 32px;
 
         &:hover {
             opacity: 1;
+        }
+
+        @include hover-effect;
+    }
+
+    .web-search-icon-wrapper {
+        height: 24px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 24px; // 设置最小宽度
+        overflow: hidden; // 隐藏溢出内容
+
+        svg {
+            flex-shrink: 0; // 防止 svg 被压缩
+        }
+
+        .search-text {
+            font-size: 12px;
+            color: var(--el-color-primary);
+            white-space: nowrap;
+            opacity: 0;
+            max-width: 0;
+            transition: all 0.3s ease;
+        }
+
+        &.selected {
+            svg {
+                color: rgb(2 133 255);
+                opacity: 1;
+                pointer-events: none;
+            }
+
+            background-color: var(--el-color-primary-light-9);
+            padding: 0 8px 0 0;
+        }
+
+        .search-text {
+            opacity: 1;
+            max-width: 100px;
+            font-size: 12px;
+            font-weight: bold;
+            color: rgb(2 133 255);
         }
     }
 }

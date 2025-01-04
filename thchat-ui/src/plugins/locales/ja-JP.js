@@ -103,6 +103,7 @@ export default {
       connectionFailed: "ローカルインターフェースに接続できません！",
       interfaceError: "ローカルインターフェースエラー！",
       uploadFailed: "アップロードに失敗しました"
-    }
+    },
+    webSearch: "インターネット検索"
   }
 } 

@@ -105,6 +105,7 @@ export default {
       connectionFailed: "无法连接本地接口!",
       interfaceError: "本地接口错误!",
       uploadFailed: "上传失败"
-    }
+    },
+    webSearch: "联网搜索"
   }
 }

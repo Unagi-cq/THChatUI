@@ -103,6 +103,7 @@ export default {
       connectionFailed: "Unable to connect to local interface!",
       interfaceError: "Local interface error!",
       uploadFailed: "Upload failed"
-    }
+    },
+    webSearch: "Web Search"
   }
 }

@@ -40,6 +40,10 @@ export default {
     position: fixed;
     bottom: 2px;
     font-size: 12px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 :deep(.el-link__inner) {

@@ -103,6 +103,7 @@ export default {
       connectionFailed: "로컬 인터페이스에 연결할 수 없습니다!",
       interfaceError: "로컬 인터페이스 오류!",
       uploadFailed: "업로드 실패"
-    }
+    },
+    webSearch: "인터넷 검색"
   }
 } 
