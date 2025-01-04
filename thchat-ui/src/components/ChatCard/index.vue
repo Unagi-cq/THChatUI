@@ -29,7 +29,7 @@
                     <span class="avatar-name">{{ modelName }}</span>
                 </div>
                 <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess"
-                    v-if="modelType === 'llm'"></v-md-preview>
+                    v-if="modelType === 'llm' || modelType === 'vim'"></v-md-preview>
                 <div class="uploaded-files" v-if="modelType === 'igm'">
                     <template v-if="answer">
                         <el-image v-for="(image, index) in [answer]" :key="index" style="width: 100px; height: 100px"
