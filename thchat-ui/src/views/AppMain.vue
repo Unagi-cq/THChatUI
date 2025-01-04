@@ -12,6 +12,7 @@
                     :responseTime="c['responseTime']" 
                     :finishTime="c['finishTime']" 
                     :files="c['files']"
+                    :modelType="c['modelType']"
                     v-for="c in active_session_qa_data" />
 
                 <div class="title-container dashed-border" v-if="is_show">

@@ -19,7 +19,8 @@ export default {
     model: {
       platform: "平台",
       textModel: "文本生成模型",
-      imageModel: "图片理解模型"
+      visualInterpretationModel: "图片理解模型",
+      imageGenerationModel: '图片生成模型'
     },
     general: {
       theme: "系统主题",

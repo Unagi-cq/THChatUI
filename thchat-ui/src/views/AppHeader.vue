@@ -9,7 +9,7 @@
                 <div class="model-info-content">
                     <span class="model-name">{{ header_msg }}</span>
                     <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20"
-                        v-if="model_type === 'vl'" height="20" fill="none">
+                        v-if="model_type === 'vim' || model_type === 'igm'" height="20" fill="none">
                         <path
                             d="M14 3.5H10C6.22876 3.5 4.34315 3.5 3.17157 4.67157C2 5.84315 2 7.72876 2 11.5V13.5C2 17.2712 2 19.1569 3.17157 20.3284C4.34315 21.5 6.22876 21.5 10 21.5H14C17.7712 21.5 19.6569 21.5 20.8284 20.3284C22 19.1569 22 17.2712 22 13.5V11.5C22 7.72876 22 5.84315 20.8284 4.67157C19.6569 3.5 17.7712 3.5 14 3.5Z"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -49,7 +49,7 @@ export default {
                     ${this.$t('AppHeader.model')}：${model_config.name}
                     ${this.$t('AppHeader.chatMode')}：${memory ? this.$t('AppHeader.multiRound') : this.$t('AppHeader.singleRound')}
                     ${this.$t('AppHeader.statistics')}：${chat_detail ? this.$t('AppHeader.show') : this.$t('AppHeader.hide')} 
-                    ${this.$t('AppHeader.modelType')}：${this.model_type === 'vl' ? this.$t('AppHeader.visionModel') : this.$t('AppHeader.languageModel')}
+                    ${this.$t('AppHeader.modelType')}：${this.model_type === 'vim' ? this.$t('AppHeader.visionModel') : this.$t('AppHeader.languageModel')}
                     ${this.$t('AppHeader.canWebSearch')}：${model_config.can_web_search ? this.$t('Common.is_true') : this.$t('Common.is_false')}`
         },
         header_msg() {

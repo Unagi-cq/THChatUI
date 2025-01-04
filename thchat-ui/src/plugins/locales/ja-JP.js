@@ -17,7 +17,8 @@ export default {
     model: {
       platform: 'プラットフォーム',
       textModel: 'LLM',
-      imageModel: 'VL'
+      visualInterpretationModel: 'VIM',
+      imageGenerationModel: 'IGM'
     },
     general: {
       theme: 'テーマ',

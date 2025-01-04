@@ -11,7 +11,8 @@ function preProcess(model_version, prompt, history, pre_method, files, is_search
     let body = {};
     console.log(is_search);
     switch (pre_method) {
-        case "llm_ali":
+        // 阿里平台的文本输入格式
+        case "text_ali":
             body = {
                 model: model_version,
                 input: {
@@ -26,7 +27,8 @@ function preProcess(model_version, prompt, history, pre_method, files, is_search
                 body.parameters.enable_search = true;
             }
             break;
-        case "llm_baidu":
+        // 百度平台的文本输入格式
+        case "text_baidu":
             body = {
                 model: model_version,
                 messages: buildLlmMessage(prompt, history),
@@ -38,7 +40,8 @@ function preProcess(model_version, prompt, history, pre_method, files, is_search
                 };
             }
             break;
-        case "llm_xunfei":
+        // 讯飞平台的文本输入格式
+        case "text_xunfei":
             body = {
                 parameter: {
                     chat: {
@@ -54,14 +57,16 @@ function preProcess(model_version, prompt, history, pre_method, files, is_search
                 },
             }
             break;
-        case "llm_moonshot_zhipu":
+        // 智谱AI和月之暗面的文本输入格式
+        case "text_moonshot_zhipu":
             body = {
                 model: model_version,
                 messages: buildLlmMessage(prompt, history),
                 stream: true
             }
             break;
-        case "ali_vl":
+        // 阿里平台的图片输入格式
+        case "img_ali":
             body = {
                 model: model_version,
                 input: {
@@ -73,11 +78,19 @@ function preProcess(model_version, prompt, history, pre_method, files, is_search
                 }
             }
             break;
-        case "zhipu_vl":
+        // 智谱AI平台的图片输入格式
+        case "img_zhipu":
             body = {
                 model: model_version,
                 messages: buildZhipuVLMessage(prompt, history, files[0]),
                 stream: true
+            }
+            break;
+        // 智谱AI平台的图片生成模型输入格式
+        case "igm_zhipu":
+            body = {
+                model: model_version,
+                prompt: prompt
             }
             break;
     }
@@ -231,6 +244,8 @@ function postProcess(e, post_method) {
             return JSON.parse(e.data).result;
         case "local":
             return JSON.parse(e.data).data;
+        case "igm_zhipu":
+            return e.data[0].url;
         default:
             console.warn(`未知的后处理方法: ${post_method}`);
             return e;
@@ -245,14 +260,14 @@ module.exports = {
         "Ali_DashScope": {
             platform_name: "阿里云百炼",
             list: [
-                { type: "llm", name: "qwen-turbo", series: "qwen", version: "qwen-turbo-latest", pre_method: "llm_ali", post_method: "base", can_web_search: true },
-                { type: "llm", name: "qwen-plus", series: "qwen", version: "qwen-plus-latest", pre_method: "llm_ali", post_method: "base", can_web_search: true },
-                { type: "llm", name: "qwen-max", series: "qwen", version: "qwen-max-latest", pre_method: "llm_ali", post_method: "base", can_web_search: true },
-                { type: "llm", name: "qwen-math-turbo", series: "qwen", version: "qwen-math-turbo-latest", pre_method: "llm_ali", post_method: "base" },
-                { type: "llm", name: "qwen-coder-plus", series: "qwen", version: "qwen-coder-plus-latest", pre_method: "llm_ali", post_method: "base" },
-                { type: "vl", name: "qwen-vl-max", series: "qwen", version: "qwen-vl-max-latest", pre_method: "ali_vl", post_method: "text" },
-                { type: "vl", name: "qwen-vl-plus", series: "qwen", version: "qwen-vl-plus-latest", pre_method: "ali_vl", post_method: "text" },
-                { type: "vl", name: "qwen-vl-ocr", series: "qwen", version: "qwen-vl-ocr-latest", pre_method: "ali_vl", post_method: "text" },
+                { type: "llm", name: "qwen-turbo", series: "qwen", version: "qwen-turbo-latest", pre_method: "text_ali", post_method: "base", can_web_search: true },
+                { type: "llm", name: "qwen-plus", series: "qwen", version: "qwen-plus-latest", pre_method: "text_ali", post_method: "base", can_web_search: true },
+                { type: "llm", name: "qwen-max", series: "qwen", version: "qwen-max-latest", pre_method: "text_ali", post_method: "base", can_web_search: true },
+                { type: "llm", name: "qwen-math-turbo", series: "qwen", version: "qwen-math-turbo-latest", pre_method: "text_ali", post_method: "base" },
+                { type: "llm", name: "qwen-coder-plus", series: "qwen", version: "qwen-coder-plus-latest", pre_method: "text_ali", post_method: "base" },
+                { type: "vim", name: "qwen-vl-max", series: "qwen", version: "qwen-vl-max-latest", pre_method: "img_ali", post_method: "text" },
+                { type: "vim", name: "qwen-vl-plus", series: "qwen", version: "qwen-vl-plus-latest", pre_method: "img_ali", post_method: "text" },
+                { type: "vim", name: "qwen-vl-ocr", series: "qwen", version: "qwen-vl-ocr-latest", pre_method: "img_ali", post_method: "text" },
             ],
             api_key: "", // 不要在配置文件中填写api key
             description: "通义千问系列模型，支持流式输出"
@@ -261,11 +276,11 @@ module.exports = {
         {
             platform_name: "百度千帆",
             list: [
-                { type: "llm", name: "ernie-4.0-8k", series: "wenxin", version: "ernie-4.0-8k-latest", pre_method: "llm_baidu", post_method: "baidu", can_web_search: true },
-                { type: "llm", name: "ernie-speed-128k", series: "wenxin", version: "ernie-speed-128k", pre_method: "llm_baidu", post_method: "baidu" },
-                { type: "llm", name: "ernie-tiny-8k", series: "wenxin", version: "ernie-tiny-8k", pre_method: "llm_baidu", post_method: "baidu" },
-                { type: "llm", name: "ernie-lite-8k", series: "wenxin", version: "ernie-lite-8k", pre_method: "llm_baidu", post_method: "baidu" },
-                { type: "llm", name: "Yi-34B-Chat", series: "yi", version: "yi_34b_chat", pre_method: "llm_baidu", post_method: "baidu" }
+                { type: "llm", name: "ernie-4.0-8k", series: "wenxin", version: "ernie-4.0-8k-latest", pre_method: "text_baidu", post_method: "baidu", can_web_search: true },
+                { type: "llm", name: "ernie-speed-128k", series: "wenxin", version: "ernie-speed-128k", pre_method: "text_baidu", post_method: "baidu" },
+                { type: "llm", name: "ernie-tiny-8k", series: "wenxin", version: "ernie-tiny-8k", pre_method: "text_baidu", post_method: "baidu" },
+                { type: "llm", name: "ernie-lite-8k", series: "wenxin", version: "ernie-lite-8k", pre_method: "text_baidu", post_method: "baidu" },
+                { type: "llm", name: "Yi-34B-Chat", series: "yi", version: "yi_34b_chat", pre_method: "text_baidu", post_method: "baidu" }
             ],
             api_key: "", // 不要在配置文件中填写api key
         },
@@ -273,9 +288,9 @@ module.exports = {
         {
             platform_name: "月之暗面",
             list: [
-                { type: "llm", name: "moonshot-v1-8k", series: "moonshot", version: "moonshot-v1-8k", pre_method: "llm_moonshot_zhipu", post_method: "delta" },
-                { type: "llm", name: "moonshot-v1-32k", series: "moonshot", version: "moonshot-v1-32k", pre_method: "llm_moonshot_zhipu", post_method: "delta" },
-                { type: "llm", name: "moonshot-v1-128k", series: "moonshot", version: "moonshot-v1-128k", pre_method: "llm_moonshot_zhipu", post_method: "delta" }
+                { type: "llm", name: "moonshot-v1-8k", series: "moonshot", version: "moonshot-v1-8k", pre_method: "text_moonshot_zhipu", post_method: "delta" },
+                { type: "llm", name: "moonshot-v1-32k", series: "moonshot", version: "moonshot-v1-32k", pre_method: "text_moonshot_zhipu", post_method: "delta" },
+                { type: "llm", name: "moonshot-v1-128k", series: "moonshot", version: "moonshot-v1-128k", pre_method: "text_moonshot_zhipu", post_method: "delta" }
             ],
             api_key: "", // 不要在配置文件中填写api key
         },
@@ -283,7 +298,7 @@ module.exports = {
         {
             platform_name: "讯飞星火",
             list: [
-                { type: "llm", name: "Spark Lite 🆓", series: "xunfei", version: "spark lite", pre_method: "llm_xunfei", post_method: "add" }
+                { type: "llm", name: "Spark Lite 🆓", series: "xunfei", version: "spark lite", pre_method: "text_xunfei", post_method: "add" }
             ],
             api_key: "", // 不要在配置文件中填写api key
         },
@@ -291,15 +306,18 @@ module.exports = {
         {
             platform_name: "智谱AI",
             list: [
-                { type: "llm", name: "glm-4-flash 🆓", series: "zhipu", version: "glm-4-flash", pre_method: "llm_moonshot_zhipu", post_method: "delta" },
-                { type: "llm", name: "glm-4-0520", series: "zhipu", version: "glm-4-0520", pre_method: "llm_moonshot_zhipu", post_method: "delta" },
-                { type: "llm", name: "glm-4-air", series: "zhipu", version: "glm-4-air", pre_method: "llm_moonshot_zhipu", post_method: "delta" },
-                { type: "llm", name: "glm-4-plus", series: "zhipu", version: "glm-4-plus", pre_method: "llm_moonshot_zhipu", post_method: "delta" },
-                { type: "llm", name: "glm-4-long", series: "zhipu", version: "glm-4-long", pre_method: "llm_moonshot_zhipu", post_method: "delta" },
-                { type: "llm", name: "glm-4-flashx", series: "zhipu", version: "glm-4-flashx", pre_method: "llm_moonshot_zhipu", post_method: "delta" },
-                { type: "llm", name: "glm-4-airx", series: "zhipu", version: "glm-4-airx", pre_method: "llm_moonshot_zhipu", post_method: "delta" },
-                { type: "llm", name: "glm-4", series: "zhipu", version: "glm-4", pre_method: "llm_moonshot_zhipu", post_method: "delta" },
-                { type: "vl", name: "glm-4v", series: "zhipu", version: "glm-4v", pre_method: "zhipu_vl", post_method: "delta" },
+                { type: "llm", name: "glm-4-flash 🆓", series: "zhipu", version: "glm-4-flash", pre_method: "text_moonshot_zhipu", post_method: "delta" },
+                { type: "llm", name: "glm-4-0520", series: "zhipu", version: "glm-4-0520", pre_method: "text_moonshot_zhipu", post_method: "delta" },
+                { type: "llm", name: "glm-4-air", series: "zhipu", version: "glm-4-air", pre_method: "text_moonshot_zhipu", post_method: "delta" },
+                { type: "llm", name: "glm-4-plus", series: "zhipu", version: "glm-4-plus", pre_method: "text_moonshot_zhipu", post_method: "delta" },
+                { type: "llm", name: "glm-4-long", series: "zhipu", version: "glm-4-long", pre_method: "text_moonshot_zhipu", post_method: "delta" },
+                { type: "llm", name: "glm-4-flashx", series: "zhipu", version: "glm-4-flashx", pre_method: "text_moonshot_zhipu", post_method: "delta" },
+                { type: "llm", name: "glm-4-airx", series: "zhipu", version: "glm-4-airx", pre_method: "text_moonshot_zhipu", post_method: "delta" },
+                { type: "llm", name: "glm-4", series: "zhipu", version: "glm-4", pre_method: "text_moonshot_zhipu", post_method: "delta" },
+                { type: "vim", name: "glm-4v", series: "zhipu", version: "glm-4v", pre_method: "img_zhipu", post_method: "delta" },
+                { type: "igm", name: "cogview-3-flash 🆓", series: "zhipu", version: "cogview-3-flash", pre_method: "igm_zhipu", post_method: "igm_zhipu" },
+                { type: "igm", name: "cogview-3", series: "zhipu", version: "cogview-3", pre_method: "igm_zhipu", post_method: "igm_zhipu" },
+                { type: "igm", name: "cogview-3-plus", series: "zhipu", version: "cogview-3-plus", pre_method: "igm_zhipu", post_method: "igm_zhipu" },
             ],
             api_key: "", // 不要在配置文件中填写api key
         },

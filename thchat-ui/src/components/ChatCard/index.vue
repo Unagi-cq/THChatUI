@@ -10,16 +10,9 @@
                 {{ query }}
             </p>
             <div v-if="files && files.length > 0" class="uploaded-files">
-                <el-image 
-                v-for="x in files"
-                style="width: 100px; height: 100px" 
-                :src="x.base64" 
-                :zoom-rate="1.2" 
-                :max-scale="7"
-                :min-scale="0.2" 
-                :preview-src-list="files.map(file => file.base64)" 
-                :initial-index="0"
-                fit="cover" />
+                <el-image v-for="x in files" style="width: 100px; height: 100px" :src="x.base64" :zoom-rate="1.2"
+                    :max-scale="7" :min-scale="0.2" :preview-src-list="files.map(file => file.base64)"
+                    :initial-index="0" fit="cover" />
             </div>
             <el-icon v-if="isTruncatable" @click="toggleExpand" class="collapse-icon">
                 <ArrowDown v-if="!isExpanded" />
@@ -35,7 +28,20 @@
                     <img v-else class="avatar" :src="avatar_list.local" alt="Default Bot Avatar">
                     <span class="avatar-name">{{ modelName }}</span>
                 </div>
-                <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess"></v-md-preview>
+                <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess"
+                    v-if="modelType === 'llm'"></v-md-preview>
+                <div class="uploaded-files" v-if="modelType === 'igm'">
+                    <template v-if="answer">
+                        <el-image v-for="(image, index) in [answer]" :key="index" style="width: 100px; height: 100px"
+                            :src="image" :zoom-rate="1.2" :max-scale="7" :min-scale="0.2" :preview-src-list="[answer]"
+                            :initial-index="0" fit="cover" />
+                    </template>
+                    <el-skeleton animated variant="image" v-else>
+                        <template #template>
+                            <el-skeleton-item class="avatar" variant="image" style="width: 100px; height: 100px; border-radius: 4px;" />
+                        </template>
+                    </el-skeleton>
+                </div>
             </div>
             <!-- 新增的回答统计 -->
             <div class="answer-stats" v-if="chat_detail && responseTime && finishTime">
@@ -139,7 +145,9 @@ export default {
         // 模型名称
         modelName: String,
         // 文件
-        files: Array
+        files: Array,
+        // 模型类型
+        modelType: String
     },
     computed: {
         active() {
@@ -188,7 +196,7 @@ export default {
                     await navigator.clipboard.writeText(text);
                     return true;
                 }
-                
+
                 // 后备方案：使用传统的 document.execCommand
                 const textArea = document.createElement('textarea');
                 textArea.value = text;
@@ -198,7 +206,7 @@ export default {
                 document.body.appendChild(textArea);
                 textArea.focus();
                 textArea.select();
-                
+
                 try {
                     document.execCommand('copy');
                     textArea.remove();
@@ -216,7 +224,7 @@ export default {
         async copyMarkdown() {
             const success = await this.copyToClipboard(this.answer);
             this.$notify({
-                title: success 
+                title: success
                     ? this.$t('ChatCard.notifications.markdownCopySuccess')
                     : this.$t('ChatCard.notifications.markdownCopyFailed'),
                 type: success ? 'success' : 'error',
@@ -227,10 +235,10 @@ export default {
             const div = document.createElement('div');
             div.innerHTML = marked.parse(this.answer);
             const plainText = div.textContent || div.innerText || '';
-            
+
             const success = await this.copyToClipboard(plainText);
             this.$notify({
-                title: success 
+                title: success
                     ? this.$t('ChatCard.notifications.plainTextCopySuccess')
                     : this.$t('ChatCard.notifications.plainTextCopyFailed'),
                 type: success ? 'success' : 'error',
@@ -377,5 +385,4 @@ export default {
 .uploaded-files {
     margin-top: 8px;
 }
-
 </style>

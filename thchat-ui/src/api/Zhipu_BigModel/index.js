@@ -6,7 +6,8 @@ import {preProcess} from "@/util/config"
 // 引入 store
 import store from '../../store';
 // 智谱AI平台的接口地址
-const URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
+const LLM_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
+const IGM_URL = "https://open.bigmodel.cn/api/paas/v4/images/generations";
 
 /**
  * 调用智谱AI平台的接口
@@ -23,8 +24,32 @@ export async function fenchStream({prompt, history, files, controller, onopen, o
     let model_version = store.state.setting.model_config.version;
     let pre_method = store.state.setting.model_config.pre_method;
     let api_key = store.state.setting.api_key_map[store.state.setting.platform];
+    let url = store.state.setting.model_config.type === 'llm' ? LLM_URL : IGM_URL;
 
-    const response = await fetchEventSource(URL, {
+    // 如果是图片生成接口，使用普通的fetch请求
+    if (store.state.setting.model_config.type === 'igm') {
+        onopen({ status: 200 });
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${api_key}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(preProcess(model_version, prompt, history, pre_method, files, false)),
+            });
+            const data = await response.json();
+            onmessage(data);
+            onclose();
+            return;
+        } catch (error) {
+            onerror(error);
+            return;
+        }
+    }
+
+    // 对于LLM接口继续使用SSE
+    const response = await fetchEventSource(url, {
         method: "POST",
         headers: {
             // 智谱AI平台的接口密钥

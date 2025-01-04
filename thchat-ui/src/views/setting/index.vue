@@ -20,9 +20,17 @@
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item :label="$t('Setting.model.imageModel')" v-if="model_list[platform].list.some(m => m.type === 'vl')">
+                <el-form-item :label="$t('Setting.model.visualInterpretationModel')" v-if="model_list[platform].list.some(m => m.type === 'vim')">
                     <el-radio-group v-model="model_version" class="platform-radio-group" size="small">
-                        <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'vl')" class="vl-model">
+                        <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'vim')" class="vl-model">
+                            {{ x.name }}
+                        </el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+                <el-form-item :label="$t('Setting.model.imageGenerationModel')" v-if="model_list[platform].list.some(m => m.type === 'igm')">
+                    <el-radio-group v-model="model_version" class="platform-radio-group" size="small">
+                        <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'igm')" class="vl-model">
                             {{ x.name }}
                         </el-radio>
                     </el-radio-group>

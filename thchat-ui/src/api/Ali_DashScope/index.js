@@ -8,7 +8,7 @@ import store from '../../store';
 
 // 阿里云平台的接口地址 在项目内部设置了跨域 所以拼接了字符串"/ali/remote" 对应项目里面的代理配置 vue.config.js
 const LLM_URL = "/ali/remote/api/v1/services/aigc/text-generation/generation";
-const VL_URL = "/ali/remote/api/v1/services/aigc/multimodal-generation/generation";
+const VIM_URL = "/ali/remote/api/v1/services/aigc/multimodal-generation/generation";
 
 
 /**
@@ -26,7 +26,7 @@ export async function fenchStream({prompt, history, files, controller, onopen, o
     let model_version = store.state.setting.model_config.version;
     let pre_method = store.state.setting.model_config.pre_method;
     let api_key = store.state.setting.api_key_map[store.state.setting.platform];
-    let url = store.state.setting.model_config.type === 'llm' ? LLM_URL : VL_URL;
+    let url = store.state.setting.model_config.type === 'llm' ? LLM_URL : VIM_URL;
     let is_search = store.state.setting.model_config.can_web_search && store.state.setting.chat_type === 'web';
 
     const response = await fetchEventSource(url, {
