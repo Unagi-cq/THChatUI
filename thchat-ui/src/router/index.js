@@ -30,14 +30,14 @@ const routes = [
         ]
     },
     {
-        path: '/docs',
-        name: 'docs',
+        path: '/kb',
+        name: 'kb',
         component: Layout,
         children: [
             {
                 path: '', // 默认子路由
-                name: 'docs',
-                component: () => import('@/views/docs/index.vue')
+                name: 'kb',
+                component: () => import('@/views/kb/index.vue')
             }
         ]
     }

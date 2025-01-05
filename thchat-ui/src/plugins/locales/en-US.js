@@ -6,7 +6,9 @@ export default {
     success: "Success",
     failed: "Failed",
     is_true: "Yes",
-    is_false: "No"
+    is_false: "No",
+    deleteSuccess: "Deleted successfully",
+    confirmDelete: "Are you sure you want to delete?",
   },
   Setting: {
     tabs: {

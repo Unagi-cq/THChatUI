@@ -6,7 +6,9 @@ export default {
     success: "성공",
     failed: "실패",
     is_true: "예",
-    is_false: "아니오"
+    is_false: "아니오",
+    confirmDelete: "삭제하시겠습니까?",
+    deleteSuccess: "삭제되었습니다"
   },
   Setting: {
     tabs: {

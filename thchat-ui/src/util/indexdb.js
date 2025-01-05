@@ -6,7 +6,7 @@
 
 const DB_NAME = 'thchat-db';
 const DB_VERSION = 1;
-const STORE_NAMES = ['active', 'tabStorage', 'chatStorage', 'fileStorage'];
+const STORE_NAMES = ['active', 'tabStorage', 'chatStorage', 'kbStorage'];
 
 class IndexDBUtil {
     /**

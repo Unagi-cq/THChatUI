@@ -15,7 +15,7 @@
                     :modelType="c['modelType']"
                     v-for="c in active_session_qa_data" />
 
-                <div class="title-container dashed-border" v-if="is_show">
+                <div class="title-container" v-if="is_show">
                     <div class="title-line">LLM的Web会话管理方案 <span>THChatUI</span></div>
                     <div class="sub-title-line"> 嗨喽~朋友！🤖 欢迎使用THWebUI。目前项目已支持</div>
                     <el-row>

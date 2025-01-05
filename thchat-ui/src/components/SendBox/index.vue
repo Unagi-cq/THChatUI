@@ -6,7 +6,7 @@
             :class="{ 'has-files': uploadedFiles.length > 0 }">
         </el-input>
 
-        <div class="left-icons" v-if="uploadedFiles.length == 0">
+        <div class="left-icons" v-if="uploadedFiles.length === 0">
             <!-- 上传图标 -->
             <el-upload class="upload-icon" action="" :show-file-list="false" :auto-upload="false" accept="image/*"
                 :multiple="false" :on-change="handleImageUpload" :limit="upload_limit"
@@ -297,6 +297,7 @@ export default {
                             chatStoreHelper.addQA(this.active, qa);
                         },
                         onmessage: (event) => {
+                            console.log("消息传输")
                             // 过滤接口内部错误消息
                             if (event.event === 'error') {
                                 this.$notify({
@@ -308,6 +309,15 @@ export default {
                                 this.stopChat()
                                 return;
                             }
+
+                            if (event !== undefined && event.error && event.error.code === '1301') { // 智谱平台错误返回
+                                this.$notify({
+                                    title: this.$t('Common.failed'),
+                                    message: event.error.message,
+                                    type: 'error',
+                                })
+                                return;
+                            } 
 
                             // 批量更新优化
                             try {

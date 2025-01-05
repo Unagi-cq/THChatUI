@@ -10,6 +10,7 @@
 import indexDBUtil from '@/util/indexdb'
 import { Tab } from '@/schema/tab'
 import { Chat } from '@/schema/chat'
+import { Kb } from '@/schema/kb'
 
 /**
  * Store存放整个Vue项目的状态数据 全局公用
@@ -26,7 +27,7 @@ const app = {
         // 所有会话的聊天记录
         chat: new Chat({list: []}),
         // 所有的上传文件
-        files: []
+        kb: new Kb({list: []})
     },
 
     mutations: {
@@ -42,9 +43,9 @@ const app = {
             state.chat = ins instanceof Chat ? ins : new Chat(ins);
             indexDBUtil.set('chatStorage', 'value', state.chat)
         },
-        SET_FILES: (state, files) => {
-            state.files = files
-            indexDBUtil.set('fileStorage', 'value', {files: files})
+        SET_KB: (state, kb) => {
+            state.kb = kb
+            indexDBUtil.set('kbStorage', 'value', kb)
         },
         SET_READY: (state, ready) => {
             state.ready = ready
@@ -57,12 +58,12 @@ const app = {
                 const active = await indexDBUtil.get('active', 'value') || ''
                 const tabData = await indexDBUtil.get('tabStorage', 'value') || {list: []}
                 const chatData = await indexDBUtil.get('chatStorage', 'value') || {list: []}
-                const fileData = (await indexDBUtil.get('fileStorage', 'value') || {files: []})
+                const kbData = await indexDBUtil.get('kbStorage', 'value') || {list: []}
 
                 commit('SET_ACTIVE', active)
                 commit('SET_TAB', tabData)
                 commit('SET_CHAT', chatData)
-                commit('SET_FILES', fileData.files)
+                commit('SET_KB', kbData)
                 commit('SET_READY', true)
             } catch (error) {
                 console.error('初始化状态失败:', error)
@@ -77,19 +78,19 @@ const app = {
         setChat({commit}, ins) {
             commit('SET_CHAT', ins)
         },
-        setFiles({commit}, files) {
-            commit('SET_FILES', files)
+        setKb({commit}, kb) {
+            commit('SET_KB', kb)
         },
         clearAll({commit}) {
             const active = ''
             const tabData = {list: []}
             const chatData = {list: []}
-            const fileData = {files: []}
+            const kbData = {list: []}
 
             commit('SET_ACTIVE', active)
             commit('SET_TAB', tabData)
             commit('SET_CHAT', chatData)
-            commit('SET_FILES', fileData.files)
+            commit('SET_KB', kbData)
         }
     },
 
@@ -97,7 +98,7 @@ const app = {
         active: state => state.active,
         tab: state => state.tab,
         chat: state => state.chat,
-        file: state => state.files,
+        kb: state => state.kb,
         ready: state => state.ready
     }
 }

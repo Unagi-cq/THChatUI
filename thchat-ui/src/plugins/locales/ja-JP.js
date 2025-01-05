@@ -6,7 +6,9 @@ export default {
     success: "成功",
     failed: "失敗",
     is_true: "はい",
-    is_false: "いいえ"
+    is_false: "いいえ",
+    confirmDelete: "削除してもよろしいですか？",
+    deleteSuccess: "削除しました"
   },
   Setting: {
     tabs: {

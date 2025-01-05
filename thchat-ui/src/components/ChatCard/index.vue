@@ -39,7 +39,7 @@
                     <el-skeleton animated variant="image" v-else>
                         <template #template>
                             <el-skeleton-item class="avatar" variant="image"
-                                style="width: 100px; height: 100px; border-radius: 4px;" />
+                                style="width: 100px; height: 100px; border-radius: 10px;" />
                         </template>
                     </el-skeleton>
                 </div>
@@ -390,5 +390,9 @@ export default {
 
 .uploaded-files {
     margin-top: 8px;
+}
+
+.el-image {
+    border-radius: 10px;
 }
 </style>

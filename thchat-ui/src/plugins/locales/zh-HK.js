@@ -1,5 +1,3 @@
-import { warn } from "vue";
-
 export default {
   Common: {
     warn: "警告",
@@ -8,7 +6,9 @@ export default {
     success: "成功",
     failed: "失敗",
     is_true: "是",
-    is_false: "否"
+    is_false: "否",
+    confirmDelete: "確認要刪除嗎？",
+    deleteSuccess: "刪除成功"
   },
   Setting: {
     tabs: {

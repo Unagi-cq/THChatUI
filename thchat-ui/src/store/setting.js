@@ -50,12 +50,19 @@ const defaultSettings = {
     // 聊天类型 chat|web|rag
     "chat_type": 'chat',
     /******************************** 系统默认参数 ********************************/
-    // 单次上传的文件数量
+    // 输入框单次上传的文件数量
     "upload_limit": 1,
-    // 可上传的文件类型
+    // 输入框可上传的文件类型
     "upload_type": "image/",
+    // 输入框限制文件大小 2MB
+    "upload_size": 2,
+    /******************************** 知识库参数 ********************************/
+    // 可上传的文件类型
+    "kb_file_type": ['pdf', 'doc', 'docx', 'txt'],
+    // 一个chunk的最长字符数
+    "kb_chunk_size": 500,
     // 限制文件大小 2MB
-    "upload_size": 2
+    "kb_file_size": 2
 }
 
 const setting = {
