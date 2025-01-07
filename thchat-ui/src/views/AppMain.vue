@@ -70,10 +70,10 @@
                     </el-row>
 
                     <div class="sub-title-line">
-                        (查看源码<el-link type="primary" href="https://github.com/Unagi-cq/THChatUI"
-                            target="_blank">github</el-link>
-                        系统文档<el-link type="primary" href="https://github.com/Unagi-cq/THChatUI"
-                            @click="goTo('/about')">文档</el-link>)</div>
+                        源码<el-link type="primary" href="https://github.com/Unagi-cq/THChatUI"
+                            target="_blank">Github</el-link>
+                        文档<el-link type="primary" href="https://github.com/Unagi-cq/THChatUI"
+                            @click="goTo('/about')">Doc</el-link></div>
                 </div>
             </el-col>
         </el-row>

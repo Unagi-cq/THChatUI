@@ -6,7 +6,7 @@
 
                 <el-form-item :label="$t('Setting.model.platform')">
                     <el-radio-group v-model="platform" class="platform-radio-group" size="small">
-                        <el-radio :value="y" v-for="(x, y) in model_list" :key="y" >
+                        <el-radio :value="y" v-for="(x, y) in model_list" :key="y">
                             {{ x.platform_name }}
                         </el-radio>
                     </el-radio-group>
@@ -14,24 +14,29 @@
 
                 <el-form-item :label="$t('Setting.model.textModel')">
                     <el-radio-group v-model="model_version" class="platform-radio-group" size="small">
-                        <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'llm')" >
+                        <el-radio :value="x.version"
+                            v-for="x in model_list[platform].list.filter(m => m.type === 'llm')">
                             {{ x.name }}
                             <el-tag v-if="x.can_web_search" size="small" class="web-tag">Web</el-tag>
                         </el-radio>
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item :label="$t('Setting.model.visualInterpretationModel')" v-if="model_list[platform].list.some(m => m.type === 'vim')">
+                <el-form-item :label="$t('Setting.model.visualInterpretationModel')"
+                    v-if="model_list[platform].list.some(m => m.type === 'vim')">
                     <el-radio-group v-model="model_version" class="platform-radio-group" size="small">
-                        <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'vim')" class="vl-model">
+                        <el-radio :value="x.version"
+                            v-for="x in model_list[platform].list.filter(m => m.type === 'vim')" class="vl-model">
                             {{ x.name }}
                         </el-radio>
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item :label="$t('Setting.model.imageGenerationModel')" v-if="model_list[platform].list.some(m => m.type === 'igm')">
+                <el-form-item :label="$t('Setting.model.imageGenerationModel')"
+                    v-if="model_list[platform].list.some(m => m.type === 'igm')">
                     <el-radio-group v-model="model_version" class="platform-radio-group" size="small">
-                        <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'igm')" class="vl-model">
+                        <el-radio :value="x.version"
+                            v-for="x in model_list[platform].list.filter(m => m.type === 'igm')" class="vl-model">
                             {{ x.name }}
                         </el-radio>
                     </el-radio-group>
@@ -45,12 +50,11 @@
 
             <el-form label-width="130" label-position="left">
                 <el-form-item :label="$t('Setting.general.theme')">
-                    <el-segmented v-model="theme"
-                        :options="[
-                            { label: $t('Setting.general.themeOptions.glass'), value: 'glass' },
-                            { label: $t('Setting.general.themeOptions.dark'), value: 'dark' },
-                            { label: $t('Setting.general.themeOptions.light'), value: 'light' }
-                        ]">
+                    <el-segmented v-model="theme" :options="[
+                        { label: $t('Setting.general.themeOptions.glass'), value: 'glass' },
+                        { label: $t('Setting.general.themeOptions.dark'), value: 'dark' },
+                        { label: $t('Setting.general.themeOptions.light'), value: 'light' }
+                    ]">
                         <template #default="{ item }">
                             <div class="flex flex-col items-center">
                                 <div>{{ item.label }}</div>
@@ -62,10 +66,7 @@
                 <el-form-item :label="$t('Setting.general.language')">
                     <el-select v-model="locale">
                         <el-option label="简体中文" value="zh-CN" />
-                        <el-option label="繁体中文" value="zh-HK" />
                         <el-option label="English" value="en-US" />
-                        <el-option label="日本語" value="ja-JP" />
-                        <el-option label="한국어" value="ko-KR" />
                     </el-select>
                 </el-form-item>
 
@@ -79,25 +80,15 @@
 
                 <el-form-item :label="$t('Setting.general.background')" v-if="theme === 'glass'">
                     <div class="preset-bg-container">
-                        <div 
-                            v-for="(bgImage, index) in presetBgs" 
-                            :key="index"
-                            class="preset-bg-item"
-                            :class="{ active: currentBg === bgImage }"
-                            @click="selectPresetBg(bgImage)"
-                        >
+                        <div v-for="(bgImage, index) in presetBgs" :key="index" class="preset-bg-item"
+                            :class="{ active: currentBg === bgImage }" @click="selectPresetBg(bgImage)">
                             <img :src="bgImage" alt="preset background" />
                         </div>
-                        
-                        <el-upload 
-                            class="preset-bg-item avatar-uploader" 
-                            action="" 
-                            :show-file-list="false" 
-                            :auto-upload="false"
-                            accept="image/*" 
-                            :on-change="handleBgChange"
-                        >
-                            <img v-if="currentBg && !presetBgs.includes(currentBg)" :src="currentBg" class="preview-img" alt="background">
+
+                        <el-upload class="preset-bg-item avatar-uploader" action="" :show-file-list="false"
+                            :auto-upload="false" accept="image/*" :on-change="handleBgChange">
+                            <img v-if="currentBg && !presetBgs.includes(currentBg)" :src="currentBg" class="preview-img"
+                                alt="background">
                             <el-icon v-else class="avatar-uploader-icon">
                                 <Plus />
                             </el-icon>
@@ -120,9 +111,39 @@
                 <el-form-item :label="x.platform_name" v-for="(x, y) in model_list" :key="y">
                     <el-text v-if="y === 'Xunfei_Spark'" type="info">{{ $t('Setting.key.xunfeiTip') }}</el-text>
                     <el-text v-else-if="y === 'Local'" type="info">{{ $t('Setting.key.localTip') }}</el-text>
-                    <el-input v-else v-model="api_key_map[y]" 
+                    <el-input v-else v-model="api_key_map[y]"
                         :placeholder="$t('Setting.key.placeholder', { platform: x.platform_name })"
                         @change="updateApiKey(y, $event)" />
+                </el-form-item>
+            </el-form>
+        </el-tab-pane>
+
+        <!-- 知识库设置标签页 -->
+        <el-tab-pane :label="$t('Setting.tabs.knowledge')" class="flex-form-item">
+            <el-form label-width="130" label-position="left">
+                <el-form-item>
+                    <template #label>
+                        {{ $t('Setting.knowledge.chunkSize') }}
+                        <el-tooltip :content="$t('Setting.knowledge.chunkSizeTip')" effect="dark" placement="top">
+                            <el-icon class="tips-icon">
+                                <QuestionFilled />
+                            </el-icon>
+                        </el-tooltip>
+                    </template>
+                    <el-input-number v-model="chunkSize" :min="200" :max="1000" :step="100"
+                        controls-position="right" />
+                </el-form-item>
+
+                <el-form-item>
+                    <template #label>
+                        {{ $t('Setting.knowledge.recall') }}
+                        <el-tooltip :content="$t('Setting.knowledge.recallTip')" effect="dark" placement="top">
+                            <el-icon class="tips-icon">
+                                <QuestionFilled />
+                            </el-icon>
+                        </el-tooltip>
+                    </template>
+                    <el-input-number v-model="recallCount" :min="1" :max="3" :step="1" controls-position="right" />
                 </el-form-item>
             </el-form>
         </el-tab-pane>
@@ -134,9 +155,13 @@
 import { model_list } from "@/util/config";
 import bg from '@/assets/images/bg.jpg'
 import bg2 from '@/assets/images/bg2.jpg'
+import { QuestionFilled } from '@element-plus/icons-vue'
 
 export default {
     name: 'Setting',
+    components: {
+        QuestionFilled
+    },
     data() {
         return {
             model_list: model_list,
@@ -238,6 +263,30 @@ export default {
         // api key map
         api_key_map() {
             return this.$store.state.setting.api_key_map;
+        },
+        // 知识库分块大小设置
+        chunkSize: {
+            get() {
+                return this.$store.state.setting.chunk_size || 500;
+            },
+            set(val) {
+                this.$store.dispatch('changeSetting', {
+                    key: 'chunk_size',
+                    value: val
+                })
+            }
+        },
+        // 知识库召回数量设置
+        recallCount: {
+            get() {
+                return this.$store.state.setting.recall_count || 3;
+            },
+            set(val) {
+                this.$store.dispatch('changeSetting', {
+                    key: 'recall_count',
+                    value: val
+                })
+            }
         }
     },
     methods: {
@@ -276,8 +325,8 @@ export default {
          */
         clearLocalStorage() {
             this.$confirm(
-                this.$t('Setting.general.clearCacheConfirm'), 
-                this.$t('Common.warn'), 
+                this.$t('Setting.general.clearCacheConfirm'),
+                this.$t('Common.warn'),
                 {
                     confirmButtonText: this.$t('Common.confirm'),
                     cancelButtonText: this.$t('Common.cancel'),
@@ -460,5 +509,12 @@ export default {
     background-color: transparent !important;
     border: none !important;
     color: var(--el-color-warning);
+}
+
+.tips-icon {
+    margin-left: 4px;
+    font-size: 14px;
+    color: var(--answer-stats-color);
+    cursor: help;
 }
 </style>

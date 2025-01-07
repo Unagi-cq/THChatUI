@@ -34,6 +34,35 @@ export default {
             kb.list[index] = newRepo;
             store.dispatch('setKb', kb);
         }
+    },
+
+    /**
+     * 添加文件到知识库
+     * @param {string} repoId 知识库id
+     * @param {Object} file 文件对象
+     */
+    addFile(repoId, file) {
+        let kb = store.state.app.kb;
+        console.log(kb)
+        let repo = kb.findRepository(repoId);
+        if (repo) {
+            repo.addFile(file);
+            store.dispatch('setKb', kb);
+        }
+    },
+
+    /**
+     * 删除知识库中的文件
+     * @param {string} repoId 知识库id
+     * @param {string} fileId 文件id
+     */
+    delFile(repoId, fileId) {
+        let kb = store.state.app.kb;
+        let repo = kb.findRepository(repoId);
+        if (repo) {
+            repo.removeFile(fileId);
+            store.dispatch('setKb', kb);
+        }
     }
 
 }

@@ -2,14 +2,10 @@
  * 知识块类
  */
 class Chunk {
-    constructor(chunkId, content, {
-        createTime = new Date(),
-        source = ''
-    } = {}) {
+    constructor(chunkId, content) {
         this.chunkId = chunkId;
         this.content = content;
-        this.createTime = createTime;
-        this.source = source;
+        this.contentLength = content.length;
     }
 }
 
@@ -17,27 +13,17 @@ class Chunk {
  * 文件类
  */
 class File {
-    constructor(fileId, name, createTime, fileType, url, {
-        size = 0,
-        updateTime = new Date(),
-        metadata = {},
-        list = []
-    } = {}) {
+    constructor(fileId, name, createTime, fileType, url, size = 0, list = []) {
         this.fileId = fileId;
         this.name = name;
         this.createTime = createTime;
         this.fileType = fileType;
         this.url = url;
         this.size = size;
-        this.updateTime = updateTime;
-        this.metadata = metadata; // {pageCount, wordCount, ...}
+        this.showChunks = false;
         this.list = list.map(chunk => chunk instanceof Chunk ? chunk : new Chunk(
             chunk.chunkId,
-            chunk.content,
-            {
-                createTime: chunk.createTime,
-                source: chunk.source
-            }
+            chunk.content
         ));
     }
 
@@ -57,13 +43,6 @@ class File {
     findChunk(chunkId) {
         return this.list.find(chunk => chunk.chunkId === chunkId);
     }
-
-    /**
-     * 删除知识块
-     */
-    removeChunk(chunkId) {
-        this.list = this.list.filter(chunk => chunk.chunkId !== chunkId);
-    }
 }
 
 /**
@@ -81,13 +60,8 @@ class Repository {
             file.createTime,
             file.fileType,
             file.url,
-            {
-                size: file.size,
-                updateTime: file.updateTime,
-                status: file.status,
-                metadata: file.metadata,
-                list: file.list
-            }
+            file.size,
+            file.list
         ));
     }
 
@@ -101,6 +75,7 @@ class Repository {
             file.createTime,
             file.fileType,
             file.url,
+            file.size,
             file.list
         ));
     }
@@ -181,8 +156,8 @@ class Kb {
         this.statistics = {
             totalRepositories: this.list.length,
             totalFiles: this.list.reduce((sum, repo) => sum + repo.list.length, 0),
-            totalChunks: this.list.reduce((sum, repo) => 
-                sum + repo.list.reduce((fileSum, file) => 
+            totalChunks: this.list.reduce((sum, repo) =>
+                sum + repo.list.reduce((fileSum, file) =>
                     fileSum + file.list.length, 0), 0)
         };
     }

@@ -10,7 +10,7 @@
                 <!-- 知识库卡片列表 -->
                 <el-row :gutter="24">
                     <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6">
-                        <div class="kb-card dashed-border create-kb-card" @click="showCreateRepoDialog">
+                        <div class="kb-card dashed-border create-kb-card" @click="createRepoDialogVisible = true">
                             <div class="create-kb-content">
                                 <el-icon :size="40">
                                     <Plus />
@@ -70,11 +70,11 @@
 
         <!-- 自定义弹窗 -->
         <CustomDialog v-model="createRepoDialogVisible" title="创建知识库">
-            <el-form :model="newKbForm" label-width="100px">
-                <el-form-item label="知识库名称">
+            <el-form :model="newKbForm" label-width="100px" :rules="rules" ref="newKbForm">
+                <el-form-item label="知识库名称" prop="name">
                     <el-input v-model="newKbForm.name" maxlength="10" show-word-limit />
                 </el-form-item>
-                <el-form-item label="描述">
+                <el-form-item label="描述" prop="description">
                     <el-input type="textarea" v-model="newKbForm.description" />
                 </el-form-item>
             </el-form>
@@ -84,26 +84,71 @@
             </div>
         </CustomDialog>
 
-        <!-- 文件列表弹窗 -->
-        <CustomDialog v-model="fileListDialogVisible" :title="`${currentKb?.name || ''} - 文件列表`">
+        <!-- 知识库的文件列表弹窗 -->
+        <CustomDialog v-model="repoDialogVisible" :title="`${activeRepo?.name || ''} - 文件列表`">
             <div class="file-container">
                 <!-- 文件展示部分 -->
                 <div class="file-card" v-for="x in files">
                     <img src="@/assets/images/file.svg" alt="File Icon" class="file-icon" />
                     <div class="file-details">
-                        <div class="file-title">{{ x.title }}</div>
-                        <div class="upload-time">上传时间: {{ formattedTime(x.uuid) }}</div>
+                        <div class="file-title">
+                            {{ x.name }}
+                            <el-button type="text" size="small" @click="toggleChunks(x)">
+                                {{ x.showChunks ? '收起分段' : '查看分段' }}
+                            </el-button>
+                        </div>
+                        <div class="file-info">
+                            <span class="upload-time">上传时间: {{ x.createTime }}</span>
+                            <span class="file-size">大小: {{ formatFileSize(x.size) }}</span>
+                        </div>
+                        <!-- chunks预览部分 -->
+                        <div v-if="x.showChunks" class="chunks-preview">
+                            <div class="chunks-grid">
+                                <div v-for="(chunk, index) in x.list" 
+                                     :key="index" 
+                                     class="chunk-square"
+                                     @click="toggleChunkContent(x.fileId, index)"
+                                     :class="{ 'expanded': isChunkExpanded(x.fileId, index) }">
+                                    <div class="chunk-square-content">
+                                        <template v-if="!isChunkExpanded(x.fileId, index)">
+                                            <div class="chunk-number">分段 {{ index + 1 }}</div>
+                                            <div class="chunk-preview-text">{{ getPreviewText(chunk.content) }}</div>
+                                            <div class="chunk-length">{{ chunk.content.length }} 字符</div>
+                                        </template>
+                                        <template v-else>
+                                            <div class="chunk-expanded-header">
+                                                <span>分段 {{ index + 1 }}</span>
+                                                <span class="chunk-length">{{ chunk.content.length }} 字符</span>
+                                            </div>
+                                            <div class="chunk-expanded-content">
+                                                <el-scrollbar height="200px">
+                                                    {{ chunk.content }}
+                                                </el-scrollbar>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button class="delete-btn" @click="delFile(x.uuid)">&#x2715;</button>
+                    <button class="delete-btn" @click="delFile(x.fileId)">&#x2715;</button>
                 </div>
 
+                <!-- 文件上传部分 -->
                 <div class="upload-card" style="border-bottom: none;">
-                    <el-upload class="upload-button" drag action="/local/upload" multiple :on-success="handleSuccess"
-                        accept=".pdf,.doc,.docx,.txt">
-                        <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-                        <div class="el-upload__text">
-                            将文件拖拽至此处 或 <em>点击上传</em>
-                        </div>
+                    <el-upload class="upload-button" drag :auto-upload="true" :http-request="handleLocalUpload" multiple
+                        :before-upload="beforeUpload" :show-file-list="false" accept=".pdf,.doc,.docx,.txt">
+                        <template v-if="!isUploading">
+                            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+                            <div class="el-upload__text">
+                                将文件拖拽至此处 或 <em>点击上传</em>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <el-progress type="circle" :percentage="uploadProgress"
+                                :status="uploadProgress === 100 ? 'success' : ''" />
+                            <div class="upload-progress-text">{{ uploadStatusText }}</div>
+                        </template>
                         <template #tip>
                             <div class="el-upload__tip">
                                 目前仅支持5MB以内的PDF/DOC/DOCX/TXT文件上传，请确保文件格式正确
@@ -118,72 +163,94 @@
 </template>
 
 <script>
-import { Repository } from '@/schema/kb';
+import { Repository, File, Chunk } from '@/schema/kb';
 import kbStoreHelper from '@/schema/kbStoreHelper';
 
 export default {
     name: "Kb",
     data() {
         return {
-            currentKb: null, // 当前选中的知识库
+            // 当前选中的知识库
+            activeRepo: null,
             // 创建知识库弹窗是否显示
             createRepoDialogVisible: false,
-            // 文件列表弹窗显示状态
-            fileListDialogVisible: false, 
             // 创建知识库表单
             newKbForm: {
                 // 知识库名称
                 name: '',
                 // 知识库描述
                 description: ''
-            }
+            },
+            // 创建知识库表单校验规则
+            rules: {
+                name: [
+                    { required: true, message: '请输入知识库名称', trigger: 'blur' }
+                ],
+                description: [
+                    { required: true, message: '请输入知识库描述', trigger: 'blur' }
+                ]
+            },
+            // 知识库详情弹窗是否显示
+            repoDialogVisible: false,
+            uploadProgress: 0, // 添加上传进度状态
+            isUploading: false, // 添加上传状态标志
+            uploadStatusText: '',
+            progressTimer: null, // 添加计时器变量
+            fileChunksVisibility: {}, // 新增：用于存储每个文件的 chunks 显示状态
+            expandedChunks: {}, // 存储展开状态的chunks
         }
     },
     computed: {
-        // 所有知识库
+        // 获取所有知识库列表
         repos() {
             return this.$store.state.app.kb.list;
         },
-        files: {
-            get() {
-                return this.$store.state.app.files;
-            },
-            set(val) {
-                this.$store.dispatch('setFiles', val);
-            }
+        // 获取当前选中知识库的文件列表,如果没有选中知识库则返回空数组
+        files() {
+            return this.activeRepo?.list || [];
         },
+        // 获取chunkSize
+        chunkSize() {
+            return this.$store.state.setting.chunk_size;
+        }
     },
     created() {
-        console.log(kbStoreHelper)
+        // console.log(kbStoreHelper)
     },
     methods: {
-        onBack() {
-            // 返回首页
-            this.$router.push('/');
-        },
-        showCreateRepoDialog() {
-            this.createRepoDialogVisible = true;
-        },
-
         /**
          * 创建知识库
          */
         createRepo() {
-            const newRepo = new Repository(
-                Date.now(),
-                this.newKbForm.name,
-                new Date().toLocaleString(),
-                this.newKbForm.description,
-                []
-            );
-            kbStoreHelper.addRepo(newRepo);
-            this.createRepoDialogVisible = false;
-            this.newKbForm = { name: '', description: '' };
+            this.$refs.newKbForm.validate((valid) => {
+                if (valid) {
+                    const newRepo = new Repository(
+                        Date.now(),
+                        this.newKbForm.name,
+                        new Date().toLocaleString(),
+                        this.newKbForm.description,
+                        []
+                    );
+                    kbStoreHelper.addRepo(newRepo);
+                    this.createRepoDialogVisible = false;
+                    this.newKbForm = { name: '', description: '' };
+                    this.$refs.newKbForm.resetFields();
+                }
+            });
+        },
+
+        /**
+         * 打开知识库详情页面弹窗
+         * @param {Repository} repo 要打开的知识库对象
+         */
+        openRepo(repo) {
+            this.activeRepo = repo;
+            this.repoDialogVisible = true;
         },
 
         /**
          * 删除知识库
-         * @param {string} repoId 要删除的知识库ID
+         * @param {Number} repoId 要删除的知识库ID
          */
         deleteRepo(repoId) {
             this.$confirm(this.$t('Common.confirmDelete'), this.$t('Common.warn'), {
@@ -200,11 +267,302 @@ export default {
             }).catch(() => { });
         },
 
-
-        openRepo(kb) {
-            this.currentKb = kb;
-            this.fileListDialogVisible = true;
+        /**
+         * 上传文件前校验文件大小
+         * @param {File} file 待上传的文件对象
+         * @returns {boolean} 是否允许上传
+         */
+         beforeUpload(file) {
+            const maxSize = this.$store.state.setting.kb_file_size * 1024 * 1024;
+            if (file.size > maxSize) {
+                this.$notify({
+                    title: '错误',
+                    message: '文件大小不能超过' + this.$store.state.setting.kb_file_size + 'MB',
+                    type: 'error'
+                });
+                return false; // 阻止上传
+            }
+            return true; // 允许上传
         },
+
+        /**
+         * 处理本地文件上传
+         * @param {Object} options 上传选项对象
+         */
+        async handleLocalUpload(options) {
+            const file = options.file;
+
+            // 重置上传状态
+            this.isUploading = true;
+            this.uploadProgress = 0;
+            this.uploadStatusText = '准备上传...';
+
+            try {
+                // 模拟文件读取进度
+                const simulateProgress = setInterval(() => {
+                    if (this.uploadProgress < 90) {
+                        this.uploadProgress += 10;
+                        this.uploadStatusText = '正在处理文件...';
+                    }
+                }, 500);
+
+                // 读取文件内容
+                const content = await this.readFileContent(file);
+
+                // 检查内容是否为空
+                if (!content || content.trim() === '') {
+                    this.$notify({
+                        title: '警告',
+                        message: '未识别到文件内容',
+                        type: 'warning'
+                    });
+                    this.isUploading = false;
+                    this.uploadProgress = 0;
+                    this.uploadStatusText = '';
+                    return;
+                }
+
+                // 将内容分割成chunks
+                const chunks = this.splitContentIntoChunks(content, this.chunkSize);
+
+                // 清除进度模拟
+                clearInterval(simulateProgress);
+
+                // 创建文件对象
+                const fileData = new File(
+                    Date.now(),
+                    file.name,
+                    new Date().toLocaleString(),
+                    file.name.split('.').pop().toLowerCase(),
+                    '',
+                    file.size,
+                    chunks.map(chunk => new Chunk(Date.now(), chunk)) // 添加chunks
+                );
+
+                // 添加文件到知识库
+                kbStoreHelper.addFile(this.activeRepo.repoId, fileData);
+
+                // 完成上传
+                this.uploadProgress = 100;
+                this.uploadStatusText = '上传完成！';
+
+                // 显示成功通知
+                this.$notify({
+                    title: '成功',
+                    message: '文件上传成功',
+                    type: 'success'
+                });
+
+                // 重置状态
+                setTimeout(() => {
+                    this.isUploading = false;
+                    this.uploadProgress = 0;
+                    this.uploadStatusText = '';
+                }, 1500);
+
+            } catch (error) {
+                console.error('文件上传失败:', error);
+                this.uploadStatusText = '上传失败';
+
+                this.$notify({
+                    title: '错误',
+                    message: '文件上传失败',
+                    type: 'error'
+                });
+
+                // 重置状态
+                setTimeout(() => {
+                    this.isUploading = false;
+                    this.uploadProgress = 0;
+                    this.uploadStatusText = '';
+                }, 1500);
+            }
+        },
+
+        /**
+         * 读取文件内容 分流处理
+         * @param {File} file 文件对象
+         */
+        async readFileContent(file) {
+            const fileType = file.name.split('.').pop().toLowerCase();
+
+            switch (fileType) {
+                case 'pdf':
+                    return await this.readPdfContent(file);
+                case 'doc':
+                case 'docx':
+                    return await this.readDocContent(file);
+                case 'txt':
+                    return await this.readTxtContent(file);
+                default:
+                    throw new Error('不支持的文件格式');
+            }
+        },
+
+        /**
+         * 读取txt文本文件内容
+         * @param {File} file 文件对象
+         */
+        readTxtContent(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = (e) => reject(e);
+                reader.readAsText(file, 'UTF-8');
+            });
+        },
+
+        /**
+         * 读取pdf文件内容
+         * @param {File} file 文件对象
+         */
+        async readPdfContent(file) {
+            return new Promise((resolve, reject) => {
+                const fileReader = new FileReader();
+
+                fileReader.onload = async (event) => {
+                    try {
+                        const pdfData = new Uint8Array(event.target.result);
+                        const pdf = await import('pdfjs-dist');
+                        pdf.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdf.version}/pdf.worker.min.js`;
+
+                        const loadingTask = pdf.getDocument(pdfData);
+                        const pdfDoc = await loadingTask.promise;
+
+                        let fullText = '';
+                        for (let i = 1; i <= pdfDoc.numPages; i++) {
+                            const page = await pdfDoc.getPage(i);
+                            const textContent = await page.getTextContent();
+                            const pageText = textContent.items.map(item => item.str).join(' ');
+                            fullText += pageText + '\n';
+                        }
+
+                        resolve(fullText);
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                fileReader.onerror = reject;
+                fileReader.readAsArrayBuffer(file);
+            });
+        },
+
+        /**
+         * 读取doc/docx文件内容
+         * @param {File} file 文件对象
+         */
+        async readDocContent(file) {
+            const mammoth = await import('mammoth');
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer });
+            return result.value;
+        },
+
+        /**
+         * 删除文件
+         * @param {string} fileId 文件ID
+         */
+        async delFile(fileId) {
+            try {
+                await this.$confirm('确认删除该文件?', '警告', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                });
+
+                kbStoreHelper.delFile(this.activeRepo.repoId, fileId);
+
+                this.$notify({
+                    title: '成功',
+                    message: '文件删除成功',
+                    type: 'success'
+                });
+            } catch (error) {
+                if (error !== 'cancel') {
+                    console.error('文件删除失败:', error);
+                    this.$notify({
+                        title: '错误',
+                        message: '文件删除失败',
+                        type: 'error'
+                    });
+                }
+            }
+        },
+
+        /**
+         * 格式化文件大小
+         * @param {number} bytes 文件大小(字节)
+         * @returns {string} 格式化后的文件大小
+         */
+        formatFileSize(bytes) {
+            if (!bytes) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        },
+
+        // 添加新方法用于分割内容
+        splitContentIntoChunks(content, chunkSize) {
+            const chunks = [];
+            let currentChunk = '';
+            const sentences = content.split(/[。！？.!?]/); // 按句子分割
+
+            for (const sentence of sentences) {
+                if ((currentChunk + sentence).length > chunkSize) {
+                    if (currentChunk) {
+                        chunks.push(currentChunk.trim());
+                    }
+                    currentChunk = sentence;
+                } else {
+                    currentChunk += sentence;
+                }
+            }
+
+            if (currentChunk) {
+                chunks.push(currentChunk.trim());
+            }
+
+            return chunks;
+        },
+
+        /**
+         * 切换显示/隐藏文件的chunks
+         * @param {File} file 文件对象
+         */
+        toggleChunks(file) {
+            file.showChunks = !file.showChunks;
+        },
+
+        /**
+         * 切换chunk内容的显示状态
+         * @param {string} fileId 文件ID
+         * @param {number} index 分段索引
+         */
+        toggleChunkContent(fileId, index) {
+            const key = `${fileId}-${index}`;
+            this.expandedChunks[key] = !this.expandedChunks[key];
+        },
+
+        /**
+         * 判断chunk是否展开
+         * @param {string} fileId 文件ID
+         * @param {number} chunkIndex chunk索引
+         * @returns {boolean} 是否展开
+         */
+        isChunkExpanded(fileId, chunkIndex) {
+            const key = `${fileId}-${chunkIndex}`;
+            return this.expandedChunks[key];
+        },
+
+        /**
+         * 获取预览文本
+         * @param {string} content 完整内容
+         * @returns {string} 预览文本
+         */
+        getPreviewText(content) {
+            return content.length > 50 ? content.slice(0, 50) + '...' : content;
+        }
     },
 };
 </script>
@@ -374,9 +732,16 @@ export default {
                 margin-bottom: 5px;
             }
 
-            >.upload-time {
+            >.file-info {
+                display: flex;
+                gap: 15px;
                 font-size: 12px;
                 color: #777;
+
+                .upload-time,
+                .file-size {
+                    white-space: nowrap;
+                }
             }
         }
 
@@ -408,5 +773,93 @@ export default {
 :deep(.el-page-header__content),
 :deep(.el-page-header__back) {
     color: var(--common-color);
+}
+
+.upload-progress-text {
+    margin-top: 10px;
+    color: #909399;
+    font-size: 14px;
+    text-align: center;
+}
+
+:deep(.el-progress) {
+    margin: 10px auto;
+}
+
+.chunks-preview {
+    margin: 12px 0;
+    
+    .chunks-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+        padding: 8px;
+    }
+    
+    .chunk-square {
+        aspect-ratio: 1;
+        background-color: var(--el-fill-color-lighter);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        
+        &:hover {
+            background-color: var(--el-fill-color-light);
+            transform: translateY(-2px);
+        }
+        
+        &.expanded {
+            aspect-ratio: auto;
+            grid-column: 1 / -1;
+            height: auto;
+            min-height: 250px;
+        }
+        
+        .chunk-square-content {
+            height: 100%;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .chunk-number {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .chunk-preview-text {
+            flex: 1;
+            font-size: 12px;
+            color: var(--el-text-color-regular);
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+        }
+        
+        .chunk-length {
+            font-size: 12px;
+            color: var(--el-text-color-secondary);
+            margin-top: 8px;
+        }
+        
+        .chunk-expanded-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+        
+        .chunk-expanded-content {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--el-text-color-primary);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+    }
 }
 </style>
