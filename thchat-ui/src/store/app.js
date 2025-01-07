@@ -44,8 +44,8 @@ const app = {
             indexDBUtil.set('chatStorage', 'value', state.chat)
         },
         SET_KB: (state, kb) => {
-            state.kb = kb
-            indexDBUtil.set('kbStorage', 'value', kb)
+            state.kb = kb instanceof Kb ? kb : new Kb(kb)
+            indexDBUtil.set('kbStorage', 'value', state.kb)
         },
         SET_READY: (state, ready) => {
             state.ready = ready

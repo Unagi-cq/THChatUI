@@ -21,7 +21,7 @@ const apiKeyMap = Object.fromEntries(
 const defaultSettings = {
     /******************************** 系统设置弹窗对应的参数 ********************************/
     // 系统主题
-    "theme": 'glass',
+    "theme": 'light',
     // 背景图片
     "bg": bg,
     // 是否显示回答统计
@@ -57,12 +57,12 @@ const defaultSettings = {
     // 输入框限制文件大小 2MB
     "upload_size": 2,
     /******************************** 知识库参数 ********************************/
-    // 可上传的文件类型
-    "kb_file_type": ['pdf', 'doc', 'docx', 'txt'],
     // 一个chunk的最长字符数
-    "kb_chunk_size": 500,
-    // 限制文件大小 2MB
-    "kb_file_size": 2
+    "chunk_size": 500,
+    // 限制文件大小 5MB
+    "kb_file_size": 5,
+    // 召回数量
+    "recall_count": 3
 }
 
 const setting = {
