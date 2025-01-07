@@ -14,7 +14,8 @@ export default {
     tabs: {
       model: 'Model',
       general: 'General',
-      key: 'API Key'
+      key: 'API Key',
+      knowledge: 'Knowledge Base'
     },
     model: {
       platform: 'Platform',
@@ -45,6 +46,12 @@ export default {
     upload: {
       sizeLimit: 'Upload image size cannot exceed 3MB!',
       failed: 'Upload failed!'
+    },
+    knowledge: {
+      chunkSize: 'Chunk Size',
+      chunkSizeTip: 'Document chunk size (characters)',
+      recall: 'Recall Count',
+      recallTip: 'Number of relevant passages returned per query'
     }
   },
   AppAside: {

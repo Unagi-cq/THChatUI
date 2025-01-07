@@ -14,7 +14,8 @@ export default {
     tabs: {
       model: "模型",
       general: "通用",
-      key: "API密钥"
+      key: "API Key",
+      knowledge: "知识库"
     },
     model: {
       platform: "平台",
@@ -45,6 +46,12 @@ export default {
     upload: {
       sizeLimit: "上传图片大小不能超过 3MB!",
       failed: "上传失败!"
+    },
+    knowledge: {
+      chunkSize: "分块大小",
+      chunkSizeTip: "文档分块大小（字符数）",
+      recall: "召回数量",
+      recallTip: "单次查询返回的相关文段数量"
     }
   },
   AppAside: {
