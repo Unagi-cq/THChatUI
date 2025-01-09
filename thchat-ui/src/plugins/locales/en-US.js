@@ -51,7 +51,9 @@ export default {
       chunkSize: 'Chunk Size',
       chunkSizeTip: 'Document chunk size (characters)',
       recall: 'Recall Count',
-      recallTip: 'Number of relevant passages returned per query'
+      recallTip: 'Number of relevant passages returned per query',
+      enable: "Enable",
+      select: "Select Repo"
     }
   },
   AppAside: {

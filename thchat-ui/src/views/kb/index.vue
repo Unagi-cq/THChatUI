@@ -96,6 +96,7 @@
                             <el-button type="text" size="small" @click="toggleChunks(x)">
                                 {{ x.showChunks ? '收起分段' : '查看分段' }}
                             </el-button>
+                            <button class="delete-btn" @click="delFile(x.fileId)">&#x2715;</button>
                         </div>
                         <div class="file-info">
                             <span class="upload-time">上传时间: {{ x.createTime }}</span>
@@ -111,9 +112,7 @@
                                      :class="{ 'expanded': isChunkExpanded(x.fileId, index) }">
                                     <div class="chunk-square-content">
                                         <template v-if="!isChunkExpanded(x.fileId, index)">
-                                            <div class="chunk-number">分段 {{ index + 1 }}</div>
-                                            <div class="chunk-preview-text">{{ getPreviewText(chunk.content) }}</div>
-                                            <div class="chunk-length">{{ chunk.content.length }} 字符</div>
+                                            <div class="chunk-number">{{ index + 1 }}</div>
                                         </template>
                                         <template v-else>
                                             <div class="chunk-expanded-header">
@@ -131,7 +130,6 @@
                             </div>
                         </div>
                     </div>
-                    <button class="delete-btn" @click="delFile(x.fileId)">&#x2715;</button>
                 </div>
 
                 <!-- 文件上传部分 -->
@@ -298,13 +296,17 @@ export default {
             this.uploadStatusText = '准备上传...';
 
             try {
-                // 模拟文件读取进度
+                // 模拟文件读取进度，使用衰减增长
                 const simulateProgress = setInterval(() => {
                     if (this.uploadProgress < 90) {
-                        this.uploadProgress += 10;
+                        // 计算剩余进度空间
+                        const remainingProgress = 90 - this.uploadProgress;
+                        // 使用衰减因子，随着进度增加而减少增量
+                        const increment = Math.max(1, Math.floor(remainingProgress * 0.2));
+                        this.uploadProgress += increment;
                         this.uploadStatusText = '正在处理文件...';
                     }
-                }, 500);
+                }, 1000);
 
                 // 读取文件内容
                 const content = await this.readFileContent(file);
@@ -553,15 +555,6 @@ export default {
         isChunkExpanded(fileId, chunkIndex) {
             const key = `${fileId}-${chunkIndex}`;
             return this.expandedChunks[key];
-        },
-
-        /**
-         * 获取预览文本
-         * @param {string} content 完整内容
-         * @returns {string} 预览文本
-         */
-        getPreviewText(content) {
-            return content.length > 50 ? content.slice(0, 50) + '...' : content;
         }
     },
 };
@@ -730,28 +723,33 @@ export default {
                 font-size: 14px;
                 font-weight: bold;
                 margin-bottom: 5px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: var(--common-color);
+                
+                .delete-btn {
+                    background: none;
+                    border: none;
+                    color: #f00;
+                    cursor: pointer;
+                    font-size: 18px;
+                    padding: 0;
+                    margin-left: auto;
+                }
             }
 
             >.file-info {
                 display: flex;
                 gap: 15px;
                 font-size: 12px;
-                color: #777;
+                color: var(--answer-stats-color);
 
                 .upload-time,
                 .file-size {
                     white-space: nowrap;
                 }
             }
-        }
-
-        /* 删除按钮样式 */
-        >.delete-btn {
-            background: none;
-            border: none;
-            color: #f00;
-            cursor: pointer;
-            font-size: 18px;
         }
 
         /* 拖拽上传按钮 */
@@ -787,21 +785,20 @@ export default {
 }
 
 .chunks-preview {
-    margin: 12px 0;
+    font-size: 12px;
+    margin-top: 10px;
     
     .chunks-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 12px;
-        padding: 8px;
+        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+        gap: 8px;
     }
     
     .chunk-square {
-        aspect-ratio: 1;
         background-color: var(--el-fill-color-lighter);
         border-radius: 8px;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: all 0.2s;
         
         &:hover {
             background-color: var(--el-fill-color-light);
@@ -816,30 +813,17 @@ export default {
         }
         
         .chunk-square-content {
-            height: 100%;
-            padding: 12px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
         
         .chunk-number {
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-        
-        .chunk-preview-text {
-            flex: 1;
-            font-size: 12px;
-            color: var(--el-text-color-regular);
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            -webkit-box-orient: vertical;
+            text-align: center;
         }
         
         .chunk-length {
-            font-size: 12px;
             color: var(--el-text-color-secondary);
             margin-top: 8px;
         }
@@ -854,7 +838,6 @@ export default {
         
         .chunk-expanded-content {
             flex: 1;
-            font-size: 14px;
             line-height: 1.6;
             color: var(--el-text-color-primary);
             white-space: pre-wrap;

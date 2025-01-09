@@ -51,7 +51,9 @@ export default {
       chunkSize: "分块大小",
       chunkSizeTip: "文档分块大小（字符数）",
       recall: "召回数量",
-      recallTip: "单次查询返回的相关文段数量"
+      recallTip: "单次查询返回的相关文段数量",
+      enable: "启用",
+      select: "选择知识库"
     }
   },
   AppAside: {

@@ -121,6 +121,21 @@
         <!-- 知识库设置标签页 -->
         <el-tab-pane :label="$t('Setting.tabs.knowledge')" class="flex-form-item">
             <el-form label-width="130" label-position="left">
+                <el-form-item :label="$t('Setting.knowledge.enable')">
+                    <el-switch v-model="knowledgeEnabled" />
+                </el-form-item>
+
+                <el-form-item :label="$t('Setting.knowledge.select')" v-if="knowledgeEnabled">
+                    <el-select v-model="selectedRepoId" clearable>
+                        <el-option
+                            v-for="item in repoList"
+                            :key="item.repoId"
+                            :label="item.name"
+                            :value="item.repoId"
+                        />
+                    </el-select>
+                </el-form-item>
+
                 <el-form-item>
                     <template #label>
                         {{ $t('Setting.knowledge.chunkSize') }}
@@ -264,6 +279,9 @@ export default {
         api_key_map() {
             return this.$store.state.setting.api_key_map;
         },
+        repoList() {
+            return this.$store.state.app.kb.list || []
+        },
         // 知识库分块大小设置
         chunkSize: {
             get() {
@@ -284,6 +302,30 @@ export default {
             set(val) {
                 this.$store.dispatch('changeSetting', {
                     key: 'recall_count',
+                    value: val
+                })
+            }
+        },
+        // 知识库启用状态
+        knowledgeEnabled: {
+            get() {
+                return this.$store.state.setting.kb_enabled || false;
+            },
+            set(val) {
+                this.$store.dispatch('changeSetting', {
+                    key: 'kb_enabled',
+                    value: val
+                })
+            }
+        },
+        // 选中的知识库
+        selectedRepoId: {
+            get() {
+                return this.$store.state.setting.selected_repoId;
+            },
+            set(val) {
+                this.$store.dispatch('changeSetting', {
+                    key: 'selected_repoId',
                     value: val
                 })
             }

@@ -62,7 +62,11 @@ const defaultSettings = {
     // 限制文件大小 5MB
     "kb_file_size": 5,
     // 召回数量
-    "recall_count": 3
+    "recall_count": 3,
+    // 选中的知识库
+    "selected_repoId": '',
+    // 知识库启用状态
+    "kb_enabled": false
 }
 
 const setting = {
