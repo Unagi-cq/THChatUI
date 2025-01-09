@@ -13,6 +13,7 @@
                     :finishTime="c['finishTime']" 
                     :files="c['files']"
                     :modelType="c['modelType']"
+                    :recall="c['recall']"
                     v-for="c in active_session_qa_data" />
 
                 <div class="title-container" v-if="is_show">

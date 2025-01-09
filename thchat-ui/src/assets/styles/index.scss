@@ -12,9 +12,10 @@ html {
 /* 亮 主题样式 */
 .light-theme {
 
-  /* AppAside AppHeader 背景样式 */
+  /* AppAside AppHeader 和 知识库卡片 背景样式 */
   .aside-bg,
-  .header-bg {
+  .header-bg,
+  .kb-card {
     background-color: #fff;
     color: #333;
   }
@@ -41,6 +42,7 @@ html {
   --common-color: black;
   /* 用户和机器人对话卡 底部提示信息字体颜色
    * 侧边栏 标题栏 字体颜色
+   * 召回模块单条召回文本内容颜色
    */
   --answer-stats-color: #888;
   /* 布局背景 */
@@ -54,14 +56,24 @@ html {
    * 侧边栏/工具栏 边框颜色
    */
   --app-small-border-color: #ccc;
+  /* 召回模块背景颜色 */
+  --recall-bg-color: #f5f7fa;
+  /* 召回模块单条召回文本背景颜色 */
+  --recall-item-bg-color: #f0f2f5;
+  /* 
+   * 召回模块单条召回文本标题颜色
+   * 召回模块单条召回文本分数颜色
+   */
+  --recall-item-title-color: #636363;
 }
 
 /* 暗黑 主题样式 */
 .dark-theme {
 
-  /* AppAside AppHeader 背景样式 */
+  /* AppAside AppHeader 和 知识库卡片 背景样式 */
   .aside-bg,
-  .header-bg {
+  .header-bg,
+  .kb-card {
     background-color: #333;
     color: #fff;
   }
@@ -88,6 +100,7 @@ html {
   --common-color: white;
   /* 用户和机器人对话卡 底部提示信息字体颜色
    * 侧边栏 标题栏 字体颜色
+   * 召回模块单条召回文本内容颜色
    */
   --answer-stats-color: #888;
   /* 布局背景 */
@@ -101,14 +114,24 @@ html {
    * 侧边栏/工具栏 边框颜色
    */
   --app-small-border-color: #555;
+  /* 召回模块背景颜色 */
+  --recall-bg-color: #343434;
+  /* 召回模块单条召回文本背景颜色 */
+  --recall-item-bg-color: #444;
+  /* 
+   * 召回模块单条召回文本标题颜色
+   * 召回模块单条召回文本分数颜色
+   */
+  --recall-item-title-color: #aaaaaa;
 }
 
 /* 毛玻璃 主题样式 */
 .glass-theme {
 
-  /* AppAside AppHeader 背景样式 */
+  /* AppAside AppHeader 和 知识库卡片 背景样式 */
   .aside-bg,
-  .header-bg {
+  .header-bg,
+  .kb-card {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     color: #333;
@@ -136,7 +159,10 @@ html {
    * 输入框 边框颜色
    */
   --common-color: black;
-  /* 用户和机器人对话卡 底部提示信息字体颜色 */
+  /* 
+   * 用户和机器人对话卡 底部提示信息字体颜色
+   * 召回模块单条召回文本内容颜色
+   */
   --answer-stats-color: #888;
   /* 布局背景 */
   --layout-common-layout-bg: var(--custom-bg, url('../images/bg.jpg')) center center;
@@ -149,6 +175,15 @@ html {
    * 侧边栏/工具栏 边框颜色
    */
   --app-small-border-color: #aaa;
+  /* 召回模块背景颜色 */
+  --recall-bg-color: #f5f7fa;
+  /* 召回模块单条召回文本背景颜色 */
+  --recall-item-bg-color: #f0f2f5;
+  /* 
+   * 召回模块单条召回文本标题颜色
+   * 召回模块单条召回文本分数颜色
+   */
+  --recall-item-title-color: #636363;
 }
 
 .el-row {

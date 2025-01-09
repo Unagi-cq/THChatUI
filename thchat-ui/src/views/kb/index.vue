@@ -163,6 +163,10 @@
 <script>
 import { Repository, File, Chunk } from '@/schema/kb';
 import kbStoreHelper from '@/schema/kbStoreHelper';
+import { Segment, useDefault } from 'segmentit';
+
+const segmentit = useDefault(new Segment());
+
 
 export default {
     name: "Kb",
@@ -338,7 +342,7 @@ export default {
                     file.name.split('.').pop().toLowerCase(),
                     '',
                     file.size,
-                    chunks.map(chunk => new Chunk(Date.now(), chunk)) // 添加chunks
+                    chunks.map(chunk => new Chunk(Date.now(), chunk, segmentit.doSegment(chunk.toLowerCase()).map(word => word.w))) // 添加chunks并分词
                 );
 
                 // 添加文件到知识库
@@ -602,6 +606,14 @@ export default {
     margin: 5px 0 5px 0;
     height: 120px;
     justify-content: space-between;
+    border: 2px solid var(--app-small-border-color);
+    box-shadow: none;
+    transition: all 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        border-color: var(--el-color-primary-light-5);
+    }
 
     /* 卡片内部头部 */
     >.kb-card-header {
@@ -623,10 +635,13 @@ export default {
                     cursor: pointer;
                     font-size: 16px;
                     padding: 4px;
+                    opacity: 0.7;
+                    transition: all 0.2s;
 
                     &:hover {
-                        @include hover-active-effect;
-                        color: #409EFF;
+                        opacity: 1;
+                        background: none;
+                        transform: scale(1.1);
                     }
 
                     &.delete:hover {
@@ -672,9 +687,16 @@ export default {
     align-items: center;
     justify-content: center;
     transition: all 0.3s;
+    border: 2px dashed var(--app-small-border-color);
+    background: transparent;
 
     &:hover {
-        background-color: #f5f7fa;
+        border-color: var(--el-color-primary);
+        background: transparent;
+        
+        .create-kb-content {
+            color: var(--el-color-primary);
+        }
     }
 
     >.create-kb-content {
@@ -795,14 +817,15 @@ export default {
     }
     
     .chunk-square {
-        background-color: var(--el-fill-color-lighter);
         border-radius: 8px;
         cursor: pointer;
         transition: all 0.2s;
-        
+        border: 1px solid var(--app-small-border-color);
+        background: transparent;
+        color: var(--answer-stats-color);
+
         &:hover {
-            background-color: var(--el-fill-color-light);
-            transform: translateY(-2px);
+            border-color: var(--el-color-primary-light-5);
         }
         
         &.expanded {
@@ -810,6 +833,7 @@ export default {
             grid-column: 1 / -1;
             height: auto;
             min-height: 250px;
+            border-width: 2px;
         }
         
         .chunk-square-content {
@@ -824,7 +848,7 @@ export default {
         }
         
         .chunk-length {
-            color: var(--el-text-color-secondary);
+            color: var(--answer-stats-color);
             margin-top: 8px;
         }
         
@@ -839,7 +863,7 @@ export default {
         .chunk-expanded-content {
             flex: 1;
             line-height: 1.6;
-            color: var(--el-text-color-primary);
+            color: var(--answer-stats-color);
             white-space: pre-wrap;
             word-break: break-word;
         }

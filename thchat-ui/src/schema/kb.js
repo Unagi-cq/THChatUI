@@ -2,10 +2,11 @@
  * 知识块类
  */
 class Chunk {
-    constructor(chunkId, content) {
+    constructor(chunkId, content, words = []) {
         this.chunkId = chunkId;
         this.content = content;
         this.contentLength = content.length;
+        this.words = words;
     }
 }
 
@@ -23,7 +24,8 @@ class File {
         this.showChunks = false;
         this.list = list.map(chunk => chunk instanceof Chunk ? chunk : new Chunk(
             chunk.chunkId,
-            chunk.content
+            chunk.content,
+            chunk.words
         ));
     }
 
@@ -33,7 +35,8 @@ class File {
     addChunk(chunk) {
         this.list.push(chunk instanceof Chunk ? chunk : new Chunk(
             chunk.chunkId,
-            chunk.content
+            chunk.content,
+            chunk.words
         ));
     }
 

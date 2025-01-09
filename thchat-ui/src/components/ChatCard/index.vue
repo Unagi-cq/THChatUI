@@ -28,6 +28,18 @@
                     <img v-else class="avatar" :src="avatar_list.local" alt="Default Bot Avatar">
                     <span class="avatar-name">{{ modelName }}</span>
                 </div>
+                <!-- 召回内容卡片 -->
+                <div v-if="recall && recall.length > 0" class="recall-content">
+                    <div class="recall-header">{{ $t('ChatCard.knowledge_base') }}</div>
+                    <div v-for="(item, index) in recall" :key="index" class="recall-item" 
+                        @click="toggleRecallItem(index)">
+                        <div class="recall-title">
+                            {{ item.filename }}
+                            <span class="recall-score">{{ $t('ChatCard.relevance_score', { score: (item.score * 100).toFixed(1) }) }}</span>
+                        </div>
+                        <div class="recall-text" :class="{ 'recall-collapse': !expandedRecalls[index] }">{{ item.content }}</div>
+                    </div>
+                </div>
                 <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess"
                     v-if="modelType === 'llm' || modelType === 'vim'"></v-md-preview>
                 <div class="uploaded-files" v-if="modelType === 'igm'">
@@ -114,6 +126,8 @@ export default {
             maxHeight: 60,
             // 是否可折叠
             isTruncatable: false,
+            // 改用数组来跟踪每个recall项的展开状态
+            expandedRecalls: [],
         }
     },
     props: {
@@ -134,7 +148,9 @@ export default {
         // 文件
         files: Array,
         // 模型类型
-        modelType: String
+        modelType: String,
+        // 召回内容
+        recall: Array
     },
     computed: {
         // 当前激活的对话uuid
@@ -256,6 +272,22 @@ export default {
          */
         toggleExpand() {
             this.isExpanded = !this.isExpanded;
+        },
+
+        /**
+         * 切换单个recall项的展开状态
+         */
+        toggleRecallItem(index) {
+            this.expandedRecalls[index] = !this.expandedRecalls[index];
+        }
+    },
+    watch: {
+        // 当recall数据变化时重置展开状态
+        recall: {
+            immediate: true,
+            handler(newVal) {
+                this.expandedRecalls = new Array(newVal?.length || 0).fill(false);
+            }
         }
     }
 }
@@ -394,5 +426,62 @@ export default {
 
 .el-image {
     border-radius: 10px;
+}
+
+.recall-content {
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: var(--recall-bg-color);
+    font-size: 13px;
+}
+
+.recall-header {
+    color: var(--common-color);
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.recall-item {
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: var(--recall-item-bg-color);
+    cursor: pointer;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.recall-title {
+    color: var(--recall-item-title-color);
+    font-weight: bold;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.recall-score {
+    font-size: 12px;
+    color: var(--recall-item-title-color);
+    font-weight: normal;
+}
+
+.recall-text {
+    color: var(--answer-stats-color);
+    line-height: 1.5;
+    position: relative;
+}
+
+.recall-collapse {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>

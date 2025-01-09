@@ -15,6 +15,7 @@
     "element-plus": "^2.7.0",
     "mammoth": "^1.9.0",
     "marked": "^15.0.4",
+    "segmentit": "^2.0.3",
     "vue": "^3.2.13",
     "vue-i18n": "^11.0.1",
     "vue-pdf": "^4.3.0",

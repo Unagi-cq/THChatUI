@@ -93,7 +93,9 @@ export default {
       markdownCopyFailed: "复制失败！",
       plainTextCopySuccess: "纯文本复制成功！",
       plainTextCopyFailed: "复制失败！"
-    }
+    },
+    knowledge_base: "知识库检索到的内容",
+    relevance_score: "相关性分数: {score}%"
   },
   SendBox: {
     placeholder: "请输入你的问题或需求，按'↑'可快捷复制问题",

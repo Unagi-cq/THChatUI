@@ -28,7 +28,7 @@
                         d="M8.85746 12.5061C6.36901 10.6456 4.59564 8.59915 3.62734 7.44867C3.3276 7.09253 3.22938 6.8319 3.17033 6.3728C2.96811 4.8008 2.86701 4.0148 3.32795 3.5074C3.7889 3 4.60404 3 6.23433 3H17.7657C19.396 3 20.2111 3 20.672 3.5074C21.133 4.0148 21.0319 4.8008 20.8297 6.37281C20.7706 6.83191 20.6724 7.09254 20.3726 7.44867C19.403 8.60062 17.6261 10.6507 15.1326 12.5135C14.907 12.6821 14.7583 12.9567 14.7307 13.2614C14.4837 15.992 14.2559 17.4876 14.1141 18.2442C13.8853 19.4657 12.1532 20.2006 11.226 20.8563C10.6741 21.2466 10.0043 20.782 9.93278 20.1778C9.79643 19.0261 9.53961 16.6864 9.25927 13.2614C9.23409 12.9539 9.08486 12.6761 8.85746 12.5061Z"
                         stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-                <span v-if="knowledgeEnabled" class="search-text rag">{{ selectedRepoName }}</span>
+                <span v-if="knowledgeEnabled" class="search-text rag">{{ selectedRepo?.name }}</span>
             </div>
             <!-- 联网图标 -->
             <div class="web-search-icon-wrapper" :class="{ 'selected': chat_type === 'web' }" @click="toggleWebSearch">
@@ -85,6 +85,9 @@ import { postProcess } from "@/util/config";
 import tabStoreHelper from "@/schema/tabStoreHelper";
 import chatStoreHelper from "@/schema/chatStoreHelper";
 import { QA, Session } from "@/schema/chat";
+import { Segment, useDefault } from 'segmentit';
+
+const segmentit = useDefault(new Segment());
 
 export default {
     name: 'SendBox',
@@ -176,12 +179,13 @@ export default {
             }
         },
         // 选中的知识库
-        selectedRepoName() {
+        selectedRepo() {
             const repoList = this.$store.state.app.kb.list || [];
             const selectedId = this.$store.state.setting.selected_repoId;
             const selectedRepo = repoList.find(repo => repo.repoId === selectedId);
-            return selectedRepo ? selectedRepo.name : '';
-        }
+            return selectedRepo;
+        },
+
     },
     methods: {
         /**
@@ -282,6 +286,21 @@ export default {
                 history = this.active_session_qa_data
                     .slice(-4)
                     .filter(item => item.answer && item.answer.trim());
+            }
+
+            // 如果启用了知识库
+            if (this.knowledgeEnabled && this.selectedRepo) {
+                // 在知识库中匹配相关内容
+                const matches = this.matchKnowledgeBase(query);
+
+                // 将匹配内容加入到 prompt
+                if (matches.length > 0) {
+                    query = `基于以下知识库内容回答问题:${matches.map(chunk => chunk.content).join('\n')}问题: ${query}`;
+
+                    qa.recall = matches;
+                    // 更新聊天记录
+                    chatStoreHelper.addQA(this.active, qa);
+                }
             }
 
             try {
@@ -464,7 +483,81 @@ export default {
          */
         toggleRag() {
             this.knowledgeEnabled = !this.knowledgeEnabled;
-        }
+        },
+
+        /**
+         * 计算文本相关性分数 - 使用BM25算法
+         * @param {string} query - 用户输入的问题
+         * @param {Array} words - 文本块分词后的词数组
+         * @returns {number} 相关性分数
+         */
+        calculateRelevanceScore(query, words) {
+            // BM25参数
+            const k1 = 1.5;  // 词频饱和参数
+            const b = 0.75;  // 文档长度归一化参数
+            
+            // 将查询文本分词
+            const queryWords = segmentit.doSegment(query.toLowerCase()).map(word => word.w);
+            
+            // 计算平均文档长度(这里简化处理,实际应该是所有文档的平均长度)
+            const avgDocLength = words.length;
+            
+            // 计算BM25分数
+            let score = 0;
+            const wordFreq = new Map(); // 词频统计
+            
+            // 统计词频
+            words.forEach(word => {
+                wordFreq.set(word, (wordFreq.get(word) || 0) + 1);
+            });
+            
+            // 对每个查询词计算得分
+            queryWords.forEach(qWord => {
+                // 文档中该词的频率
+                const tf = wordFreq.get(qWord) || 0;
+                if(tf === 0) return;
+                
+                // 简化的IDF计算(实际应该基于语料库统计)
+                const idf = Math.log(1.5);
+                
+                // BM25公式
+                const numerator = tf * (k1 + 1);
+                const denominator = tf + k1 * (1 - b + b * (words.length / avgDocLength));
+                
+                score += idf * (numerator / denominator);
+            });
+            
+            // 归一化分数到0-1范围
+            return Math.min(score, 1);
+        },
+
+        /**
+         * 在知识库中匹配相关内容
+         */
+        matchKnowledgeBase(query) {
+            if (!this.selectedRepo) return [];
+
+            const allChunks = [];
+            this.selectedRepo.list.forEach(file => {
+                file.list.forEach(chunk => {
+                    allChunks.push({
+                        content: chunk.content,
+                        score: this.calculateRelevanceScore(query, chunk.words),
+                        filename: file.name
+                    });
+                });
+            });
+
+            // 按BM25分数排序
+            allChunks.sort((a, b) => b.score - a.score);
+
+            console.log(allChunks)
+
+            // 返回分数最高的3个文本块,且分数需大于阈值
+            return allChunks
+                .slice(0, 3)
+                .filter(chunk => chunk.score > 0.1); // BM25分数阈值调整为0.1
+        },
     }
 }
 </script>

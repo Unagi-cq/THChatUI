@@ -93,7 +93,9 @@ export default {
       markdownCopyFailed: "Copy failed!",
       plainTextCopySuccess: "Plain text copied successfully!",
       plainTextCopyFailed: "Copy failed!"
-    }
+    },
+    knowledge_base: "Knowledge base retrieved content",
+    relevance_score: "Relevance score: {score}%"
   },
   SendBox: {
     placeholder: "Enter your question or request, press '↑' to quickly copy the question",
