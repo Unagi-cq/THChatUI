@@ -84,7 +84,7 @@ conda activate thchat
 python ./llm/chat/1_simple_local_chat.py
 ```
 
-> 【注4】如果项目启动失败，请检查前端项目端口8080和后端服务端口5000是否被占用。
+> 【注】如果项目启动失败，请检查前端项目端口8080和后端服务端口5000是否被占用。
 
 ### 打包部署
 前端项目打包：
@@ -153,7 +153,7 @@ location ^~ /ali/remote/
     }
 ```
 
-> 【注5】 本地运行调试时不需要额外配置。`/ali/remote/` `/baidu/remote/` 是和前端项目的vue.config.js文件里的代理前缀对应的。
+> 【注】 本地运行调试时不需要额外配置。`/ali/remote/` `/baidu/remote/` 是和前端项目的vue.config.js文件里的代理前缀对应的。
 
 后端接口部署就很简单了，配置好python3.10环境，安装好包，直接运行就行。
 

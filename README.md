@@ -1,6 +1,6 @@
 <h1 align="center">LM的Web会话管理方案<span style="color: #2454ff;">THChatUI</span><span style="font-size: 10px;">v2</span></h1>
 
-[![GitHub](https://img.shields.io/badge/Demo-%F0%9F%9A%80%20GitHub-blue)](https://unagi-cq.github.io/THChatUI/#/) [![China](https://img.shields.io/badge/Demo-%F0%9F%9A%80%20China-red)](http://localchatui.wuxitianyouqi.com/#/) [![Docs](https://img.shields.io/badge/Document-%F0%9F%9A%80%20GitHub-blue)](https://unagi-cq.github.io/THChatUI/#/kb)
+[![GitHub](https://img.shields.io/badge/Demo-%F0%9F%9A%80%20GitHub-blue)](https://unagi-cq.github.io/THChatUI/#/) [![China](https://img.shields.io/badge/Demo-%F0%9F%9A%80%20China-red)](http://localchatui.wuxitianyouqi.com/#/) [![Docs](https://img.shields.io/badge/Document-%F0%9F%9A%80%20GitHub-blue)](https://unagi-cq.github.io/THChatUI/#/docs)
 
 
 <p align="center">
@@ -68,10 +68,10 @@ PC端界面如下：
 
 [THChatUI国内加速体验地址](http://localchatui.wuxitianyouqi.com/#/)
 [THChatUI永久体验地址](https://unagi-cq.github.io/THChatUI/#/)
-> 【注1】THChatUI在线体验版只提供了讯飞星火Lite模型调用，阿里云灵积、智谱AI平台、百度千帆、月之暗面、OpenAI的模型调用需要去对应平台申请Key并填入设置中，Key只会保存在本地浏览器缓存中，绝对安全。
+> 【注】THChatUI在线体验版只提供了讯飞星火Lite模型调用，阿里云灵积、智谱AI平台、百度千帆、月之暗面、OpenAI的模型调用需要去对应平台申请Key并填入设置中，Key只会保存在本地浏览器缓存中，绝对安全。
 
 [THChatUI代码仓库](https://github.com/Unagi-cq/THChatUI)
-> 【注2】代码仓提供了前端项目和后端接口示例。
+> 【注】代码仓提供了前端项目和后端接口示例。
 
 [THChatUI代码视频讲解教程](https://www.bilibili.com/video/BV1tb421n7Li/)
 [个人博客](https://blog.csdn.net/qq_43592352?type=blog)
@@ -166,7 +166,7 @@ conda activate thchat
 python ./llm/chat/1_simple_local_chat.py
 ```
 
-> 【注4】如果项目启动失败，请检查前端项目端口8080和后端服务端口5000是否被占用。
+> 【注】如果项目启动失败，请检查前端项目端口8080和后端服务端口5000是否被占用。
 
 ### 打包部署
 前端项目打包：
@@ -235,7 +235,7 @@ location ^~ /ali/remote/
     }
 ```
 
-> 【注5】 本地运行调试时不需要额外配置。`/ali/remote/` `/baidu/remote/` 是和前端项目的vue.config.js文件里的代理前缀对应的。
+> 【注】 本地运行调试时不需要额外配置。`/ali/remote/` `/baidu/remote/` 是和前端项目的vue.config.js文件里的代理前缀对应的。
 
 后端接口部署就很简单了，配置好python3.10环境，安装好包，直接运行就行。
 

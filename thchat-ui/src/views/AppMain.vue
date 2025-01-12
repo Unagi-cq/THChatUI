@@ -12,7 +12,7 @@
                     <div class="title-line">{{ $t('AppMain.title') }} <span>THChatUI</span></div>
                     <div class="sub-title-line">{{ $t('AppMain.welcome') }}</div>
                     <div class="sub-title-line">
-                        <el-link type="primary" href="https://unagi-cq.github.io/THChatUI/#/kb"
+                        <el-link type="primary" href="https://unagi-cq.github.io/THChatUI/#/docs"
                             @click="goTo('/about')">
                             {{ $t('AppMain.viewDocs') }}
                         </el-link>
