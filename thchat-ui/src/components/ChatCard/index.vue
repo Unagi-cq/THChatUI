@@ -14,7 +14,7 @@
                     :max-scale="7" :min-scale="0.2" :preview-src-list="files.map(file => file.base64)"
                     :initial-index="0" fit="cover" />
             </div>
-            <el-icon v-if="isTruncatable" @click="toggleExpand" class="collapse-icon">
+            <el-icon v-if="isTruncatable" @click="isExpanded = !isExpanded" class="collapse-icon">
                 <ArrowDown v-if="!isExpanded" />
                 <ArrowUp v-else />
             </el-icon>
@@ -23,6 +23,7 @@
         <div>
             <!-- 机器人消息 -->
             <div class="bot-message">
+                <!-- 头像 名称 -->
                 <div class="avatar-header">
                     <img v-if="avatar_list[series]" class="avatar" :src="avatar_list[series]" alt="Bot Avatar">
                     <img v-else class="avatar" :src="avatar_list.local" alt="Default Bot Avatar">
@@ -40,8 +41,9 @@
                         <div class="recall-text" :class="{ 'recall-collapse': !expandedRecalls[index] }">{{ item.content }}</div>
                     </div>
                 </div>
-                <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess"
-                    v-if="modelType === 'llm' || modelType === 'vim'"></v-md-preview>
+                <!-- 回答内容 -->   
+                <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess" v-if="modelType === 'llm' || modelType === 'vim'"></v-md-preview>
+                <!-- 图片生成 -->
                 <div class="uploaded-files" v-if="modelType === 'igm'">
                     <template v-if="answer">
                         <el-image v-for="(image, index) in [answer]" :key="index" style="width: 100px; height: 100px"
@@ -50,13 +52,12 @@
                     </template>
                     <el-skeleton animated variant="image" v-else>
                         <template #template>
-                            <el-skeleton-item class="avatar" variant="image"
-                                style="width: 100px; height: 100px; border-radius: 10px;" />
+                            <el-skeleton-item class="avatar" variant="image" style="width: 100px; height: 100px; border-radius: 10px;" />
                         </template>
                     </el-skeleton>
                 </div>
             </div>
-            <!-- 新增的回答统计 -->
+            <!-- 回答统计 -->
             <div class="answer-stats" v-if="chat_detail && responseTime && finishTime">
                 <el-tooltip :content="$t('ChatCard.copyMarkdownTooltip')" placement="bottom">
                     <svg @click="copyMarkdown" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
@@ -124,9 +125,9 @@ export default {
             isExpanded: false,
             // 用户文本最大显示高度
             maxHeight: 60,
-            // 是否可折叠
+            // 用户文本是否可折叠
             isTruncatable: false,
-            // 改用数组来跟踪每个recall项的展开状态
+            // 召回内容是否可折叠
             expandedRecalls: [],
         }
     },
@@ -153,10 +154,6 @@ export default {
         recall: Array
     },
     computed: {
-        // 当前激活的对话uuid
-        active() {
-            return this.$store.state.app.active;
-        },
         // 是否开启回答统计
         chat_detail() {
             return this.$store.state.setting.chat_detail;
@@ -264,14 +261,7 @@ export default {
          * 删除对话
          */
         deleteQA() {
-            chatStoreHelper.delQA(this.active, this.qaId);
-        },
-
-        /**
-         * 展开折叠
-         */
-        toggleExpand() {
-            this.isExpanded = !this.isExpanded;
+            chatStoreHelper.delQA(this.$store.state.app.active, this.qaId);
         },
 
         /**
@@ -295,7 +285,8 @@ export default {
 
 <style lang="scss" scoped>
 /**
- * 容器样式
+ * 主容器
+ * 使用flex布局，垂直排列子元素
  */
 .container {
     display: flex;
@@ -304,7 +295,8 @@ export default {
 }
 
 /**
- * 用户消息与机器人消息的样式
+ * 用户和机器人消息的共同样式
+ * 使用相对定位便于内部元素绝对定位
  */
 .user-message,
 .bot-message {
@@ -315,6 +307,10 @@ export default {
     padding: 0.3rem 0;
 }
 
+/**
+ * 用户和机器人头像的共同样式
+ * 设置圆形头像
+ */
 .user-message img,
 .bot-message img {
     width: 20px;
@@ -323,6 +319,10 @@ export default {
     object-fit: cover;
 }
 
+/**
+ * 用户消息文本样式
+ * 设置文本换行和断词规则
+ */
 .user-message p {
     width: 100%;
     padding: 0.4rem 0 0 0;
@@ -333,26 +333,39 @@ export default {
     word-break: break-word;
 }
 
+/**
+ * Markdown预览区域样式
+ */
 :deep(.v-md-editor-preview) {
     width: 100%;
     text-align: left;
 
+    // 代码块水平滚动条样式
     pre {
         overflow-x: auto;
         scrollbar-width: none;
     }
 }
 
+/**
+ * Markdown内容区域内边距
+ */
 :deep(.vuepress-markdown-body:not(.custom)) {
     padding: 0.4rem 0 0.1rem 0;
 }
 
+/**
+ * 移动端适配
+ */
 @media (max-width: 419px) {
     :deep(.vuepress-markdown-body div[class*=v-md-pre-wrapper-]) {
         margin: 0;
     }
 }
 
+/**
+ * 消息文本的基本样式
+ */
 .user-message p,
 :deep(.vuepress-markdown-body) {
     font-size: 13px;
@@ -362,17 +375,19 @@ export default {
 }
 
 /**
- * 用户与AI头像样式
+ * 头像区域样式
  */
 .avatar-header {
     display: flex;
     align-items: center;
     gap: 8px;
 
+    // 头像边框
     >.avatar {
         border: 1px solid var(--common-color);
     }
 
+    // 用户名样式
     >.avatar-name {
         font-size: 13px;
         color: var(--common-color);
@@ -381,7 +396,7 @@ export default {
 }
 
 /**
- * 底部信息
+ * 底部统计信息样式
  */
 .answer-stats {
     font-size: 10px;
@@ -391,6 +406,7 @@ export default {
     align-items: center;
     gap: 10px;
 
+    // 图标样式
     svg {
         vertical-align: middle;
         cursor: pointer;
@@ -401,87 +417,111 @@ export default {
     }
 }
 
-.collapse-p {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: none;
+/**
+ * 折叠相关样式
+ */
+.collapse {
+    // 折叠段落
+    &-p {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-height: none;
+    }
+
+    // 折叠图标
+    &-icon {
+        position: absolute;
+        bottom: 5px;
+        right: -14px;
+        font-size: 13px;
+        color: var(--common-color);
+        cursor: pointer;
+    }
 }
 
-.collapse-icon {
-    position: absolute;
-    bottom: 5px;
-    right: -14px;
-    font-size: 13px;
-    color: var(--common-color);
-    cursor: pointer;
-}
-
+/**
+ * 上传文件区域样式
+ */
 .uploaded-files {
     margin-top: 8px;
 }
 
+/**
+ * 图片圆角样式
+ */
 .el-image {
     border-radius: 10px;
 }
 
-.recall-content {
-    width: 100%;
-    margin: 8px 0;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: var(--recall-bg-color);
-    font-size: 13px;
-}
-
-.recall-header {
-    color: var(--common-color);
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-.recall-item {
-    margin-bottom: 8px;
-    padding: 8px;
-    border-radius: 4px;
-    background-color: var(--recall-item-bg-color);
-    cursor: pointer;
-
-    &:last-child {
-        margin-bottom: 0;
+/**
+ * 召回内容相关样式
+ */
+.recall {
+    // 召回内容容器
+    &-content {
+        margin: 8px 0 0 0;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--recall-bg-color);
+        font-size: 13px;
     }
-}
 
-.recall-title {
-    color: var(--recall-item-title-color);
-    font-weight: bold;
-    margin-bottom: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    // 召回标题
+    &-header {
+        color: var(--common-color);
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
 
-.recall-score {
-    font-size: 12px;
-    color: var(--recall-item-title-color);
-    font-weight: normal;
-}
+    // 召回项目
+    &-item {
+        margin-bottom: 8px;
+        padding: 8px;
+        border-radius: 4px;
+        background-color: var(--recall-item-bg-color);
+        cursor: pointer;
 
-.recall-text {
-    color: var(--answer-stats-color);
-    line-height: 1.5;
-    position: relative;
-}
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
 
-.recall-collapse {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    // 召回项目标题
+    &-title {
+        color: var(--recall-item-title-color);
+        font-weight: bold;
+        margin-bottom: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    // 相关度分数
+    &-score {
+        font-size: 12px;
+        color: var(--recall-item-title-color);
+        font-weight: normal;
+    }
+
+    // 召回文本
+    &-text {
+        color: var(--answer-stats-color);
+        line-height: 1.5;
+        position: relative;
+    }
+
+    // 折叠的召回文本
+    &-collapse {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 </style>

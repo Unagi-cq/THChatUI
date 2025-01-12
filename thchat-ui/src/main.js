@@ -34,7 +34,7 @@ app.use(plugins)
 
 // 初始化app数据
 store.dispatch('initializeState').then(() => {
-    console.log('应用IndexDB数据库初始化成功')
+    console.log('应用IndexedDB数据库初始化成功')
 }).catch(error => {
-    console.error('应用IndexDB数据库初始化失败:', error)
+    console.error('应用IndexedDB数据库初始化失败:', error)
 })

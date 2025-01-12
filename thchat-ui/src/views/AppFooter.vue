@@ -7,7 +7,7 @@
         <span class="copyright">{{ new Date().getFullYear() }} © THChatUI made by HCQ.
             <el-link href="https://github.com/Unagi-cq/THChatUI" target="_blank">{{ $t('AppFooter.repository')
                 }}</el-link>
-            <el-link href="https://github.com/Unagi-cq/THChatUI" target="_blank">{{ $t('AppFooter.docs') }}</el-link>
+            <el-link href="https://unagi-cq.github.io/THChatUI/#/kb" target="_blank">{{ $t('AppFooter.docs') }}</el-link>
         </span>
     </el-row>
 </template>

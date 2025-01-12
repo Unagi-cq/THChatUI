@@ -3,78 +3,20 @@
 
         <el-row :gutter="24" justify="center" style="margin-left: 0;margin-right: 0;">
             <el-col :md="18" :sm="22" :xs="22">
-                <ChatCard 
-                    :qaId="c['qaId']" 
-                    :query="c['query']" 
-                    :answer="c['answer']" 
-                    :modelName="c['modelName']" 
-                    :series="c['series']"
-                    :responseTime="c['responseTime']" 
-                    :finishTime="c['finishTime']" 
-                    :files="c['files']"
-                    :modelType="c['modelType']"
-                    :recall="c['recall']"
+                <ChatCard :qaId="c['qaId']" :query="c['query']" :answer="c['answer']" :modelName="c['modelName']"
+                    :series="c['series']" :responseTime="c['responseTime']" :finishTime="c['finishTime']"
+                    :files="c['files']" :modelType="c['modelType']" :recall="c['recall']"
                     v-for="c in active_session_qa_data" />
 
                 <div class="title-container" v-if="is_show">
-                    <div class="title-line">LLM的Web会话管理方案 <span>THChatUI</span></div>
-                    <div class="sub-title-line"> 嗨喽~朋友！🤖 欢迎使用THWebUI。目前项目已支持</div>
-                    <el-row>
-                        <el-col :span="12">
-                            <div class="grid-content bg-purple-light">
-                                <h1>本地实现</h1>
-                                <p style="font-size: 10px">(Python实现，支持知识库和联网搜索，可切换本地模型或远程模型)</p>
-                                <div class="sub-title-line">
-                                    <p>① <b>聊天对话</b>功能：</p>
-                                    <div style="font-size: 10px">
-                                        <p>开源模型网站：Huggingface</p>
-                                        <p>远程模型平台：阿里云百炼 \ 讯飞星火 \ 智谱AI</p>
-                                    </div>
-                                </div>
-                                <div class="sub-title-line">
-                                    <p>② <b>联网搜索</b>功能</p>
-                                </div>
-                                <div class="sub-title-line">
-                                    <p>③ <b>知识库</b>功能：</p>
-                                    <div style="font-size: 10px">
-                                        <p>文档(pdf、word、txt)检索增强</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </el-col>
-                        <el-col :span="12">
-                            <div class="grid-content bg-purple">
-                                <h1>远程模型</h1>
-                                <p style="font-size: 10px">(只需填写api-key但仅支持聊天模型)</p>
-                                <div class="sub-title-line">
-                                    <p> ① <b>阿里云百炼</b>平台以下模型：</p>
-                                    <div style="font-size: 10px">
-                                        <p>千问（7个版本）</p>
-                                        <p>百川（2个版本）</p>
-                                        <p>ChatGLM（1个版本）</p>
-                                    </div>
-                                </div>
-                                <div class="sub-title-line">
-                                    <p>② <b>讯飞星火</b>平台以下模型：</p>
-                                    <div style="font-size: 10px">
-                                        <p>星火(3种版本)</p>
-                                    </div>
-                                </div>
-                                <div class="sub-title-line">
-                                    <p>③ <b>智谱AI</b>平台以下模型：</p>
-                                    <div style="font-size: 10px">
-                                        <p>ChatGLM（2个版本）</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </el-col>
-                    </el-row>
-
+                    <div class="title-line">{{ $t('AppMain.title') }} <span>THChatUI</span></div>
+                    <div class="sub-title-line">{{ $t('AppMain.welcome') }}</div>
                     <div class="sub-title-line">
-                        源码<el-link type="primary" href="https://github.com/Unagi-cq/THChatUI"
-                            target="_blank">Github</el-link>
-                        文档<el-link type="primary" href="https://github.com/Unagi-cq/THChatUI"
-                            @click="goTo('/about')">Doc</el-link></div>
+                        <el-link type="primary" href="https://unagi-cq.github.io/THChatUI/#/kb"
+                            @click="goTo('/about')">
+                            {{ $t('AppMain.viewDocs') }}
+                        </el-link>
+                    </div>
                 </div>
             </el-col>
         </el-row>

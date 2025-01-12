@@ -2,7 +2,7 @@
  * @fileoverview 缓存工具类
  * 提供会话存储(sessionStorage)和本地存储(localStorage)的封装
  * 主要用于存储用户设置等小型数据
- * 大数据量(如会话记录、对话选项卡、知识库等)建议使用IndexDB存储
+ * 大数据量(如会话记录、对话选项卡、知识库等)建议使用IndexedDB存储
  */
 
 const sessionCache = {

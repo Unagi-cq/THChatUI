@@ -1,6 +1,7 @@
 <template>
 	<el-dialog v-model="dialogVisible" :show-close="false" :before-close="handleClose" :destroy-on-close="true"
 		append-to-body>
+		<!-- 对话框头部 -->
 		<template #header="{ close }">
 			<div class="dialog-custom-header">
 				<h4>{{ title }}</h4>
@@ -12,7 +13,7 @@
 				</svg>
 			</div>
 		</template>
-
+		<!-- 对话框内容 -->
 		<div class="dialog-container">
 			<slot></slot>
 		</div>
@@ -23,10 +24,13 @@
 export default {
 	name: 'CustomDialog',
 	props: {
+		// 是否显示对话框
 		modelValue: Boolean,
+		// 对话框标题
 		title: String
 	},
 	computed: {
+		// 对话框是否显示
 		dialogVisible: {
 			get() {
 				return this.modelValue
@@ -37,6 +41,7 @@ export default {
 		}
 	},
 	methods: {
+		// 关闭对话框
 		handleClose() {
 			this.dialogVisible = false
 		}
@@ -45,12 +50,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/* 页面弹框头部 */
+/* 对话框头部样式 */
 .dialog-custom-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 
+	/* 标题文本样式 */
 	h4 {
 		margin: 0;
 		font-size: 16px;
@@ -58,6 +64,7 @@ export default {
 		color: var(--common-color);
 	}
 
+	/* 关闭图标样式 */
 	svg {
 		cursor: pointer;
 		color: var(--common-color);
@@ -70,6 +77,7 @@ export default {
 	}
 }
 
+/* Element-Plus 对话框全局样式覆盖 */
 :global(.el-dialog) {
 	border-radius: 15px;
 	background: var(--layout-common-layout-bg);
@@ -83,6 +91,7 @@ export default {
 	flex-direction: column;
 }
 
+/* 对话框毛玻璃效果 */
 :global(.el-dialog::after) {
 	content: '';
 	position: absolute;
@@ -96,24 +105,28 @@ export default {
 	pointer-events: none;
 }
 
+/* 确保对话框内容在毛玻璃效果之上 */
 :global(.el-dialog__header),
 :global(.el-dialog__body) {
 	position: relative;
 	z-index: 2;
 }
 
+/* 对话框内容区域滚动设置 */
 :global(.el-dialog__body) {
 	flex: 1;
 	overflow-y: auto;
 	scrollbar-width: none;
 }
 
+/* 移动端响应式布局 */
 @media screen and (max-width: 768px) {
 	:global(.el-dialog) {
 		width: 95% !important;
 	}
 }
 
+/* 大屏幕响应式布局 */
 @media screen and (min-width: 1200px) {
 	:global(.el-dialog) {
 		width: 60% !important;

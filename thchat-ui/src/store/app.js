@@ -4,7 +4,7 @@
  * - 活动会话状态
  * - 标签页管理
  * - 聊天记录
- * - 文件存储
+ * - 知识库存储
  * 并通过 IndexDB 实现状态持久化
  */
 import indexDBUtil from '@/util/indexdb'

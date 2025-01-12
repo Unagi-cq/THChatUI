@@ -71,6 +71,16 @@ function preProcess(model_version, prompt, history, pre_method, files, is_search
                 stream: true
             }
             break;
+        // 本地接口 文本输入格式
+        case "local": 
+            body = {
+                input: {
+                    prompt: prompt,
+                    history: getLocalHistory(history),
+                    files: files
+                }
+            };
+            break;
         // 阿里平台的图片输入格式
         case "img_ali":
             body = {
@@ -226,6 +236,24 @@ function buildAliVLMessage(prompt, history, files) {
 }
 
 /**
+ * 本地接口 拼接历史对话
+ * @param history
+ * @returns {*[]}
+ */
+function getLocalHistory(history) {
+    const array = [];
+    for (let i = 0; i < history.length; i++) {
+        const chat = history[i];
+        array.push({
+            user: chat.query,
+            assistant: chat.answer,
+        });
+    }
+
+    return array;
+}
+
+/**
  * 后处理(出参)规则处理
  * @param {Object} e - API返回的原始数据
  * @param {string} post_method - 后处理方法标识
@@ -243,8 +271,15 @@ function postProcess(e, post_method) {
             return JSON.parse(e.data).choices[0].delta.content;
         case "baidu":
             return JSON.parse(e.data).result;
-        case "local":
-            return JSON.parse(e.data).data;
+        case "llm_local":
+            if (e.event !== 'data') return '';
+            // 解析chunk里面的data参数
+            const data = JSON.parse(e.data);
+            try {
+                return data.data.content;
+            } catch (e) {
+                console.error(e)
+            }
         case "igm_zhipu":
             return e.data[0].url;
         default:
@@ -269,9 +304,7 @@ module.exports = {
                 { type: "vim", name: "qwen-vl-max", series: "qwen", version: "qwen-vl-max-latest", pre_method: "img_ali", post_method: "text" },
                 { type: "vim", name: "qwen-vl-plus", series: "qwen", version: "qwen-vl-plus-latest", pre_method: "img_ali", post_method: "text" },
                 { type: "vim", name: "qwen-vl-ocr", series: "qwen", version: "qwen-vl-ocr-latest", pre_method: "img_ali", post_method: "text" },
-            ],
-            api_key: "", // 不要在配置文件中填写api key
-            description: "通义千问系列模型，支持流式输出"
+            ]
         },
         "Baidu_QianFan":
         {
@@ -282,8 +315,7 @@ module.exports = {
                 { type: "llm", name: "ernie-tiny-8k", series: "wenxin", version: "ernie-tiny-8k", pre_method: "text_baidu", post_method: "baidu" },
                 { type: "llm", name: "ernie-lite-8k", series: "wenxin", version: "ernie-lite-8k", pre_method: "text_baidu", post_method: "baidu" },
                 { type: "llm", name: "Yi-34B-Chat", series: "yi", version: "yi_34b_chat", pre_method: "text_baidu", post_method: "baidu" }
-            ],
-            api_key: "", // 不要在配置文件中填写api key
+            ]
         },
         "Moonshot_AI":
         {
@@ -292,16 +324,14 @@ module.exports = {
                 { type: "llm", name: "moonshot-v1-8k", series: "moonshot", version: "moonshot-v1-8k", pre_method: "text_moonshot_zhipu", post_method: "delta" },
                 { type: "llm", name: "moonshot-v1-32k", series: "moonshot", version: "moonshot-v1-32k", pre_method: "text_moonshot_zhipu", post_method: "delta" },
                 { type: "llm", name: "moonshot-v1-128k", series: "moonshot", version: "moonshot-v1-128k", pre_method: "text_moonshot_zhipu", post_method: "delta" }
-            ],
-            api_key: "", // 不要在配置文件中填写api key
+            ]
         },
         "Xunfei_Spark":
         {
             platform_name: "讯飞星火",
             list: [
                 { type: "llm", name: "Spark Lite 🆓", series: "xunfei", version: "spark lite", pre_method: "text_xunfei", post_method: "add" }
-            ],
-            api_key: "", // 不要在配置文件中填写api key
+            ]
         },
         "Zhipu_BigModel":
         {
@@ -319,17 +349,23 @@ module.exports = {
                 { type: "igm", name: "cogview-3-flash 🆓", series: "zhipu", version: "cogview-3-flash", pre_method: "igm_zhipu", post_method: "igm_zhipu" },
                 { type: "igm", name: "cogview-3", series: "zhipu", version: "cogview-3", pre_method: "igm_zhipu", post_method: "igm_zhipu" },
                 { type: "igm", name: "cogview-3-plus", series: "zhipu", version: "cogview-3-plus", pre_method: "igm_zhipu", post_method: "igm_zhipu" },
-            ],
-            api_key: "", // 不要在配置文件中填写api key
+            ]
+        },
+        "OpenAI":
+        {
+            platform_name: "OpenAI",
+            list: [
+                { type: "llm", name: "llm", series: "default", version: "llm_default", pre_method: "text_moonshot_zhipu", post_method: "add" }
+            ]
         },
         "Local":
         {
-            platform_name: "本地模型调用",
+            platform_name: "本地调用",
             list: [
-                { type: "llm", name: "本地模型", series: "local", version: "local", post_method: "local", can_web_search: true }
-            ],
-            api_key: "", // 不要在配置文件中填写api key
-            description: "为了更强的自定义性，本地模型调用时，多轮对话数据不在前端项目作预处理，而是在本地调用时的接口里处理；api_key依然预留传值写法。"
+                { type: "llm", name: "对话模型", series: "local", version: "llm_local", pre_method: "local", post_method: "llm_local", can_web_search: true },
+                { type: "vim", name: "图片理解模型", series: "local", version: "vim_local", pre_method: "local", post_method: "llm_local" },
+                { type: "igm", name: "图片生成模型", series: "local", version: "igm_local", pre_method: "local", post_method: "igm_zhipu" },
+            ]
         }
     },
     /**

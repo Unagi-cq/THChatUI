@@ -4,7 +4,11 @@
         <el-row :gutter="24" justify="center" style="margin-left: 0;margin-right: 0;">
             <el-col :md="22" :sm="22" :xs="22">
                 <div class="kb-header">
-                    <h4>我的知识库</h4>
+                    <h4>{{ $t('Kb.header') }}</h4>
+                    <div class="kb-stats">
+                        <span>{{ $t('Kb.stats.totalFiles') }}: {{ totalFiles }}</span>
+                        <span>{{ $t('Kb.stats.totalChunks') }}: {{ totalChunks }}</span>
+                    </div>
                 </div>
 
                 <!-- 知识库卡片列表 -->
@@ -15,7 +19,7 @@
                                 <el-icon :size="40">
                                     <Plus />
                                 </el-icon>
-                                <span class="create-text">创建知识库</span>
+                                <span class="create-text">{{ this.$t('Kb.createRepo.title') }}</span>
                             </div>
                         </div>
                     </el-col>
@@ -59,7 +63,7 @@
                             </div>
                             <p class="kb-card-description">{{ repo.description }}</p>
                             <div class="kb-card-footer">
-                                <span class="create-time">创建时间: {{ repo.createTime }}</span>
+                                <span class="create-time">{{ this.$t('Kb.repoDetail.createTime') }}: {{ repo.createTime }}</span>
                             </div>
                         </div>
                     </el-col>
@@ -69,23 +73,23 @@
         </el-row>
 
         <!-- 自定义弹窗 -->
-        <CustomDialog v-model="createRepoDialogVisible" title="创建知识库">
+        <CustomDialog v-model="createRepoDialogVisible" :title="$t('Kb.createRepo.title')">
             <el-form :model="newKbForm" label-width="100px" :rules="rules" ref="newKbForm">
-                <el-form-item label="知识库名称" prop="name">
+                <el-form-item :label="$t('Kb.createRepo.name')" prop="name">
                     <el-input v-model="newKbForm.name" maxlength="10" show-word-limit />
                 </el-form-item>
-                <el-form-item label="描述" prop="description">
+                <el-form-item :label="$t('Kb.createRepo.description')" prop="description">
                     <el-input type="textarea" v-model="newKbForm.description" />
                 </el-form-item>
             </el-form>
             <div style="text-align: right; margin-top: 20px;">
-                <el-button type="primary" @click="createRepo">确定</el-button>
-                <el-button @click="createRepoDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="createRepo">{{ this.$t('Common.confirm') }}</el-button>
+                <el-button @click="createRepoDialogVisible = false">{{ this.$t('Common.cancel') }}</el-button>
             </div>
         </CustomDialog>
 
         <!-- 知识库的文件列表弹窗 -->
-        <CustomDialog v-model="repoDialogVisible" :title="`${activeRepo?.name || ''} - 文件列表`">
+        <CustomDialog v-model="repoDialogVisible" :title="`${activeRepo?.name || ''} - ${this.$t('Kb.repoDetail.fileList')}`">
             <div class="file-container">
                 <!-- 文件展示部分 -->
                 <div class="file-card" v-for="x in files">
@@ -94,13 +98,13 @@
                         <div class="file-title">
                             {{ x.name }}
                             <el-button type="text" size="small" @click="toggleChunks(x)">
-                                {{ x.showChunks ? '收起分段' : '查看分段' }}
+                                {{ x.showChunks ? this.$t('Kb.repoDetail.hideChunks') : this.$t('Kb.repoDetail.showChunks') }}
                             </el-button>
                             <button class="delete-btn" @click="delFile(x.fileId)">&#x2715;</button>
                         </div>
                         <div class="file-info">
-                            <span class="upload-time">上传时间: {{ x.createTime }}</span>
-                            <span class="file-size">大小: {{ formatFileSize(x.size) }}</span>
+                            <span class="upload-time">{{ this.$t('Kb.repoDetail.uploadTime') }}: {{ x.createTime }}</span>
+                            <span class="file-size">{{ this.$t('Kb.repoDetail.fileSize') }}: {{ formatFileSize(x.size) }}</span>
                         </div>
                         <!-- chunks预览部分 -->
                         <div v-if="x.showChunks" class="chunks-preview">
@@ -116,8 +120,8 @@
                                         </template>
                                         <template v-else>
                                             <div class="chunk-expanded-header">
-                                                <span>分段 {{ index + 1 }}</span>
-                                                <span class="chunk-length">{{ chunk.content.length }} 字符</span>
+                                                <span>{{ $t('Kb.repoDetail.section') }} {{ index + 1 }}</span>
+                                                <span class="chunk-length">{{ chunk.content.length }} {{ $t('Kb.repoDetail.characters') }}</span>
                                             </div>
                                             <div class="chunk-expanded-content">
                                                 <el-scrollbar height="200px">
@@ -139,7 +143,7 @@
                         <template v-if="!isUploading">
                             <el-icon class="el-icon--upload"><upload-filled /></el-icon>
                             <div class="el-upload__text">
-                                将文件拖拽至此处 或 <em>点击上传</em>
+                                {{ $t('Kb.repoDetail.uploadTip') }}
                             </div>
                         </template>
                         <template v-else>
@@ -149,7 +153,7 @@
                         </template>
                         <template #tip>
                             <div class="el-upload__tip">
-                                目前仅支持5MB以内的PDF/DOC/DOCX/TXT文件上传，请确保文件格式正确
+                                {{ $t('Kb.repoDetail.uploadLimitTip') }}
                             </div>
                         </template>
                     </el-upload>
@@ -186,10 +190,10 @@ export default {
             // 创建知识库表单校验规则
             rules: {
                 name: [
-                    { required: true, message: '请输入知识库名称', trigger: 'blur' }
+                    { required: true, message: this.$t('Kb.createRepo.nameRequired'), trigger: 'blur' }
                 ],
                 description: [
-                    { required: true, message: '请输入知识库描述', trigger: 'blur' }
+                    { required: true, message: this.$t('Kb.createRepo.descriptionRequired'), trigger: 'blur' }
                 ]
             },
             // 知识库详情弹窗是否显示
@@ -203,21 +207,29 @@ export default {
         }
     },
     computed: {
-        // 获取所有知识库列表
+        // 所有知识库列表
         repos() {
             return this.$store.state.app.kb.list;
         },
-        // 获取当前选中知识库的文件列表,如果没有选中知识库则返回空数组
+        // 当前选中知识库的文件列表,如果没有选中知识库则返回空数组
         files() {
             return this.activeRepo?.list || [];
         },
-        // 获取chunkSize
+        // chunkSize
         chunkSize() {
             return this.$store.state.setting.chunk_size;
+        },
+        // 总文件数
+        totalFiles() {
+            return this.$store.state.app.kb.statistics.totalFiles;
+        },
+        // 总分段数
+        totalChunks() {
+            return this.$store.state.app.kb.statistics.totalChunks;
         }
     },
     created() {
-        // console.log(kbStoreHelper)
+        
     },
     methods: {
         /**
@@ -278,8 +290,8 @@ export default {
             const maxSize = this.$store.state.setting.kb_file_size * 1024 * 1024;
             if (file.size > maxSize) {
                 this.$notify({
-                    title: '错误',
-                    message: '文件大小不能超过' + this.$store.state.setting.kb_file_size + 'MB',
+                    title: this.$t('Common.error'),
+                    message: this.$t('Common.failed'),
                     type: 'error'
                 });
                 return false; // 阻止上传
@@ -297,7 +309,7 @@ export default {
             // 重置上传状态
             this.isUploading = true;
             this.uploadProgress = 0;
-            this.uploadStatusText = '准备上传...';
+            this.uploadStatusText = this.$t('Kb.repoDetail.preparing');
 
             try {
                 // 模拟文件读取进度，使用衰减增长
@@ -308,7 +320,7 @@ export default {
                         // 使用衰减因子，随着进度增加而减少增量
                         const increment = Math.max(1, Math.floor(remainingProgress * 0.2));
                         this.uploadProgress += increment;
-                        this.uploadStatusText = '正在处理文件...';
+                        this.uploadStatusText = this.$t('Kb.repoDetail.processing');
                     }
                 }, 1000);
 
@@ -318,8 +330,8 @@ export default {
                 // 检查内容是否为空
                 if (!content || content.trim() === '') {
                     this.$notify({
-                        title: '警告',
-                        message: '未识别到文件内容',
+                        title: this.$t('Common.warn'),
+                        message: this.$t('Kb.repoDetail.noContent'),
                         type: 'warning'
                     });
                     this.isUploading = false;
@@ -350,12 +362,12 @@ export default {
 
                 // 完成上传
                 this.uploadProgress = 100;
-                this.uploadStatusText = '上传完成！';
+                this.uploadStatusText = this.$t('Kb.repoDetail.uploadComplete');
 
                 // 显示成功通知
                 this.$notify({
-                    title: '成功',
-                    message: '文件上传成功',
+                    title: this.$t('Common.success'),
+                    message: this.$t('Kb.repoDetail.uploadComplete'),
                     type: 'success'
                 });
 
@@ -368,11 +380,11 @@ export default {
 
             } catch (error) {
                 console.error('文件上传失败:', error);
-                this.uploadStatusText = '上传失败';
+                this.uploadStatusText = this.$t('Kb.repoDetail.uploadFailed');
 
                 this.$notify({
-                    title: '错误',
-                    message: '文件上传失败',
+                    title: this.$t('Common.error'),
+                    message: this.$t('Kb.repoDetail.uploadFailed'),
                     type: 'error'
                 });
 
@@ -470,25 +482,29 @@ export default {
          */
         async delFile(fileId) {
             try {
-                await this.$confirm('确认删除该文件?', '警告', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                });
+                await this.$confirm(
+                    this.$t('Kb.repoDetail.deleteFile.confirm'), 
+                    this.$t('Common.warn'),
+                    {
+                        confirmButtonText: this.$t('Common.confirm'),
+                        cancelButtonText: this.$t('Common.cancel'),
+                        type: 'warning'
+                    }
+                );
 
                 kbStoreHelper.delFile(this.activeRepo.repoId, fileId);
 
                 this.$notify({
-                    title: '成功',
-                    message: '文件删除成功',
+                    title: this.$t('Common.success'),
+                    message: this.$t('Kb.repoDetail.deleteFile.success'),
                     type: 'success'
                 });
             } catch (error) {
                 if (error !== 'cancel') {
                     console.error('文件删除失败:', error);
                     this.$notify({
-                        title: '错误',
-                        message: '文件删除失败',
+                        title: this.$t('Common.error'),
+                        message: this.$t('Kb.repoDetail.deleteFile.failed'),
                         type: 'error'
                     });
                 }
@@ -588,10 +604,20 @@ export default {
  * 页面头部标题
  */
 .kb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     font-family: PingFang SC;
     font-size: 28px;
     line-height: 28px;
     margin-bottom: 20px;
+
+    .kb-stats {
+        display: flex;
+        gap: 20px;
+        font-size: 14px;
+        color: var(--answer-stats-color);
+    }
 }
 
 /**

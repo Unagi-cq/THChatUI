@@ -72,7 +72,7 @@
                     </svg>
                     <div class="option-text">{{ $t('AppAside.tool_setting_name') }}</div>
                 </div>
-                <div class="option" @click="goToPage('/tools')">
+                <div class="option" @click="goToPage('/docs')">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
                         fill="none">
                         <path
@@ -85,7 +85,7 @@
                             d="M9.14426 2.5C6.48724 2.56075 4.93529 2.81456 3.87493 3.87493C2.81456 4.93529 2.56075 6.48724 2.5 9.14426M14.8557 2.5C17.5128 2.56075 19.0647 2.81456 20.1251 3.87493C21.1854 4.93529 21.4392 6.48724 21.5 9.14426M14.8557 21.5C17.5128 21.4392 19.0647 21.1854 20.1251 20.1251C21.1854 19.0647 21.4392 17.5128 21.5 14.8557M9.14426 21.5C6.48724 21.4392 4.93529 21.1854 3.87493 20.1251C2.81456 19.0647 2.56075 17.5128 2.5 14.8557"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <div class="option-text">{{ $t('AppAside.tool_agent_name') }}</div>
+                    <div class="option-text">{{ $t('AppAside.tool_docs_name') }}</div>
                 </div>
                 <div class="divider">
                     <div class="border"></div>
@@ -236,7 +236,7 @@ export default {
                 },
                 '/about': {
                     component: 'About',
-                    title: this.$t('AppAside.tool_about_name')
+                    title: this.$t('AppAside.tool_about_name') + ' - 本页面暂不配置多语言'
                 }
             }
 

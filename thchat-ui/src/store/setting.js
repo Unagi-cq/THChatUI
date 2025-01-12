@@ -3,8 +3,7 @@
  * 该模块负责管理和持久化系统的全局设置，包括主题、API密钥、模型配置等
  * 使用 Vuex 进行状态管理，并通过 localStorage 实现数据持久化
  */
-import cache from '@/util/cache'; 
-import { model_list } from '@/util/config'
+import cache from '@/util/cache';
 import bg from '@/assets/images/bg2.jpg'
 
 const settingStorage = JSON.parse(localStorage.getItem('settingStorage')) || ''
@@ -13,86 +12,96 @@ const settingStorage = JSON.parse(localStorage.getItem('settingStorage')) || ''
  * defaultSettings 是项目初次运行时的默认配置
  * 想让项目结构精简一点 所以没有单独写成一个配置文件
  */
-
-const apiKeyMap = Object.fromEntries(
-    Object.entries(model_list).map(([key, value]) => [key, value.api_key || ''])
-);
-
 const defaultSettings = {
     /******************************** 系统设置弹窗对应的参数 ********************************/
     // 系统主题
-    "theme": 'light',
+    theme: 'light',
     // 背景图片
-    "bg": bg,
+    bg: bg,
     // 是否显示回答统计
-    "chat_detail": true,
-    // api_key 从配置文件中初始化
-    "api_key_map": apiKeyMap,
+    chat_detail: true,
+    // api_key
+    api_key_map: {
+        Ali_DashScope: "",
+        Baidu_QianFan: "",
+        Moonshot_AI: "",
+        Xunfei_Spark: "",
+        Zhipu_BigModel: "",
+        OpenAI: {
+            endpoint: "",
+            api_key: "",
+            model_name: ""
+        },
+        Local: ""
+    },
     // 平台
-    "platform": 'Xunfei_Spark',
+    platform: 'Xunfei_Spark',
     // 是否多轮对话
-    "memory": true,
+    memory: true,
+    // 历史对话轮数限制
+    memory_limit: 3,
     // 模型配置
-    "model_config": { 
+    model_config: {
         // 模型类型
-        type: "llm", 
+        type: "llm",
         // 模型名称
-        name: "讯飞星火（Spark Lite）", 
+        name: "Spark Lite 🆓",
         // 模型系列
         series: "xunfei",
         // 模型版本
-        version: "spark lite", 
+        version: "spark lite",
         // 前处理组索引
-        pre_method: "xunfei", 
+        pre_method: "text_xunfei",
         // 后处理组索引
         post_method: "add"
     },
-    // 聊天类型 chat|web|rag
-    "chat_type": 'chat',
     /******************************** 系统默认参数 ********************************/
     // 输入框单次上传的文件数量
-    "upload_limit": 1,
-    // 输入框可上传的文件类型
-    "upload_type": "image/",
+    upload_limit: 1,
+    // 输入框可上传的文件类型 暂未接入其他多模态模型 所以只填图片
+    upload_type: "image/",
     // 输入框限制文件大小 2MB
-    "upload_size": 2,
+    upload_size: 2,
     /******************************** 知识库参数 ********************************/
     // 一个chunk的最长字符数
-    "chunk_size": 500,
+    chunk_size: 500,
     // 限制文件大小 5MB
-    "kb_file_size": 5,
+    kb_file_size: 5,
     // 召回数量
-    "recall_count": 3,
+    recall_count: 3,
     // 选中的知识库
-    "selected_repoId": '',
+    selected_repoId: '',
     // 知识库启用状态
-    "kb_enabled": false
+    kb_enabled: false,
+    /******************************** 联网搜索参数 ********************************/
+    // 是否启用联网搜索
+    web_search_enabled: false
 }
 
 const setting = {
-  state: Object.keys(defaultSettings).reduce((acc, key) => {
-      acc[key] = settingStorage?.[key] ?? defaultSettings[key];
-      return acc;
-  }, {}),
+    state: Object.keys(defaultSettings).reduce((acc, key) => {
+        acc[key] = settingStorage?.[key] ?? defaultSettings[key];
+        return acc;
+    }, {}),
 
-  mutations: {
-      CHANGE_SETTING: (state, { key, value }) => {
-          if (state.hasOwnProperty(key)) {
-              state[key] = value;
-              cache.local.setJSON('settingStorage', state);
-          }
-      }
-  },
+    mutations: {
+        CHANGE_SETTING: (state, { key, value }) => {
+            if (state.hasOwnProperty(key)) {
+                state[key] = value;
+                cache.local.setJSON('settingStorage', state);
+            }
+        }
+    },
 
-  actions: {
-      changeSetting({ commit }, data) {
-          commit('CHANGE_SETTING', data)
-      }
-  }
+    actions: {
+        changeSetting({ commit }, data) {
+            commit('CHANGE_SETTING', data)
+        }
+    }
 }
 
 if (!settingStorage) {
-  cache.local.setJSON('settingStorage', defaultSettings)
+    cache.local.setJSON('settingStorage', defaultSettings)
 }
 
 export default setting

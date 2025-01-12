@@ -40,6 +40,25 @@
             <h2>更新日志</h2>
 
             <div class="version-block">
+                <h3>v2.0.0 - 2025.01.12</h3>
+                <ul>
+                    <li>[fix] 重构后端Python脚本示例 给出对话模型、图片理解模型、图片会话模型API接口示例</li>
+                    <li>[fix] 重构后端Python脚本示例 整合对话模型的普通聊天、联网搜索、知识库功能</li>
+                    <li>[add] 新增了对月之暗面Kimi平台的支持</li>
+                    <li>[add] 新增了对OpenAI式EndPoint接口的支持</li>
+                    <li>[add] 内置了几个毛玻璃主题的壁纸</li>
+                    <li>[add] 多语言支持 支持简中、英文</li>
+                    <li>[add] 接入智谱的图片生成模型</li>
+                    <li>[add] 新增联网搜索功能</li>
+                    <li>[add] 接入图片上传模型</li>
+                    <li>[add] 新增知识库功能 完全依赖于前端 支持文件上传、分段、搜索</li>
+                    <li>[upd] 重构了底层储存 使用浏览器自带的IndexedDB 从此存储空间不再受限制</li>
+                    <li>[upd] 优化了公式显示插件引入方式 从cdn改为本地引入</li>
+                    <li>[upd] 优化了GitHub Pages发布脚本</li>
+                </ul>
+            </div>
+
+            <div class="version-block">
                 <h3>v1.1.3 - 2025.01.01</h3>
                 <ul>
                     <li>[fix] 重构会话预处理 适配不同平台并支持图片输入</li>

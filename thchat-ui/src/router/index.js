@@ -18,14 +18,14 @@ const routes = [
         ]
     },
     {
-        path: '/tools',
-        name: 'tools',
+        path: '/docs',
+        name: 'docs',
         component: Layout,
         children: [
             {
                 path: '', // 默认子路由
-                name: 'tools',
-                component: () => import('@/views/tools/index.vue')
+                name: 'docs',
+                component: () => import('@/views/docs/index.vue')
             }
         ]
     },

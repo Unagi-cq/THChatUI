@@ -21,7 +21,7 @@
                 </svg>
             </el-upload>
             <!-- 知识库图标 -->
-            <div class="web-search-icon-wrapper" :class="{ 'selected': knowledgeEnabled }" @click="toggleRag">
+            <div class="web-search-icon-wrapper" :class="{ 'selected': knowledgeEnabled }" @click="knowledgeEnabled = !knowledgeEnabled">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none"
                     class="rag">
                     <path
@@ -31,7 +31,7 @@
                 <span v-if="knowledgeEnabled" class="search-text rag">{{ selectedRepo?.name }}</span>
             </div>
             <!-- 联网图标 -->
-            <div class="web-search-icon-wrapper" :class="{ 'selected': chat_type === 'web' }" @click="toggleWebSearch">
+            <div class="web-search-icon-wrapper" :class="{ 'selected': webSearchEnabled }" @click="webSearchEnabled = !webSearchEnabled">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none">
                     <path
                         d="M8.9835 1.99998C6.17689 2.06393 4.53758 2.33109 3.41752 3.44727C2.43723 4.42416 2.10954 5.79742 2 7.99998M15.0165 1.99998C17.8231 2.06393 19.4624 2.33109 20.5825 3.44727C21.5628 4.42416 21.8905 5.79742 22 7.99998M15.0165 22C17.8231 21.9361 19.4624 21.6689 20.5825 20.5527C21.5628 19.5758 21.8905 18.2026 22 16M8.9835 22C6.17689 21.9361 4.53758 21.6689 3.41752 20.5527C2.43723 19.5758 2.10954 18.2026 2 16"
@@ -40,7 +40,7 @@
                         d="M15 15L17 17M16 11.5C16 9.01468 13.9853 6.99998 11.5 6.99998C9.01469 6.99998 7 9.01468 7 11.5C7 13.9853 9.01469 16 11.5 16C13.9853 16 16 13.9853 16 11.5Z"
                         stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-                <span v-if="chat_type === 'web'" class="search-text">{{ $t('SendBox.webSearch') }}</span>
+                <span v-if="webSearchEnabled" class="search-text">{{ $t('SendBox.webSearch') }}</span>
             </div>
         </div>
 
@@ -134,33 +134,13 @@ export default {
         platform() {
             return this.$store.state.setting.platform;
         },
-        // 聊天类型
-        chat_type: {
-            get() {
-                return this.$store.state.setting.chat_type;
-            },
-            set(val) {
-                this.$store.dispatch('changeSetting', {
-                    key: 'chat_type',
-                    value: val
-                })
-            }
-        },
         // 模型配置
         model_config() {
             return this.$store.state.setting.model_config;
         },
-        // 是否开启多轮对话
-        memory() {
-            return this.$store.state.setting.memory;
-        },
         // 单次上传的文件数量
         upload_limit() {
             return this.$store.state.setting.upload_limit;
-        },
-        // 可上传的文件类型
-        upload_type() {
-            return this.$store.state.setting.upload_type;
         },
         // 限制文件大小
         upload_size() {
@@ -178,14 +158,25 @@ export default {
                 })
             }
         },
+        // 联网搜索启用状态
+        webSearchEnabled: {
+              get() {
+                  return this.$store.state.setting.web_search_enabled;
+              },
+              set(val) {
+                this.$store.dispatch('changeSetting', {
+                      key: 'web_search_enabled',
+                      value: val
+                    }
+                )}
+        },
         // 选中的知识库
         selectedRepo() {
             const repoList = this.$store.state.app.kb.list || [];
             const selectedId = this.$store.state.setting.selected_repoId;
             const selectedRepo = repoList.find(repo => repo.repoId === selectedId);
             return selectedRepo;
-        },
-
+        }
     },
     methods: {
         /**
@@ -239,6 +230,8 @@ export default {
                 return import("@/api/Local").then(module => module.fetchAPI);
             } else if (this.platform === 'Moonshot_AI') {
                 return import("@/api/Moonshot_AI").then(module => module.fetchAPI);
+            } else if (this.platform === 'OpenAI') {
+                return import("@/api/OpenAI").then(module => module.fetchAPI);
             }
         },
 
@@ -279,24 +272,26 @@ export default {
                 chatStoreHelper.addQA(this.active, qa);
             }
 
-            // 此处控制是否传入历史记录
+            /**
+             * 此处控制是否传入会话历史
+             */
             let history = [];
-            if (this.memory) {
-                // 只保留最近4条有效对话
+            if (this.$store.state.setting.memory) {
+                // 只保留最近memory_limit条有效对话
                 history = this.active_session_qa_data
-                    .slice(-4)
+                    .slice(this.$store.state.setting.memory_limit * -1)
                     .filter(item => item.answer && item.answer.trim());
             }
 
-            // 如果启用了知识库
+            /**
+             * 此处控制知识库召回
+             */
             if (this.knowledgeEnabled && this.selectedRepo) {
                 // 在知识库中匹配相关内容
                 const matches = this.matchKnowledgeBase(query);
-
                 // 将匹配内容加入到 prompt
                 if (matches.length > 0) {
                     query = `基于以下知识库内容回答问题:${matches.map(chunk => chunk.content).join('\n')}问题: ${query}`;
-
                     qa.recall = matches;
                     // 更新聊天记录
                     chatStoreHelper.addQA(this.active, qa);
@@ -405,7 +400,7 @@ export default {
                 return false;
             }
 
-            const isImage = file.type.startsWith(this.upload_type);
+            const isImage = file.type.startsWith(this.$store.state.setting.upload_type);
             const isLt2M = file.size / 1024 / 1024 <= this.upload_size;
 
             if (!isImage) {
@@ -468,25 +463,8 @@ export default {
         },
 
         /**
-         * 切换聊天类型(普通聊天/网络搜索)
-         */
-        toggleWebSearch() {
-            if (this.chat_type === 'web') {
-                this.chat_type = 'chat'
-            } else {
-                this.chat_type = 'web'
-            }
-        },
-
-        /**
-         * 切换知识库开关状态
-         */
-        toggleRag() {
-            this.knowledgeEnabled = !this.knowledgeEnabled;
-        },
-
-        /**
-         * 计算文本相关性分数 - 使用BM25算法
+         * 计算文本相关性分数 - 使用BM25算法 这里只是简化的算法
+         * 生产上 数据一般会存在ElasticSearch中 不需要在前端计算
          * @param {string} query - 用户输入的问题
          * @param {Array} words - 文本块分词后的词数组
          * @returns {number} 相关性分数
@@ -533,6 +511,7 @@ export default {
 
         /**
          * 在知识库中匹配相关内容
+         * @param {string} query - 用户输入的问题
          */
         matchKnowledgeBase(query) {
             if (!this.selectedRepo) return [];
@@ -551,13 +530,11 @@ export default {
             // 按BM25分数排序
             allChunks.sort((a, b) => b.score - a.score);
 
-            console.log(allChunks)
-
-            // 返回分数最高的3个文本块,且分数需大于阈值
+            // 返回分数最高的recall_count个文本块,且分数需大于阈值
             return allChunks
-                .slice(0, 3)
-                .filter(chunk => chunk.score > 0.1); // BM25分数阈值调整为0.1
-        },
+                .slice(0, this.$store.state.setting.recall_count)
+                .filter(chunk => chunk.score > 0.6);
+        }
     }
 }
 </script>
@@ -728,6 +705,9 @@ $icon-length: 32px;
     display: none;
 }
 
+/**
+ * 文件预览容器样式
+ */
 .file-preview-container {
     z-index: 3;
     position: absolute;
