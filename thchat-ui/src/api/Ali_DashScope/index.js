@@ -10,14 +10,14 @@ import store from '../../store';
 const API_URLS = {
     llm: "/ali/remote/api/v1/services/aigc/text-generation/generation",
     vim: "/ali/remote/api/v1/services/aigc/multimodal-generation/generation",
-    igm: "" // 暂不支持阿里平台的绘图模型
+    igm: "" // 预留阿里平台的绘图模型
 };
 
 /**
  * 调用阿里云平台的接口
  * @param {string} prompt - 用户输入的问题
  * @param {Array} history - 历史对话消息
- * @param {Array} files - 文件列表
+ * @param {Array} files - 文件列表 图片
  * @param {AbortController} controller - 控制请求的取消
  * @param {Function} onopen - 连接成功回调
  * @param {Function} onmessage - 接收消息回调
@@ -35,12 +35,12 @@ export async function fetchAPI({
     onerror
 }) {
     const { setting } = store.state;
-    const { model_config, chat_type } = setting;
+    const { model_config, web_search_enabled } = setting;
     const { version, pre_method, type, can_web_search } = model_config;
     const api_key = setting.api_key_map[setting.platform];
 
     const url = API_URLS[type] || API_URLS.llm;
-    const is_search = (can_web_search !== undefined && can_web_search) && chat_type === 'web';
+    const is_search = (can_web_search !== undefined && can_web_search) && web_search_enabled;
 
     const requestConfig = {
         method: "POST",

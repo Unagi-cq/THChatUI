@@ -1,9 +1,13 @@
 import { fetchEventSource } from "@microsoft/fetch-event-source"
-// 引入 store
+import { preProcess } from "@/util/config"
 import store from '../../store';
 
-// 本地接口设置了3种模式，根据store中的chat_type来选择 ['chat','search','rag']
-const URL = '/local/' + store.state.setting.chat_type + '/stream';
+// 定义不同类型模型的请求地址
+const API_URLS = {
+    llm: "/local/chat/stream",
+    vim: "/local/vim/stream",
+    igm: "/local/igm/generate"
+};
 
 /**
  * 本地接口
@@ -16,14 +20,42 @@ const URL = '/local/' + store.state.setting.chat_type + '/stream';
  * @param onerror 处理错误时的回调函数
  * @returns {Promise<void>}
  */
-export async function fenchStream({prompt, history, files, controller, onopen, onmessage, onclose, onerror}) {
-    const response = await fetchEventSource(URL, {
+export async function fetchAPI({prompt, history, files, controller, onopen, onmessage, onclose, onerror}) {
+    const { setting } = store.state;
+    const { model_config, web_search_enabled } = setting;
+    const { version, pre_method, type, can_web_search } = model_config;
+
+    const url = API_URLS[type] || API_URLS.llm;
+    const is_search = (can_web_search !== undefined && can_web_search) && web_search_enabled;
+
+    // 如果是图片生成接口，使用普通的fetch请求
+    if (type === 'igm') {
+        onopen({ status: 200 });
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(preProcess(version, prompt, history, pre_method, files, false)),
+            });
+            const data = await response.json();
+            onmessage(data);
+            onclose();
+            return;
+        } catch (error) {
+            onerror(error);
+            return;
+        }
+    }
+
+    const response = await fetchEventSource(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Accept':'text/event-stream'
         },
-        body: getParams(prompt, history, files),
+        body: JSON.stringify(preProcess(version, prompt, history, pre_method, files, is_search)),
         signal: controller.signal,
         // 连接成功时的处理
         onopen,
@@ -36,41 +68,4 @@ export async function fenchStream({prompt, history, files, controller, onopen, o
         // 切换页面时正常传输数据
         openWhenHidden: true
     })
-}
-
-/**
- * 拼接请求参数
- * @param prompt 用户输入的问题
- * @param history 历史对话消息 在SendBox中限制最多三轮
- * @param files 上传的文件数据
- * @returns {string}
- */
-function getParams(prompt, history, files) {
-    let inputs = {
-        prompt: prompt,
-        history: getHistory(history),
-        files: files
-    }
-
-    return JSON.stringify({
-        input: inputs
-    });
-}
-
-/**
- * 拼接历史对话
- * @param history
- * @returns {*[]}
- */
-function getHistory(history) {
-    const array = [];
-    for (let i = 0; i < history.length; i++) {
-        const chat = history[i];
-        array.push({
-            user: chat.query,
-            assistant: chat.answer,
-        });
-    }
-
-    return array;
 }

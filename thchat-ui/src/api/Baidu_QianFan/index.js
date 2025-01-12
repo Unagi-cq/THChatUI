@@ -4,7 +4,6 @@
  */
 import {fetchEventSource} from "@microsoft/fetch-event-source";
 import {preProcess} from "@/util/config"
-// 引入 store
 import store from '../../store';
 
 // 定义不同类型模型的请求地址
@@ -24,7 +23,6 @@ const API_URLS = {
  * @param {Function} onmessage - 接收到消息时的回调函数
  * @param {Function} onclose - 连接关闭时的回调函数
  * @param {Function} onerror - 处理错误时的回调函数
- * @returns {Promise<void>} 返回fetchEventSource的Promise
  */
 export async function fetchAPI({
     prompt,
@@ -37,12 +35,12 @@ export async function fetchAPI({
     onerror
 }) {
     const { setting } = store.state;
-    const { model_config, chat_type } = setting;
+    const { model_config, web_search_enabled } = setting;
     const { version, pre_method, type, can_web_search } = model_config;
     const api_key = setting.api_key_map[setting.platform];
 
     const url = (API_URLS[type] || API_URLS.llm) + version + '?access_token=' + api_key;
-    const is_search = (can_web_search !== undefined && can_web_search) && chat_type === 'web';
+    const is_search = (can_web_search !== undefined && can_web_search) && web_search_enabled;
 
     const requestConfig = {
         method: "POST",
