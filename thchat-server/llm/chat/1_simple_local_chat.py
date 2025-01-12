@@ -4,10 +4,6 @@ from threading import Thread
 import torch
 from flask import Flask, request, stream_with_context
 from flask_cors import CORS
-from langchain_community.document_loaders import TextLoader, PyPDFLoader, Docx2txtLoader
-from langchain_community.vectorstores import FAISS
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_text_splitters import CharacterTextSplitter
 from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
 
 app = Flask(__name__)
@@ -26,11 +22,7 @@ model = AutoModelForCausalLM.from_pretrained(
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 
 
-from tavily import TavilyClient
-tavily = TavilyClient(api_key="tvly-xxx")
-
-
-@app.route('/search/stream', methods=['POST'])
+@app.route('/chat/stream', methods=['POST'])
 def chatstream():
     streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
     # 获取JSON数据
@@ -50,11 +42,7 @@ def chatstream():
         messages.append({"role": "user", "content": chat['user']})
         messages.append({"role": "assistant", "content": chat['assistant']})
 
-    response = tavily.search(query=inputs['prompt'], search_depth="advanced")
-    web_data = [f"标题：{item['title']}\n内容：{item['content']}\n" for item in response['results']]
-
-    messages.append(
-        {"role": "user", "content": "根据以下联网搜索结果回答问题:\n联网搜索结果:" + ''.join(web_data) + "\n问题:" + inputs['prompt']})
+    messages.append({"role": "user", "content": inputs['prompt']})
 
     print(messages)
 
@@ -75,7 +63,7 @@ def chatstream():
         # 文本生成的过程
         for new_text in streamer:
             # 创建一个包含文本的 JSON 对象
-            json_object = json.dumps({"data": new_text})
+            json_object = json.dumps({"data": {"content": new_text}})
             # 发送一个换行符，以分隔 JSON 对象
             # print(json_object)
             yield f"event: msg\ndata: " + json_object + "\n\n"

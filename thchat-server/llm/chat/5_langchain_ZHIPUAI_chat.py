@@ -3,15 +3,14 @@ import os
 from typing import List, Optional
 from langchain.pydantic_v1 import Field
 from fastapi import FastAPI
-from langchain_community.chat_models.tongyi import ChatTongyi
-from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+from langchain_community.chat_models import ChatZhipuAI
 from langchain_core.runnables import RunnableParallel, RunnableLambda
 from langserve import add_routes, CustomUserType
 from langchain.globals import set_debug
 
 set_debug(True)
 
-os.environ["DASHSCOPE_API_KEY"] = "sk-xxx"
+os.environ["ZHIPUAI_API_KEY"] = "xxx"
 
 app = FastAPI(
     title="LangChain Server",
@@ -19,7 +18,7 @@ app = FastAPI(
     description="A simple api server using Langchain's Runnable interfaces",
 )
 
-model = ChatTongyi(model="qwen-turbo", streaming=True)
+model = ChatZhipuAI(model="glm-4-flash", streaming=True)
 
 
 class ChatTurn(CustomUserType):
@@ -32,17 +31,18 @@ class ChatHistory(CustomUserType):
     history: List[ChatTurn] = Field(default_factory=list)
 
 
-def _format_to_messages(input: ChatHistory) -> List[BaseMessage]:
+def _format_to_messages(input: ChatHistory):
     """Format the input to a list of messages."""
-    history = input.history
-    user_input = input.prompt
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."}
+    ]
 
-    messages = []
+    for chat in input.history:
+        messages.append({"role": "user", "content": chat.user})
+        messages.append({"role": "assistant", "content": chat.assistant})
 
-    for turn in history:
-        messages.append(HumanMessage(content=turn.user))
-        messages.append(AIMessage(content=turn.assistant))
-    messages.append(HumanMessage(content=user_input))
+    messages.append({"role": "user", "content": input.prompt})
+
     return messages
 
 

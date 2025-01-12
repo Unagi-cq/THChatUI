@@ -4,10 +4,6 @@ from threading import Thread
 import torch
 from flask import Flask, request, stream_with_context
 from flask_cors import CORS
-from langchain_community.document_loaders import TextLoader, PyPDFLoader, Docx2txtLoader
-from langchain_community.vectorstores import FAISS
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_text_splitters import CharacterTextSplitter
 from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
 
 app = Flask(__name__)
@@ -26,21 +22,11 @@ model = AutoModelForCausalLM.from_pretrained(
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 
 
-def split_text(files, chunk_size=300, chunk_overlap=20):
-    docs = []
-    for f in files:
-        if f['file_type'] == 'txt':
-            docs.extend(TextLoader(f['url'], autodetect_encoding=True).load())
-        elif f['file_type'] == 'pdf':
-            docs.extend(PyPDFLoader(f['url']).load())
-        else:
-            docs.extend(Docx2txtLoader(f['url']).load())
-
-    text_splitter = CharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
-    return text_splitter.split_documents(docs)
+from tavily import TavilyClient
+tavily = TavilyClient(api_key="xxx")
 
 
-@app.route('/rag/stream', methods=['POST'])
+@app.route('/chat/stream', methods=['POST'])
 def chatstream():
     streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
     # 获取JSON数据
@@ -51,18 +37,6 @@ def chatstream():
     print(data)
 
     inputs = data['input']
-    files = inputs['files']
-
-    split_docs = split_text(files)
-
-    embedding = HuggingFaceEmbeddings(model_name=r"D:\Embs\bge-small-zh-v1.5")
-
-    # 构建 FAISS 向量存储和对应的 retriever
-    vs = FAISS.from_documents(split_docs, embedding)
-
-    retriever = vs.as_retriever()
-
-    search_docs = retriever.get_relevant_documents(inputs['prompt'])
 
     messages = [
         {"role": "system", "content": "You are a helpful assistant."}
@@ -72,10 +46,11 @@ def chatstream():
         messages.append({"role": "user", "content": chat['user']})
         messages.append({"role": "assistant", "content": chat['assistant']})
 
-    content = '\n'.join([doc.page_content for doc in search_docs])
+    response = tavily.search(query=inputs['prompt'], search_depth="advanced")
+    web_data = [f"标题：{item['title']}\n内容：{item['content']}\n" for item in response['results']]
 
     messages.append(
-        {"role": "user", "content": "根据以下上下文回答问题:\n上下文:" + content + "\n问题:" + inputs['prompt']})
+        {"role": "user", "content": "根据以下联网搜索结果回答问题:\n联网搜索结果:" + ''.join(web_data) + "\n问题:" + inputs['prompt']})
 
     print(messages)
 

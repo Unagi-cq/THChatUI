@@ -4,7 +4,6 @@ from typing import List, Optional
 from langchain.pydantic_v1 import Field
 from fastapi import FastAPI
 from langchain_community.chat_models import ChatZhipuAI
-from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 from langchain_core.runnables import RunnableParallel, RunnableLambda
 from langserve import add_routes, CustomUserType
 from langchain.globals import set_debug
@@ -19,7 +18,7 @@ app = FastAPI(
     description="A simple api server using Langchain's Runnable interfaces",
 )
 
-model = ChatZhipuAI(model="glm-4", streaming=True)
+model = ChatZhipuAI(model="glm-4v-flash", streaming=True)
 
 
 class ChatTurn(CustomUserType):
@@ -27,22 +26,48 @@ class ChatTurn(CustomUserType):
     assistant: Optional[str] = None
 
 
+class Picture(CustomUserType):
+    base64: str
+
+
 class ChatHistory(CustomUserType):
     prompt: str
     history: List[ChatTurn] = Field(default_factory=list)
+    files: List[Picture] = Field(default_factory=list)
 
 
-def _format_to_messages(input: ChatHistory) -> List[BaseMessage]:
+def _format_to_messages(input: ChatHistory):
     """Format the input to a list of messages."""
-    history = input.history
-    user_input = input.prompt
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."}
+    ]
 
-    messages = []
+    # 处理历史对话
+    for chat in input.history:
+        messages.append({"role": "user", "content": [{"type": "text", "text": chat.user}]})
+        messages.append({"role": "assistant", "content": [{"type": "text", "text": chat.assistant}]})
 
-    for turn in history:
-        messages.append(HumanMessage(content=turn.user))
-        messages.append(AIMessage(content=turn.assistant))
-    messages.append(HumanMessage(content=user_input))
+    # 构建当前用户消息的 content
+    content = []
+    
+    # 添加图片（如果有）
+    if input.files and len(input.files) > 0:
+        content.append({
+            "type": "image_url",
+            "image_url": {
+                "url": input.files[0].base64
+            }
+        })
+    
+    # 添加文本
+    content.append({
+        "type": "text",
+        "text": input.prompt
+    })
+
+    # 添加当前用户消息
+    messages.append({"role": "user", "content": content})
+
     return messages
 
 
@@ -51,9 +76,8 @@ model = RunnableParallel({"data": (RunnableLambda(_format_to_messages) | model)}
 add_routes(
     app,
     model.with_types(input_type=ChatHistory),
-    path="/chat",
+    path="/vim",
 )
-
 
 if __name__ == "__main__":
     import uvicorn

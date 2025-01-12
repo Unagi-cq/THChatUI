@@ -4,6 +4,10 @@ from threading import Thread
 import torch
 from flask import Flask, request, stream_with_context
 from flask_cors import CORS
+from langchain_community.document_loaders import TextLoader, PyPDFLoader, Docx2txtLoader
+from langchain_community.vectorstores import FAISS
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_text_splitters import CharacterTextSplitter
 from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
 
 app = Flask(__name__)
@@ -11,18 +15,33 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:8080"}})
 
 model_path = r"D:\PLMs\qwen\qwen1.5-1.8B-Chat"
+embedding_path = r"D:\Embs\bge-small-zh-v1.5"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+embedding = HuggingFaceEmbeddings(model_name=embedding_path)
 model = AutoModelForCausalLM.from_pretrained(
     model_path,
     torch_dtype="auto",
     device_map=device
 )
 
-tokenizer = AutoTokenizer.from_pretrained(model_path)
+
+def split_text(files, chunk_size=300, chunk_overlap=20):
+    docs = []
+    for f in files:
+        if f['file_type'] == 'txt':
+            docs.extend(TextLoader(f['url'], autodetect_encoding=True).load())
+        elif f['file_type'] == 'pdf':
+            docs.extend(PyPDFLoader(f['url']).load())
+        else:
+            docs.extend(Docx2txtLoader(f['url']).load())
+
+    text_splitter = CharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+    return text_splitter.split_documents(docs)
 
 
-@app.route('/chat/stream', methods=['POST'])
+@app.route('/rag/stream', methods=['POST'])
 def chatstream():
     streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
     # 获取JSON数据
@@ -34,6 +53,8 @@ def chatstream():
 
     inputs = data['input']
 
+    search_docs = retriever.get_relevant_documents(inputs['prompt'])
+
     messages = [
         {"role": "system", "content": "You are a helpful assistant."}
     ]
@@ -42,7 +63,10 @@ def chatstream():
         messages.append({"role": "user", "content": chat['user']})
         messages.append({"role": "assistant", "content": chat['assistant']})
 
-    messages.append({"role": "user", "content": inputs['prompt']})
+    content = '\n'.join([doc.page_content for doc in search_docs])
+
+    messages.append(
+        {"role": "user", "content": "根据以下上下文回答问题:\n上下文:" + content + "\n问题:" + inputs['prompt']})
 
     print(messages)
 
@@ -73,4 +97,14 @@ def chatstream():
 
 
 if __name__ == '__main__':
+    files = [
+        {"url": "rag_example.pdf", "file_type": "pdf"}
+    ]
+    split_docs = split_text(files)
+
+    # 构建 FAISS 向量存储和对应的 retriever
+    vs = FAISS.from_documents(split_docs, embedding)
+
+    retriever = vs.as_retriever()
+
     app.run(debug=True)
