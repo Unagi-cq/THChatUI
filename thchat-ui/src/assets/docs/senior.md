@@ -2,7 +2,7 @@
 
 ## 二次开发
 
-请参考：[THChatUI V2 代码视频讲解教程](https://www.bilibili.com/video/BV1tb421n7Li/)
+请参考：[THChatUI V2 代码视频讲解教程](https://www.bilibili.com/video/BV1xTcVezEKP/)
 
 ## 数据schema
 

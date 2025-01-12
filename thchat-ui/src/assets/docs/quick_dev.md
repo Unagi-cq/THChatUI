@@ -158,4 +158,4 @@ location ^~ /ali/remote/
 后端接口部署就很简单了，配置好python3.10环境，安装好包，直接运行就行。
 
 ### 项目目录与代码实现
-请参考：[THChatUI V2 代码视频讲解教程](https://www.bilibili.com/video/BV1tb421n7Li/)
+请参考：[THChatUI V2 代码视频讲解教程](https://www.bilibili.com/video/BV1xTcVezEKP/)
