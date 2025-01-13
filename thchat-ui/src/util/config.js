@@ -157,11 +157,11 @@ function buildZhipuVLMessage(prompt, history, files) {
             const chat = history[i];
             array.push({
                 "role": "user",
-                "content": { "type": "text", "text": chat.query }
+                "content": [{ "type": "text", "text": chat.query }]
             });
             array.push({
                 "role": "assistant",
-                "content": { "type": "text", "text": chat.answer }
+                "content": [{ "type": "text", "text": chat.answer }]
             });
         }
         return array;
@@ -205,11 +205,11 @@ function buildAliVLMessage(prompt, history, files) {
             const chat = history[i];
             array.push({
                 "role": "user",
-                "content": { "text": chat.query }
+                "content": [{ "text": chat.query }]
             });
             array.push({
                 "role": "assistant",
-                "content": { "text": chat.answer }
+                "content": [{ "text": chat.answer }]
             });
         }
         return array;

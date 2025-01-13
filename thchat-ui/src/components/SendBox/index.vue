@@ -279,7 +279,7 @@ export default {
             if (this.$store.state.setting.memory) {
                 // 只保留最近memory_limit条有效对话
                 history = this.active_session_qa_data
-                    .slice(this.$store.state.setting.memory_limit * -1)
+                    .slice((this.$store.state.setting.memory_limit + 1) * -1)
                     .filter(item => item.answer && item.answer.trim());
             }
 
