@@ -78,7 +78,7 @@ PC端界面如下：
 
 公众号
 
-![Description](https://img.chkaja.com/a83d585b1ba85fb9.png)
+![Description](thchat-ui/src/assets/docs_img/qr_code.png)
 
 ## 快速开发
 

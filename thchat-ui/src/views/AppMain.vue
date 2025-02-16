@@ -5,7 +5,7 @@
             <el-col :md="18" :sm="22" :xs="22">
                 <ChatCard :qaId="c['qaId']" :query="c['query']" :answer="c['answer']" :modelName="c['modelName']"
                     :series="c['series']" :responseTime="c['responseTime']" :finishTime="c['finishTime']"
-                    :files="c['files']" :modelType="c['modelType']" :recall="c['recall']"
+                    :files="c['files']" :modelType="c['modelType']" :recall="c['recall']" :reason="c['reason']"
                     v-for="c in active_session_qa_data" />
 
                 <div class="title-container" v-if="is_show">

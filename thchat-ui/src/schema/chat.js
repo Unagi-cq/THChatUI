@@ -2,7 +2,7 @@
  * 单次问答类
  */
 class QA {
-    constructor(qaId, query, answer, files, responseTime, finishTime, series, modelName, modelType, recall) {
+    constructor(qaId, query, answer, files, responseTime, finishTime, series, modelName, modelType, recall, reason) {
         this.qaId = qaId;
         this.query = query;
         this.answer = answer;
@@ -13,6 +13,7 @@ class QA {
         this.modelName = modelName;
         this.modelType = modelType;
         this.recall = recall;
+        this.reason = reason;
     }
 
     setResponse(time) {
@@ -50,7 +51,8 @@ class Session {
                 qa.series,
                 qa.modelName,
                 qa.modelType,
-                qa.recall
+                qa.recall,
+                qa.reason
             );
         });
     }
@@ -70,7 +72,8 @@ class Session {
             qa.series,
             qa.modelName,
             qa.modelType,
-            qa.recall
+            qa.recall,
+            qa.reason
         ));
     }
 

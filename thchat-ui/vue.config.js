@@ -24,6 +24,13 @@ module.exports = defineConfig({
           '^/baidu/remote': ''
         },
       },
+      '/tt/remote': {
+        target: 'https://ark.cn-beijing.volces.com', // 代理的目标地址
+        changeOrigin: true, // 是否需要改变源
+        pathRewrite: {
+          '^/tt/remote': ''
+        },
+      },
       // 配置代理 本地使用
       '/local': {
         target: 'http://localhost:5000', // 代理的目标地址

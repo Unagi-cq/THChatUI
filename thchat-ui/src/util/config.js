@@ -261,27 +261,33 @@ function getLocalHistory(history) {
 function postProcess(e, post_method) {
     switch (post_method) {
         case "base":
-            return JSON.parse(e.data).output.choices[0].message.content;
+            return {content:JSON.parse(e.data).output.choices[0].message.content};
         case "text":
             const content = JSON.parse(e.data).output.choices[0].message.content;
-            return content && content.length > 0 ? content[0].text : '';
+            return { content: content && content.length > 0 ? content[0].text : '' };
         case "add":
-            return e;
+            return {content:e};
         case "delta":
-            return JSON.parse(e.data).choices[0].delta.content;
+            return {content:JSON.parse(e.data).choices[0].delta.content};
+        case "delta_reasoning":
+            if (JSON.parse(e.data).choices[0].delta.reasoning_content) {
+                return {reasoning_content:JSON.parse(e.data).choices[0].delta.reasoning_content};
+            } else {
+                return {content:JSON.parse(e.data).choices[0].delta.content};
+            }
         case "baidu":
-            return JSON.parse(e.data).result;
+            return {content:JSON.parse(e.data).result};
         case "llm_local":
             if (e.event !== 'data') return '';
             // 解析chunk里面的data参数
             const data = JSON.parse(e.data);
             try {
-                return data.data.content;
+                return {content:data.data.content};
             } catch (e) {
                 console.error(e)
             }
         case "igm_zhipu":
-            return e.data[0].url;
+            return {content:e.data[0].url};
         default:
             console.warn(`未知的后处理方法: ${post_method}`);
             return e;
@@ -349,6 +355,13 @@ module.exports = {
                 { type: "igm", name: "cogview-3-flash 🆓", series: "zhipu", version: "cogview-3-flash", pre_method: "igm_zhipu", post_method: "igm_zhipu" },
                 { type: "igm", name: "cogview-3", series: "zhipu", version: "cogview-3", pre_method: "igm_zhipu", post_method: "igm_zhipu" },
                 { type: "igm", name: "cogview-3-plus", series: "zhipu", version: "cogview-3-plus", pre_method: "igm_zhipu", post_method: "igm_zhipu" },
+            ]
+        },
+        "TT_Volcengine":
+        {
+            platform_name: "火山方舟",
+            list: [
+                { type: "llm", name: "deepseek-r1", series: "volcengine", version: "", pre_method: "text_moonshot_zhipu", post_method: "delta_reasoning" }
             ]
         },
         "OpenAI":

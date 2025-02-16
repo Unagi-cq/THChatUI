@@ -18,6 +18,8 @@
                         <el-radio :value="x.version" v-for="x in model_list[platform].list.filter(m => m.type === 'llm')">
                             {{ x.name }}
                             <el-tag v-if="x.can_web_search" size="small" class="web-tag">Web</el-tag>
+                            <!-- 火山方舟平台API Key输入 -->
+                            <el-input v-model="x.version" v-if="platform === 'TT_Volcengine'" :placeholder="$t('Setting.model.ark')" />
                         </el-radio>
                     </el-radio-group>
                 </el-form-item>

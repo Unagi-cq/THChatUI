@@ -41,6 +41,10 @@
                         <div class="recall-text" :class="{ 'recall-collapse': !expandedRecalls[index] }">{{ item.content }}</div>
                     </div>
                 </div>
+                <!-- 思考内容 -->
+                <div v-if="reason" class="reason-content">
+                    <v-md-preview :text="'>**思考内容**\n' + reason.split('\n').map(line => `> ${line}`).join('\n')"></v-md-preview>
+                </div>
                 <!-- 回答内容 -->   
                 <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess" v-if="modelType === 'llm' || modelType === 'vim'"></v-md-preview>
                 <!-- 图片生成 -->
@@ -151,7 +155,9 @@ export default {
         // 模型类型
         modelType: String,
         // 召回内容
-        recall: Array
+        recall: Array,
+        // 思考内容
+        reason: String
     },
     computed: {
         // 是否开启回答统计
@@ -169,6 +175,7 @@ export default {
                 wenxin: new URL('@/assets/images/wenxin.png', import.meta.url).href,
                 yi: new URL('@/assets/images/yi.svg', import.meta.url).href,
                 moonshot: new URL('@/assets/images/moonshot.svg', import.meta.url).href,
+                volcengine: new URL('@/assets/images/volcengine.png', import.meta.url).href,
                 local: new URL('@/assets/images/logo.png', import.meta.url).href
             }
         }
@@ -372,6 +379,12 @@ export default {
     color: var(--common-color);
     background: none;
     word-wrap: break-word;
+}
+
+:deep(.vuepress-markdown-body) blockquote {
+    color: var(--common-color);
+    opacity: 0.5;
+    font-size: 13px;
 }
 
 /**

@@ -27,6 +27,7 @@ const defaultSettings = {
         Moonshot_AI: "",
         Xunfei_Spark: "",
         Zhipu_BigModel: "",
+        TT_Volcengine: "",
         OpenAI: {
             endpoint: "",
             api_key: "",

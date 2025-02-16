@@ -69,7 +69,3 @@ PC端界面如下：
 
 [THChatUI代码视频讲解教程](https://www.bilibili.com/video/BV1xTcVezEKP/)
 [个人博客](https://blog.csdn.net/qq_43592352?type=blog)
-
-公众号
-
-![Description](https://img.chkaja.com/a83d585b1ba85fb9.png)

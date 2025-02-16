@@ -25,7 +25,7 @@
                 >
                     <template #content>
                         <img 
-                            src="https://camo.githubusercontent.com/87a893bee88420aeafe213982817f6a2e184206a3fa42e5f466e489681b58a4e/68747470733a2f2f696d672e63686b616a612e636f6d2f613833643538356231626138356662392e706e67" 
+                            src="../../assets/docs_img/qr_code.png" 
                             alt="公众号二维码" 
                             class="qrcode-image"
                         />
@@ -38,6 +38,14 @@
         <!-- 更新日志 -->
         <div class="changelog-section">
             <h2>更新日志</h2>
+
+            <div class="version-block">
+                <h3>v2.0.1 - 2025.02.16</h3>
+                <ul>
+                    <li>[add] 新增了对字节火山方舟平台的支持</li>
+                    <li>[add] 新增了对推理模型的样式支持</li>
+                </ul>
+            </div>
 
             <div class="version-block">
                 <h3>v2.0.0 - 2025.01.12</h3>

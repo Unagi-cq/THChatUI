@@ -22,7 +22,8 @@ export default {
       platform: "平台",
       textModel: "文本生成模型",
       visualInterpretationModel: "图片理解模型",
-      imageGenerationModel: "图片生成模型"
+      imageGenerationModel: "图片生成模型",
+      ark: "火山方舟平台deepseek模型的接入点id"
     },
     general: {
       theme: "系统主题",
@@ -132,7 +133,7 @@ export default {
   },
   AppMain: {
     title: "LLM的轻量级Web会话管理方案",
-    welcome: "嗨喽~朋友！🤖 欢迎使用THChatUI。",
+    welcome: "嗨喽~朋友！🤖 欢迎使用THChatUI。Github发布页未配置代理，阿里、百度、火山方舟平台体验请移步至国内镜像源：http://localchatui.wuxitianyouqi.com/",
     viewDocs: "查看文档"
   },
   Kb: {

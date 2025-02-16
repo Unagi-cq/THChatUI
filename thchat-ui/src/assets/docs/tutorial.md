@@ -8,12 +8,19 @@
 [申请百度千帆平台API KEY](https://cloud.baidu.com/product/ai/wenxin)
 [申请月之暗面平台API KEY](https://platform.moonshot.cn/console/api-keys)
 [申请智谱平台API KEY](https://open.bigmodel.cn/usercenter/apikeys)
+[申请火山方舟平台API KEY](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey)
 
 对于OpenAI式的API KEY，通常我们并不是仅仅指OpenAI这家公司的ChatGPT的API KEY，而是指提供了OpenAI接口规范的所有服务商的URL、KEY、Model这三个参数。
 
 几乎所有的厂商都支持OpenAI的API规范，因此你也可以去各大平台查看它们提供的参数，例如[Kimi](https://platform.moonshot.cn/docs/guide/migrating-from-openai-to-kimi#%E5%85%B3%E4%BA%8E-api-%E5%85%BC%E5%AE%B9%E6%80%A7)。
 
 > 【注】对于目前本项目没有集成的平台，你可以用OpenAI的API规范很容易的接入它们。
+
+### 火山方舟使用deepseek的特别说明
+
+除了要在设置 - API Key中填写火山方舟平台的API KEY，还需要在设置 - 模型 - 火山方舟平台中填写deepseek模型的接入点id。
+
+接入点需要在火山方舟平台[https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint)开通。
 
 ## 使用说明
 

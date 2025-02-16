@@ -184,12 +184,14 @@ export default {
          * @param {KeyboardEvent} e - 键盘事件对象
          */
         onEnterKeyDown(e) {
-            // 按下Shift时 e.shiftKey = true
-            if (!e.shiftKey) {
-                e.cancelBubble = true; //ie阻止冒泡行为
-                e.stopPropagation();//Firefox阻止冒泡行为
-                e.preventDefault(); //取消事件的默认动作*换行
-                this.onSubmitChat();
+            // 检查是否是Enter键 feat issue #2
+            if (e.key === 'Enter') {
+                // 当没有按下Shift键时执行发送
+                if (!e.shiftKey) {
+                    e.preventDefault(); // 阻止默认行为，比如表单提交
+                    // 在这里调用发送消息的方法
+                    this.onSubmitChat();
+                }
             }
         },
 
@@ -232,6 +234,8 @@ export default {
                 return import("@/api/Moonshot_AI").then(module => module.fetchAPI);
             } else if (this.platform === 'OpenAI') {
                 return import("@/api/OpenAI").then(module => module.fetchAPI);
+            } else if (this.platform === 'TT_Volcengine') {
+                return import("@/api/TT_Volcengine").then(module => module.fetchAPI);
             }
         },
 
@@ -359,8 +363,11 @@ export default {
                             // 批量更新优化
                             try {
                                 const newContent = postProcess(event, this.model_config.post_method);
-                                if (newContent) {
-                                    qa.answer = (qa.answer || '') + newContent;
+                                if (newContent && newContent.content) {
+                                    qa.answer = (qa.answer || '') + newContent.content;
+                                    chatStoreHelper.addQA(this.active, qa);
+                                } else if (newContent && newContent.reasoning_content) {
+                                    qa.reason = (qa.reason || '') + newContent.reasoning_content;
                                     chatStoreHelper.addQA(this.active, qa);
                                 }
                             } catch (e) {
