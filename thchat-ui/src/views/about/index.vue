@@ -25,7 +25,7 @@
                 >
                     <template #content>
                         <img 
-                            src="../../assets/docs_img/qr_code.png" 
+                            :src="require('@/assets/docs_img/qr_code.png')" 
                             alt="公众号二维码" 
                             class="qrcode-image"
                         />
