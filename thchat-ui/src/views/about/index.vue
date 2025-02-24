@@ -25,7 +25,7 @@
                 >
                     <template #content>
                         <img 
-                            :src="require('https://i.miji.bid/2025/02/25/a91b0353789a3195638a127cf84b6c67.png')" 
+                            src="https://i.miji.bid/2025/02/25/a91b0353789a3195638a127cf84b6c67.png" 
                             alt="公众号二维码" 
                             class="qrcode-image"
                         />
