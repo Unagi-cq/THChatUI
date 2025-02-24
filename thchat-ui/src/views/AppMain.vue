@@ -2,6 +2,7 @@
     <div class="home" ref="homeRef">
 
         <el-row :gutter="24" justify="center" style="margin-left: 0;margin-right: 0;">
+
             <el-col :md="18" :sm="22" :xs="22">
                 <ChatCard :qaId="c['qaId']" :query="c['query']" :answer="c['answer']" :modelName="c['modelName']"
                     :series="c['series']" :responseTime="c['responseTime']" :finishTime="c['finishTime']"
@@ -19,14 +20,24 @@
                     </div>
                 </div>
             </el-col>
+
+            <canvas id="live2d"></canvas>
         </el-row>
     </div>
 </template>
 
 <script>
+import loadLive2d from 'live2d-helper'
 
 export default {
     name: 'AppMain',
+    data() {
+        return {
+            isLive2dLoading: false,
+            live2dError: null,
+            live2dInstance: null  // 添加实例引用
+        }
+    },
     computed: {
         // 当前激活的聊天记录uuid
         active() {
@@ -40,48 +51,60 @@ export default {
         // 等app数据加载之后再执行逻辑 否则会闪屏
         is_show() {
             return this.$store.state.app.ready && this.active_session_qa_data.length === 0;
-        }
-    },
-    watch: {
-        // 监听chat的变化，当变化时，表示在Bot回答，此时需要刷新滚动条的位置
-        "$store.state.app.chat": {
-            deep: true, //深度监听设置为 true
-            handler: function (newVal, oldVal) {
-                // 检查是否滚动到底部 给200px的误差控制 这里的200px可以根据实际需求调整
-                let isAtBottom = this.$refs.homeRef.scrollTop + this.$refs.homeRef.clientHeight >= this.$refs.homeRef.scrollHeight - 200;
-                if (!isAtBottom) {
-                    return;
-                }
-                // 内容更新时，保持滚动条的位置
-                this.$nextTick(() => {
-                    this.$refs.homeRef.scrollTop = this.$refs.homeRef.scrollHeight
-                });
-            }
         },
-        // 监听active的变化，当变化时，表示切换了聊天选项卡，此时需要把滚动条的位置设置到最下方
-        "$store.state.app.active": {
-            deep: true, //深度监听设置为 true
-            handler: function (newVal, oldVal) {
-                // 内容更新时，保持滚动条的位置
-                this.$nextTick(() => {
-                    this.$refs.homeRef.scrollTop = this.$refs.homeRef.scrollHeight
-                });
-            }
+        // 看板娘启用状态
+        live2dEnabled() {
+            return this.$store.state.setting.live2d_enabled || false;
         },
-        query: function (newVal, oldVal) {
-            // 内容更新时，保持滚动条的位置
-            this.$nextTick(() => {
-                this.$refs.homeRef.scrollTop = this.$refs.homeRef.scrollHeight
-            });
+        // 当前看板娘模型
+        currentLive2dModel() {
+            return this.$store.state.setting.live2d_model || null;
         }
-    },
-    created() {
-        // 内容更新时，保持滚动条的位置
-        this.$nextTick(() => {
-            this.$refs.homeRef.scrollTop = this.$refs.homeRef.scrollHeight
-        });
     },
     methods: {
+        // 统一处理滚动
+        scrollToBottom() {
+            this.$nextTick(() => {
+                if (this.$refs.homeRef) {
+                    this.$refs.homeRef.scrollTop = this.$refs.homeRef.scrollHeight;
+                }
+            });
+        },
+        // 初始化Live2D
+        async initLive2d() {
+            if (window.innerWidth <= 768 || !this.live2dEnabled || !this.currentLive2dModel) {
+                if (this.live2dInstance) {
+                    // 清理现有实例
+                    this.live2dInstance.dispose && this.live2dInstance.dispose();
+                    this.live2dInstance = null;
+                }
+                return;
+            }
+
+            this.isLive2dLoading = true;
+            this.live2dError = null;
+
+            try {
+                // 清理现有实例
+                if (this.live2dInstance) {
+                    this.live2dInstance.dispose && this.live2dInstance.dispose();
+                }
+
+                this.live2dInstance = await loadLive2d({
+                    canvas: "live2d",
+                    baseUrl: this.currentLive2dModel.substring(0, this.currentLive2dModel.lastIndexOf('/')),
+                    model: this.currentLive2dModel,
+                    globalFollowPointer: true,
+                    allowSound: true,
+                    height: "800"
+                });
+            } catch (error) {
+                console.error('Live2D 加载失败:', error);
+                this.live2dError = error.message || '初始化失败';
+            } finally {
+                this.isLive2dLoading = false;
+            }
+        },
         /**
          * 跳转页面函数
          * @param path
@@ -89,6 +112,42 @@ export default {
         goTo(path) {
             this.$router.push(path)
         }
+    },
+    watch: {
+        "$store.state.app.chat": {
+            deep: true,
+            handler: function(newVal, oldVal) {
+                const isAtBottom = this.$refs.homeRef.scrollTop + this.$refs.homeRef.clientHeight >= this.$refs.homeRef.scrollHeight - 200;
+                if (isAtBottom) {
+                    this.scrollToBottom();
+                }
+            }
+        },
+        "$store.state.app.active": {
+            deep: true,
+            handler: function() {
+                this.scrollToBottom();
+            }
+        },
+        query() {
+            this.scrollToBottom();
+        },
+        currentLive2dModel: {
+            handler: function() {
+                this.initLive2d();
+            }
+        },
+        live2dEnabled: {
+            handler: function() {
+                this.initLive2d();
+            }
+        }
+    },
+    mounted() {
+        this.initLive2d();
+    },
+    created() {
+        this.scrollToBottom();
     }
 }
 </script>
@@ -150,5 +209,20 @@ export default {
 
 .title-container .sub-title-line {
     font-size: 15px;
+}
+
+/* 修改live2d容器样式 */
+#live2d {
+    // border: 1px solid #000;
+    width: 200px;
+    position: fixed; /* 改为固定定位 */
+    bottom: 82px; /* 固定在底部 */
+    right: -20px; /* 固定在右侧 */
+    z-index: 100; /* 确保在其他元素上层 */
+    
+    /* 在小屏幕设备上隐藏live2d */
+    @media screen and (max-width: 768px) {
+        display: none;
+    }
 }
 </style>

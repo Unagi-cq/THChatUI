@@ -6,6 +6,9 @@ module.exports = defineConfig({
     : '/',
   transpileDependencies: true,
   devServer: {
+    client: {
+      overlay: false // 禁用错误覆盖层
+    },
     compress: false,
     // 开发服务器配置
     proxy: {

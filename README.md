@@ -44,6 +44,7 @@ THChatUI V2 是一个专为**数据敏感型个人/组织/公司**设计的**开
     - 支持图片绘制模型
 - 国际化：支持简中、英文
 - APIKEY管理：支持APIKEY的添加、删除、编辑
+- 看板娘：支持看板娘，提供了200+模型
 
 ### 设计特性
 本项目具有以下特性：
@@ -78,7 +79,7 @@ PC端界面如下：
 
 公众号
 
-![Description](thchat-ui/src/assets/docs_img/qr_code.png)
+![Description](https://i.miji.bid/2025/02/25/a91b0353789a3195638a127cf84b6c67.png)
 
 ## 快速开发
 

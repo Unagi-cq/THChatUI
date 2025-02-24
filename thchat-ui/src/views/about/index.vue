@@ -25,7 +25,7 @@
                 >
                     <template #content>
                         <img 
-                            :src="require('@/assets/docs_img/qr_code.png')" 
+                            :src="require('https://i.miji.bid/2025/02/25/a91b0353789a3195638a127cf84b6c67.png')" 
                             alt="公众号二维码" 
                             class="qrcode-image"
                         />
@@ -38,6 +38,14 @@
         <!-- 更新日志 -->
         <div class="changelog-section">
             <h2>更新日志</h2>
+
+            <div class="version-block">
+                <h3>v2.0.2 - 2025.02.25</h3>
+                <ul>
+                    <li>[add] 新增了对看板娘的支持</li>
+                    <li>[add] 新增了200+看板娘模型，感谢 https://github.com/zenghongtu/live2d-model-assets</li>
+                </ul>
+            </div>
 
             <div class="version-block">
                 <h3>v2.0.1 - 2025.02.16</h3>

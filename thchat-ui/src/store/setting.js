@@ -76,7 +76,14 @@ const defaultSettings = {
     kb_enabled: false,
     /******************************** 联网搜索参数 ********************************/
     // 是否启用联网搜索
-    web_search_enabled: false
+    web_search_enabled: false,
+    /******************************** 看板娘设置 ********************************/
+    // 是否启用看板娘
+    live2d_enabled: true,
+    // 看板娘模型索引
+    live2d_model_index: 0,
+    // 看板娘模型
+    live2d_model: "https://raw.githubusercontent.com/zenghongtu/live2d-model-assets/master/assets/moc/22.xmas.1/22.2017.newyear.model.json"
 }
 
 const setting = {

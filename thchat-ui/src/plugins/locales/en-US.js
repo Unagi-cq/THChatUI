@@ -16,7 +16,8 @@ export default {
       general: 'General',
       key: 'API Key',
       knowledge: 'Knowledge Base',
-      web_search: 'Web Search'
+      web_search: 'Web Search',
+      live2d: 'Live2D'
     },
     model: {
       platform: 'Platform',
@@ -62,6 +63,10 @@ export default {
     },
     web_search: {
       enable: 'Enable'
+    },
+    live2d: {
+      enable: 'Enable',
+      model: 'Model'
     }
   },
   AppAside: {

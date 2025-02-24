@@ -200,6 +200,31 @@
             </el-form>
         </el-tab-pane>
 
+        <!-- 看板娘设置标签页 -->
+        <el-tab-pane :label="$t('Setting.tabs.live2d')" class="flex-form-item">
+            <el-form label-width="130" label-position="left">
+                <!-- 启用按钮 -->
+                <el-form-item :label="$t('Setting.live2d.enable')">
+                    <el-switch v-model="live2dEnabled" />
+                </el-form-item>
+
+                <!-- 模型选择 -->
+                <el-form-item :label="$t('Setting.live2d.model')" v-if="live2dEnabled">
+                    <div class="live2d-model-selector">
+                        <el-button :disabled="currentModelIndex <= 0" @click="prevModel">
+                            <el-icon><ArrowLeft /></el-icon>
+                        </el-button>
+
+                        <el-input v-model="currentModelIndex" style="width: 60px;" />
+                        
+                        <el-button :disabled="currentModelIndex >= live2dModels.length - 1" @click="nextModel">
+                            <el-icon><ArrowRight /></el-icon>
+                        </el-button>
+                    </div>
+                </el-form-item>
+            </el-form>
+        </el-tab-pane>
+
     </el-tabs>
 </template>
 
@@ -208,6 +233,7 @@ import { model_list } from "@/util/config";
 import bg from '@/assets/images/bg.jpg'
 import bg2 from '@/assets/images/bg2.jpg'
 import { QuestionFilled } from '@element-plus/icons-vue'
+import live2dModels from '@/util/live2d_models.js'
 
 export default {
     name: 'Setting',
@@ -218,7 +244,10 @@ export default {
         return {
             model_list: model_list,
             filteredModelList: [],
-            presetBgs: [bg, bg2]
+            presetBgs: [bg, bg2],
+            // 看板娘相关数据
+            live2dEnabled: false,
+            live2dModelIndex: 0
         };
     },
     computed: {
@@ -380,6 +409,31 @@ export default {
         // 可选知识库列表
         repoList() {
             return this.$store.state.app.kb.list || []
+        },
+        // 看板娘启用状态
+        live2dEnabled: {
+            get() {
+                return this.$store.state.setting.live2d_enabled || false;
+            },
+            set(val) {
+                this.$store.dispatch('changeSetting', {
+                    key: 'live2d_enabled',
+                    value: val
+                })
+            }
+        },
+        // 当前看板娘模型索引
+        currentModelIndex: {
+            get() {
+                return this.$store.state.setting.live2d_model_index || 0;
+            },
+            set(val) {
+                this.$store.dispatch('changeSetting', {
+                    key: 'live2d_model_index',
+                    value: val
+                })
+                this.updateLive2dModel();
+            }
         }
     },
     created() {
@@ -389,6 +443,7 @@ export default {
                 return key !== 'Xunfei_Spark' && key !== 'Local' && key !== 'OpenAI';
             })
         );
+        this.loadLive2dModels();
     },
     methods: {
           /**
@@ -486,6 +541,43 @@ export default {
                   value: newApiKeys
               });
           },
+
+          // 加载看板娘模型列表
+          async loadLive2dModels() {
+              try {
+                  this.live2dModels = live2dModels.live2d_models;
+              } catch (error) {
+                  console.error('加载看板娘模型列表失败:', error);
+                  this.live2dModels = [];
+              }
+          },
+          
+          // 切换到上一个模型
+          prevModel() {
+              if (this.currentModelIndex > 0) {
+                  this.currentModelIndex--;
+                  this.updateLive2dModel();
+              }
+          },
+          
+          // 切换到下一个模型
+          nextModel() {
+              if (this.currentModelIndex < this.live2dModels.length - 1) {
+                  this.currentModelIndex++;
+                  this.updateLive2dModel();
+              }
+          },
+          
+          // 更新看板娘模型
+          updateLive2dModel() {
+              const currentModel = this.live2dModels[this.currentModelIndex];
+              if (currentModel) {
+                  this.$store.dispatch('changeSetting', {
+                      key: 'live2d_model',
+                      value: currentModel
+                  });
+              }
+          }
       }
 }
 </script>
@@ -657,5 +749,21 @@ export default {
     padding: 0 10px;
     font-size: 14px;
     font-weight: 500;
+}
+
+.live2d-model-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.live2d-model-selector .model-name {
+    min-width: 120px;
+    text-align: center;
+    color: var(--common-color);
+}
+
+.live2d-model-selector .el-button {
+    padding: 8px;
 }
 </style>

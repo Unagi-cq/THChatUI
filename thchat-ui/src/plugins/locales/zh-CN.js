@@ -16,7 +16,8 @@ export default {
       general: "通用",
       key: "API Key",
       knowledge: "知识库",
-      web_search: "联网搜索"
+      web_search: "联网搜索",
+      live2d: "动漫人物"
     },
     model: {
       platform: "平台",
@@ -62,6 +63,10 @@ export default {
     },
     web_search: {
       enable: "启用"
+    },
+    live2d: {
+      enable: "启用",
+      model: "模型"
     }
   },
   AppAside: {

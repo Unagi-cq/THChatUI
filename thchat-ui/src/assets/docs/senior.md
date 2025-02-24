@@ -4,6 +4,12 @@
 
 请参考：[THChatUI V2 代码视频讲解教程](https://www.bilibili.com/video/BV1xTcVezEKP/)
 
+## 看板娘
+
+请参考：[https://npm.io/package/live2d-helper](https://npm.io/package/live2d-helper)
+
+封装的live2d-helper，可以方便的调用看板娘，并且支持自定义模型。但是功能有限，且用且珍惜。
+
 ## 数据schema
 
 THChatUI运行时，数据存储在两个地方：
