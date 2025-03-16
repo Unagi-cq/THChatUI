@@ -28,6 +28,7 @@ const defaultSettings = {
         Xunfei_Spark: "",
         Zhipu_BigModel: "",
         TT_Volcengine: "",
+        Yidong_CMECloud: "",
         OpenAI: {
             endpoint: "",
             api_key: "",

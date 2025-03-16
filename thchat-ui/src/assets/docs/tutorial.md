@@ -9,6 +9,7 @@
 [申请月之暗面平台API KEY](https://platform.moonshot.cn/console/api-keys)
 [申请智谱平台API KEY](https://open.bigmodel.cn/usercenter/apikeys)
 [申请火山方舟平台API KEY](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey)
+[申请移动云平台API KEY](https://ecloud.10086.cn/portal/act/AI)
 
 对于OpenAI式的API KEY，通常我们并不是仅仅指OpenAI这家公司的ChatGPT的API KEY，而是指提供了OpenAI接口规范的所有服务商的URL、KEY、Model这三个参数。
 
@@ -21,6 +22,12 @@
 除了要在设置 - API Key中填写火山方舟平台的API KEY，还需要在设置 - 模型 - 火山方舟平台中填写deepseek模型的接入点id。
 
 接入点需要在火山方舟平台[https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint)开通。
+
+### 移动云平台使用模型的特别说明
+
+除了要申请API KEY，还要去移动云官网申请Endpoint，修改`thchat-ui\src\api\Yidong_CMECloud\index.js`里面的代理路径。
+
+这是由于移动云的模型名称默认是`default`，真正的信息全都集成在endpoint里面了。在未来的ThChtUI版本迭代中，会重构API KEY管理模块。
 
 ## 使用说明
 

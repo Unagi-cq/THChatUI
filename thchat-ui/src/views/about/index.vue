@@ -40,6 +40,13 @@
             <h2>更新日志</h2>
 
             <div class="version-block">
+                <h3>v2.0.3 - 2025.03.16</h3>
+                <ul>
+                    <li>[add] 新增了对移动云平台的支持</li>
+                </ul>
+            </div>
+
+            <div class="version-block">
                 <h3>v2.0.2 - 2025.02.25</h3>
                 <ul>
                     <li>[add] 新增了对看板娘的支持</li>

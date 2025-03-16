@@ -1,6 +1,11 @@
-<h1 align="center">LM的Web会话管理方案<span style="color: #2454ff;">THChatUI</span><span style="font-size: 10px;">v2</span></h1>
+<h1 align="center">LM的Web会话管理方案<span style="color: #2454ff;">THChatUI</span>
+<span style="font-size: 10px;">v2.0.3</span></h1>
+
+<div align="center">
 
 [![GitHub](https://img.shields.io/badge/Demo-%F0%9F%9A%80%20GitHub-blue)](https://unagi-cq.github.io/THChatUI/#/) [![China](https://img.shields.io/badge/Demo-%F0%9F%9A%80%20China-red)](http://localchatui.wuxitianyouqi.com/#/) [![Docs](https://img.shields.io/badge/Document-%F0%9F%9A%80%20GitHub-blue)](https://unagi-cq.github.io/THChatUI/#/docs)
+
+</div>
 
 
 <p align="center">
@@ -37,6 +42,7 @@ THChatUI V2 是一个专为**数据敏感型个人/组织/公司**设计的**开
     - 智谱AI
     - OpenAI(包括类OpenAI式服务)
     - 火山方舟(DeepSeek R1)
+    - 移动云
 - 系统主题切换：支持浅色、深色、毛玻璃三种主题，支持自定义背景图片
 - 响应式设计：支持PC、移动端
 - 多模态：
@@ -241,6 +247,33 @@ location ^~ /ali/remote/
         proxy_pass https://ark.cn-beijing.volces.com;
         proxy_ssl_server_name on; 
         proxy_set_header Host ark.cn-beijing.volces.com;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header REMOTE-HOST $remote_addr;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_http_version 1.1;
+        # proxy_hide_header Upgrade;
+    
+        add_header X-Cache $upstream_cache_status;
+        #Set Nginx Cache
+    
+        set $static_file8WLuNoD1 0;
+        if ( $uri ~* "\.(gif|png|jpg|css|js|woff|woff2)$" )
+        {
+            set $static_file8WLuNoD1 1;
+            expires 1m;
+        }
+        if ( $static_file8WLuNoD1 = 0 )
+        {
+            add_header Cache-Control no-cache;
+        }
+    }
+
+    location ^~ /yidong/remote/
+    {
+        proxy_pass https://zhenze-huhehaote.cmecloud.cn;
+        proxy_ssl_server_name on; 
+        proxy_set_header Host zhenze-huhehaote.cmecloud.cn;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header REMOTE-HOST $remote_addr;

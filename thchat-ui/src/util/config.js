@@ -364,6 +364,13 @@ module.exports = {
                 { type: "llm", name: "deepseek-r1", series: "volcengine", version: "", pre_method: "text_moonshot_zhipu", post_method: "delta_reasoning" }
             ]
         },
+        "Yidong_CMECloud":
+        {
+            platform_name: "移动云",
+            list: [
+                { type: "llm", name: "default", series: "default", version: "default", pre_method: "text_moonshot_zhipu", post_method: "delta" }
+            ]
+        },
         "OpenAI":
         {
             platform_name: "OpenAI",

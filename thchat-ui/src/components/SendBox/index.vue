@@ -236,6 +236,8 @@ export default {
                 return import("@/api/OpenAI").then(module => module.fetchAPI);
             } else if (this.platform === 'TT_Volcengine') {
                 return import("@/api/TT_Volcengine").then(module => module.fetchAPI);
+            } else if (this.platform === 'Yidong_CMECloud') {
+                return import("@/api/Yidong_CMECloud").then(module => module.fetchAPI);
             }
         },
 
