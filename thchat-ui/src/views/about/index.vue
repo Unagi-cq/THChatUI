@@ -253,12 +253,6 @@ export default {
         }
     }
 
-    .qrcode-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
     .qrcode-image {
         width: 150px;
         height: 150px;

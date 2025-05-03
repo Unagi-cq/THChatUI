@@ -419,7 +419,7 @@ export default {
                     try {
                         const pdfData = new Uint8Array(event.target.result);
                         const pdf = await import('pdfjs-dist');
-                        pdf.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdf.version}/pdf.worker.min.js`;
+                        pdf.GlobalWorkerOptions.workerSrc = '/pdfjs-dist@5.2.133/pdf.worker.min.mjs';
 
                         const loadingTask = pdf.getDocument(pdfData);
                         const pdfDoc = await loadingTask.promise;

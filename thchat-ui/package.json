@@ -19,14 +19,16 @@
     "mammoth": "^1.9.0",
     "marked": "^15.0.6",
     "openai": "^4.77.4",
+    "pdfjs-dist": "^5.2.133",
     "segmentit": "^2.0.3",
     "vue": "^3.2.13",
     "vue-i18n": "^11.0.1",
-    "vue-pdf": "^4.3.0",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"
   },
   "devDependencies": {
+    "@babel/plugin-transform-class-static-block": "^7.27.1",
+    "@babel/plugin-transform-private-methods": "^7.27.1",
     "@types/cacheable-request": "^6.0.3",
     "@types/http-cache-semantics": "^4.0.4",
     "@types/responselike": "^1.0.3",
