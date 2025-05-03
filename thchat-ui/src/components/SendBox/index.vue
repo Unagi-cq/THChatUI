@@ -1,46 +1,28 @@
 <template>
     <div class="search-container">
         <!--    输入框    -->
-        <el-input :placeholder="$t('SendBox.placeholder')" v-model="query" :autosize="{ minRows: 1, maxRows: 8 }"
+        <el-input placeholder="请输入你的问题或需求，按'↑'可快捷复制问题" v-model="query" :autosize="{ minRows: 1, maxRows: 8 }"
             resize="none" @keydown.enter="onEnterKeyDown" @keydown.up="onEnterKeyUp" type="textarea"
             :class="{ 'has-files': uploadedFiles.length > 0 }">
         </el-input>
 
         <div class="left-icons" v-if="uploadedFiles.length === 0">
             <!-- 上传图标 -->
-            <el-upload class="upload-icon" action="" :show-file-list="false" :auto-upload="false" accept="image/*"
-                :multiple="false" :on-change="handleImageUpload" :limit="upload_limit"
-                :disabled="uploadedFiles.length >= upload_limit">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none">
-                    <path
-                        d="M6.93745 10C6.24652 10.0051 5.83076 10.0263 5.4996 10.114C3.99238 10.5131 2.96048 11.8639 3.00111 13.3847C3.01288 13.8252 3.18057 14.3696 3.51595 15.4585C4.32309 18.079 5.67958 20.3539 8.7184 20.8997C9.27699 21 9.90556 21 11.1627 21L12.8372 21C14.0943 21 14.7229 21 15.2815 20.8997C18.3203 20.3539 19.6768 18.079 20.4839 15.4585C20.8193 14.3696 20.987 13.8252 20.9988 13.3847C21.0394 11.8639 20.0075 10.5131 18.5003 10.114C18.1691 10.0263 17.7534 10.0051 17.0625 10"
-                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                    <path
-                        d="M12 3L12 14M12 3C12.4683 3 12.8243 3.4381 13.5364 4.3143L14.5 5.5M12 3C11.5316 3 11.1756 3.4381 10.4635 4.3143L9.49995 5.5"
-                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
+            <el-upload action="" :show-file-list="false" :auto-upload="false" accept="image/*" :multiple="false"
+                :on-change="handleImageUpload" :limit="upload_limit" :disabled="uploadedFiles.length >= upload_limit">
+                <SvgIcon icon-class="upload" style="width: 20px; height: 20px;" />
             </el-upload>
             <!-- 知识库图标 -->
-            <div class="web-search-icon-wrapper" :class="{ 'selected': knowledgeEnabled }" @click="knowledgeEnabled = !knowledgeEnabled">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none"
-                    class="rag">
-                    <path
-                        d="M8.85746 12.5061C6.36901 10.6456 4.59564 8.59915 3.62734 7.44867C3.3276 7.09253 3.22938 6.8319 3.17033 6.3728C2.96811 4.8008 2.86701 4.0148 3.32795 3.5074C3.7889 3 4.60404 3 6.23433 3H17.7657C19.396 3 20.2111 3 20.672 3.5074C21.133 4.0148 21.0319 4.8008 20.8297 6.37281C20.7706 6.83191 20.6724 7.09254 20.3726 7.44867C19.403 8.60062 17.6261 10.6507 15.1326 12.5135C14.907 12.6821 14.7583 12.9567 14.7307 13.2614C14.4837 15.992 14.2559 17.4876 14.1141 18.2442C13.8853 19.4657 12.1532 20.2006 11.226 20.8563C10.6741 21.2466 10.0043 20.782 9.93278 20.1778C9.79643 19.0261 9.53961 16.6864 9.25927 13.2614C9.23409 12.9539 9.08486 12.6761 8.85746 12.5061Z"
-                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
+            <div class="web-search-icon-wrapper" :class="{ 'selected': knowledgeEnabled }"
+                @click="knowledgeEnabled = !knowledgeEnabled">
+                <SvgIcon icon-class="knowledge" style="width: 20px; height: 20px;" />
                 <span v-if="knowledgeEnabled" class="search-text rag">{{ selectedRepo?.name }}</span>
             </div>
             <!-- 联网图标 -->
-            <div class="web-search-icon-wrapper" :class="{ 'selected': webSearchEnabled }" @click="webSearchEnabled = !webSearchEnabled">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none">
-                    <path
-                        d="M8.9835 1.99998C6.17689 2.06393 4.53758 2.33109 3.41752 3.44727C2.43723 4.42416 2.10954 5.79742 2 7.99998M15.0165 1.99998C17.8231 2.06393 19.4624 2.33109 20.5825 3.44727C21.5628 4.42416 21.8905 5.79742 22 7.99998M15.0165 22C17.8231 21.9361 19.4624 21.6689 20.5825 20.5527C21.5628 19.5758 21.8905 18.2026 22 16M8.9835 22C6.17689 21.9361 4.53758 21.6689 3.41752 20.5527C2.43723 19.5758 2.10954 18.2026 2 16"
-                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    <path
-                        d="M15 15L17 17M16 11.5C16 9.01468 13.9853 6.99998 11.5 6.99998C9.01469 6.99998 7 9.01468 7 11.5C7 13.9853 9.01469 16 11.5 16C13.9853 16 16 13.9853 16 11.5Z"
-                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                <span v-if="webSearchEnabled" class="search-text">{{ $t('SendBox.webSearch') }}</span>
+            <div class="web-search-icon-wrapper" :class="{ 'selected': webSearchEnabled }"
+                @click="webSearchEnabled = !webSearchEnabled">
+                <SvgIcon icon-class="web-search" style="width: 20px; height: 20px;" />
+                <span v-if="webSearchEnabled" class="search-text">联网搜索</span>
             </div>
         </div>
 
@@ -48,19 +30,11 @@
             <!--    发送ICON    -->
             <el-button type="primary" @click="onSubmitChat" v-if="controller === undefined"
                 class="right-send-stop-button">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none">
-                    <path
-                        d="M11.922 4.79004C16.6963 3.16245 19.0834 2.34866 20.3674 3.63261C21.6513 4.91656 20.8375 7.30371 19.21 12.078L18.1016 15.3292C16.8517 18.9958 16.2267 20.8291 15.1964 20.9808C14.9195 21.0216 14.6328 20.9971 14.3587 20.9091C13.3395 20.5819 12.8007 18.6489 11.7231 14.783C11.4841 13.9255 11.3646 13.4967 11.0924 13.1692C11.0134 13.0742 10.9258 12.9866 10.8308 12.9076C10.5033 12.6354 10.0745 12.5159 9.21705 12.2769C5.35111 11.1993 3.41814 10.6605 3.0909 9.64127C3.00292 9.36724 2.97837 9.08053 3.01916 8.80355C3.17088 7.77332 5.00419 7.14834 8.6708 5.89838L11.922 4.79004Z"
-                        stroke="currentColor" stroke-width="3.5" />
-                </svg>
+                <SvgIcon icon-class="send" style="width: 16px; height: 16px;" />
             </el-button>
             <!--    停止发送ICON    -->
             <el-button type="danger" @click="stopChat" v-if="controller !== undefined" class="right-send-stop-button">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3.5" />
-                    <path d="M9.5 9L9.5 15M14.5 9V15" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
+                <SvgIcon icon-class="stop" style="width: 16px; height: 16px;" />
             </el-button>
         </div>
 
@@ -69,10 +43,7 @@
             <div class="file-preview-item" v-for="(file, index) in uploadedFiles" :key="index">
                 <img :src="file.base64" alt="uploaded file" />
                 <div class="delete-icon" @click="removeFile(index)">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none">
-                        <path d="M19.0005 4.99988L5.00049 18.9999M5.00049 4.99988L19.0005 18.9999" stroke="currentColor"
-                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
+                    <SvgIcon icon-class="delete" style="width: 16px; height: 16px;" />
                 </div>
             </div>
         </div>
@@ -81,11 +52,11 @@
 </template>
 
 <script>
-import { postProcess } from "@/util/config";
 import tabStoreHelper from "@/schema/tabStoreHelper";
 import chatStoreHelper from "@/schema/chatStoreHelper";
 import { QA, Session } from "@/schema/chat";
 import { Segment, useDefault } from 'segmentit';
+import { TavilySearch } from "@langchain/tavily";
 
 const segmentit = useDefault(new Segment());
 
@@ -98,9 +69,7 @@ export default {
             // 聊天控制
             controller: undefined,
             // 存储上传的多个文件
-            uploadedFiles: [],
-            // 是否开启联网搜索 用于样式显示
-            isWebSearchEnabled: false,
+            uploadedFiles: []
         }
     },
     mounted() {
@@ -160,15 +129,24 @@ export default {
         },
         // 联网搜索启用状态
         webSearchEnabled: {
-              get() {
-                  return this.$store.state.setting.web_search_enabled;
-              },
-              set(val) {
+            get() {
+                return this.$store.state.setting.web_search_enabled;
+            },
+            set(val) {
                 this.$store.dispatch('changeSetting', {
-                      key: 'web_search_enabled',
-                      value: val
-                    }
-                )}
+                    key: 'web_search_enabled',
+                    value: val
+                }
+                )
+            }
+        },
+        // 是否使用TavilySearch
+        isTavilySearch() {
+            return this.$store.state.setting.is_tavily_search
+        },
+        // TavilySearch Key
+        tavilySearchKey() {
+            return this.$store.state.setting.tavily_search_key
         },
         // 选中的知识库
         selectedRepo() {
@@ -184,7 +162,7 @@ export default {
          * @param {KeyboardEvent} e - 键盘事件对象
          */
         onEnterKeyDown(e) {
-            // 检查是否是Enter键 feat issue #2
+            // 检查是否是Enter键
             if (e.key === 'Enter') {
                 // 当没有按下Shift键时执行发送
                 if (!e.shiftKey) {
@@ -219,25 +197,13 @@ export default {
         /**
          * 动态导入不同平台的远程接口规范
          */
-        getDynamicCall() {
-            if (this.platform === 'Ali_DashScope') {
-                return import("@/api/Ali_DashScope").then(module => module.fetchAPI);
-            } else if (this.platform === 'Xunfei_Spark') {
-                return import("@/api/Xunfei_Spark").then(module => module.fetchAPI);
-            } else if (this.platform === 'Zhipu_BigModel') {
-                return import("@/api/Zhipu_BigModel").then(module => module.fetchAPI);
-            } else if (this.platform === 'Baidu_QianFan') {
-                return import("@/api/Baidu_QianFan").then(module => module.fetchAPI);
-            } else if (this.platform === 'Local') {
-                return import("@/api/Local").then(module => module.fetchAPI);
-            } else if (this.platform === 'Moonshot_AI') {
-                return import("@/api/Moonshot_AI").then(module => module.fetchAPI);
-            } else if (this.platform === 'OpenAI') {
-                return import("@/api/OpenAI").then(module => module.fetchAPI);
-            } else if (this.platform === 'TT_Volcengine') {
-                return import("@/api/TT_Volcengine").then(module => module.fetchAPI);
-            } else if (this.platform === 'Yidong_CMECloud') {
-                return import("@/api/Yidong_CMECloud").then(module => module.fetchAPI);
+        async getDynamicCall() {
+            try {
+                const apiModule = await import(`@/api/${this.platform}`);
+                return [apiModule.fetchAPI, apiModule.postProcess];
+            } catch (error) {
+                console.error(`加载平台 ${this.platform} 的API模块失败:`, error);
+                return [null, null];
             }
         },
 
@@ -262,7 +228,7 @@ export default {
             this.query = ''
             this.uploadedFiles = []
 
-            let qa = new QA(qaId, query, "", files, undefined, undefined, this.model_config.series, this.model_config.name, this.model_config.type);
+            let qa = new QA(qaId, query, "", files, undefined, undefined, this.model_config.series, this.model_config.version, this.model_config.type);
 
             // active为空表示现在是新建会话，否则表示是已有会话
             if (this.active === '') {
@@ -289,6 +255,39 @@ export default {
                     .filter(item => item.answer && item.answer.trim());
             }
 
+            let prompt = "";
+
+            /**
+             * 此处控制TavilySearch联网搜索
+             * 注意不是模型内置联网搜索
+             */
+            if (this.webSearchEnabled && this.isTavilySearch) {
+                try {
+                    const tool = new TavilySearch({
+                        maxResults: 10,
+                        topic: "general",
+                        tavilyApiKey: this.tavilySearchKey
+                    });
+                    const searchResult = await tool.invoke({
+                        query: query
+                    });
+
+                    qa.webSearchResults = searchResult.results;
+                    // 更新聊天记录
+                    chatStoreHelper.addQA(this.active, qa);
+                    console.log('搜索结果:', searchResult);
+                    prompt = `以下是搜索结果:\n${searchResult.results.map(result => `标题: ${result.title}\n内容: ${result.content}`).join('\n\n')}\n\n`;
+                } catch (error) {
+                    console.error('联网搜索错误:', error);
+                    this.$notify({
+                        title: '联网搜索失败',
+                        message: '搜索过程中发生错误 请确保搜索key正确或网络可达',
+                        type: 'error'
+                    });
+                    return;
+                }
+            }
+
             /**
              * 此处控制知识库召回
              */
@@ -297,98 +296,100 @@ export default {
                 const matches = this.matchKnowledgeBase(query);
                 // 将匹配内容加入到 prompt
                 if (matches.length > 0) {
-                    query = `基于以下知识库内容回答问题:${matches.map(chunk => chunk.content).join('\n')}问题: ${query}`;
+                    prompt += `以下是知识库召回内容:\n${matches.map(chunk => chunk.content).join('\n')}\n\n`;
                     qa.recall = matches;
                     // 更新聊天记录
                     chatStoreHelper.addQA(this.active, qa);
                 }
             }
 
+            query = prompt + query;
+
+            let [fetchAPI, postProcess] = await this.getDynamicCall();
+
             try {
                 this.controller = new AbortController();
-                this.getDynamicCall().then(fetchAPI => {
-                    fetchAPI({
-                        prompt: query,
-                        history: history,
-                        files: files,
-                        controller: this.controller,
-                        onopen: (event) => {
-                            // SSE的500错误需要在onopen中检测 https://github.com/Azure/fetch-event-source/issues/70
-                            console.log('连接成功')
-                            if (event !== undefined && event.status === 401) {
-                                this.$notify({
-                                    title: this.$t('SendBox.notifications.remoteFailed'),
-                                    message: this.$t('SendBox.errors.apiKey'),
-                                    type: 'error',
-                                });
-                            }
-                            if (event !== undefined && (event.status === 500 || event.status === 404)) {
-                                this.$notify({
-                                    title: this.$t('SendBox.notifications.connectionFailed'),
-                                    message: this.$t('SendBox.errors.connection'),
-                                    type: 'error',
-                                });
-                            } else if (event !== undefined && event.status === 422) {
-                                this.$notify({
-                                    title: this.$t('SendBox.notifications.interfaceError'),
-                                    message: this.$t('SendBox.errors.interface'),
-                                    type: 'error',
-                                })
-                            }
-                            qa.responseTime = new Date().getTime();
-                            // 更新聊天记录
-                            chatStoreHelper.addQA(this.active, qa);
-                        },
-                        onmessage: (event) => {
-                            console.log("消息传输")
-                            // 过滤接口内部错误消息
-                            if (event.event === 'error') {
-                                this.$notify({
-                                    title: this.$t('SendBox.notifications.interfaceError'),
-                                    message: this.$t('SendBox.errors.internalError'),
-                                    type: 'error',
-                                });
-                                qa.finishTime = new Date().getTime();
-                                this.stopChat()
-                                return;
-                            }
-
-                            if (event !== undefined && event.error && event.error.code === '1301') { // 智谱平台错误返回
-                                this.$notify({
-                                    title: this.$t('Common.failed'),
-                                    message: event.error.message,
-                                    type: 'error',
-                                })
-                                return;
-                            }
-
-                            // 批量更新优化
-                            try {
-                                const newContent = postProcess(event, this.model_config.post_method);
-                                if (newContent && newContent.content) {
-                                    qa.answer = (qa.answer || '') + newContent.content;
-                                    chatStoreHelper.addQA(this.active, qa);
-                                } else if (newContent && newContent.reasoning_content) {
-                                    qa.reason = (qa.reason || '') + newContent.reasoning_content;
-                                    chatStoreHelper.addQA(this.active, qa);
-                                }
-                            } catch (e) {
-                                console.error("解析响应错误:", e, event);
-                            }
-                        },
-                        onclose: () => {
-                            console.log("连接关闭")
+                fetchAPI({
+                    prompt: query,
+                    history: history,
+                    files: files,
+                    controller: this.controller,
+                    onopen: (event) => {
+                        // SSE的500错误需要在onopen中检测 https://github.com/Azure/fetch-event-source/issues/70
+                        console.log('连接成功')
+                        if (event !== undefined && event.status === 401) {
+                            this.$notify({
+                                title: '远程调用失败!',
+                                message: '请检查API KEY是否填写或过期',
+                                type: 'error',
+                            });
+                        }
+                        if (event !== undefined && (event.status === 500 || event.status === 404)) {
+                            this.$notify({
+                                title: '无法连接本地接口!',
+                                message: '请检测网络或接口是否开启',
+                                type: 'error',
+                            });
+                        } else if (event !== undefined && event.status === 422) {
+                            this.$notify({
+                                title: '本地接口错误!',
+                                message: '请检测接口是否正常',
+                                type: 'error',
+                            })
+                        }
+                        qa.responseTime = new Date().getTime();
+                        // 更新聊天记录
+                        chatStoreHelper.addQA(this.active, qa);
+                    },
+                    onmessage: (event) => {
+                        console.log("消息传输")
+                        // 过滤接口内部错误消息
+                        if (event.event === 'error') {
+                            this.$notify({
+                                title: '本地接口错误!',
+                                message: '请检测接口内部是否发生错误或异常',
+                                type: 'error',
+                            });
                             qa.finishTime = new Date().getTime();
                             this.stopChat()
-                            // 更新聊天记录
-                            chatStoreHelper.addQA(this.active, qa);
-                        },
-                        onerror: (error) => {
-                            console.log('close', error)
-                            this.stopChat()
-                            this.$message.error(this.$t('SendBox.errors.system', { error }))
+                            return;
                         }
-                    });
+
+                        if (event !== undefined && event.error && event.error.code === '1301') { // 智谱平台错误返回
+                            this.$notify({
+                                title: "失败",
+                                message: event.error.message,
+                                type: 'error',
+                            })
+                            return;
+                        }
+
+                        // 批量更新优化
+                        try {
+                            const res = postProcess(event);
+                            if (res && res.content) {
+                                qa.answer = (qa.answer || '') + res.content;
+                                chatStoreHelper.addQA(this.active, qa);
+                            } else if (res && res.reasoning_content) {
+                                qa.reason = (qa.reason || '') + res.reasoning_content;
+                                chatStoreHelper.addQA(this.active, qa);
+                            }
+                        } catch (e) {
+                            console.error("解析响应错误:", e, event);
+                        }
+                    },
+                    onclose: () => {
+                        console.log("连接关闭")
+                        qa.finishTime = new Date().getTime();
+                        this.stopChat()
+                        // 更新聊天记录
+                        chatStoreHelper.addQA(this.active, qa);
+                    },
+                    onerror: (error) => {
+                        console.log('close', error)
+                        this.stopChat()
+                        this.$message.error('系统错误：' + error)
+                    }
                 });
             } catch (e) {
                 console.error(e);
@@ -402,8 +403,8 @@ export default {
         processImage(file) {
             if (this.uploadedFiles.length >= this.upload_limit) {
                 this.$notify({
-                    title: this.$t('SendBox.notifications.uploadFailed'),
-                    message: this.$t('SendBox.uploadLimit.error', { limit: this.upload_limit }),
+                    title: '上传失败',
+                    message: '最多只能上传' + this.upload_limit + '个文件!',
                     type: 'error'
                 });
                 return false;
@@ -414,16 +415,16 @@ export default {
 
             if (!isImage) {
                 this.$notify({
-                    title: this.$t('SendBox.notifications.uploadFailed'),
-                    message: this.$t('SendBox.uploadType.error'),
+                    title: '上传失败',
+                    message: '只能上传图片文件!',
                     type: 'error'
                 });
                 return false;
             }
             if (!isLt2M) {
                 this.$notify({
-                    title: this.$t('SendBox.notifications.uploadFailed'),
-                    message: this.$t('SendBox.uploadSize.error', { size: this.upload_size }),
+                    title: '上传失败',
+                    message: '图片大小不能超过 ' + this.upload_size + 'MB!',
                     type: 'error'
                 });
                 return false;
@@ -482,38 +483,38 @@ export default {
             // BM25参数
             const k1 = 1.5;  // 词频饱和参数
             const b = 0.75;  // 文档长度归一化参数
-            
+
             // 将查询文本分词
             const queryWords = segmentit.doSegment(query.toLowerCase()).map(word => word.w);
-            
+
             // 计算平均文档长度(这里简化处理,实际应该是所有文档的平均长度)
             const avgDocLength = words.length;
-            
+
             // 计算BM25分数
             let score = 0;
             const wordFreq = new Map(); // 词频统计
-            
+
             // 统计词频
             words.forEach(word => {
                 wordFreq.set(word, (wordFreq.get(word) || 0) + 1);
             });
-            
+
             // 对每个查询词计算得分
             queryWords.forEach(qWord => {
                 // 文档中该词的频率
                 const tf = wordFreq.get(qWord) || 0;
-                if(tf === 0) return;
-                
+                if (tf === 0) return;
+
                 // 简化的IDF计算(实际应该基于语料库统计)
                 const idf = Math.log(1.5);
-                
+
                 // BM25公式
                 const numerator = tf * (k1 + 1);
                 const denominator = tf + k1 * (1 - b + b * (words.length / avgDocLength));
-                
+
                 score += idf * (numerator / denominator);
             });
-            
+
             // 归一化分数到0-1范围
             return Math.min(score, 1);
         },
@@ -607,7 +608,7 @@ $icon-length: 32px;
         display: flex;
         align-items: center;
         gap: 4px;
-        border-radius: 8px;
+        border-radius: 4px;
         cursor: pointer;
         transition: all 0.3s ease;
         min-width: 24px; // 设置最小宽度

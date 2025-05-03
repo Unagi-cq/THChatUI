@@ -1,12 +1,19 @@
 /****
+ * 全局变量
+ */
+:root {
+  // --thchatui-font-family: Optima-Regular, Optima, PingFangSC-light, PingFangTC-light, 'PingFang SC', Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  --thchatui-font-size: 14px;
+}
+
+/****
  * 系统主题
  */
 
-/* 设置全局字体为思源宋体 */
 body,
 html {
-  font-family: 'Heiti SC', sans-serif;
-  font-weight: lighter;
+  font-family: var(--thchatui-font-family);
+  font-size: var(--thchatui-font-size);
 }
 
 /* 亮 主题样式 */
@@ -49,7 +56,10 @@ html {
   --layout-common-layout-bg: #efefef;
   /* 发送框背景 */
   --sendBox-bg-color: white;
-  /* 侧边栏选中和hover背景 */
+  /* 
+   * 侧边栏选中和hover背景
+   * 用户消息 背景颜色
+   */
   --aside-active-hover-bg: rgba(98, 108, 126, 0.1);
   /**
    * 侧边栏 右侧边框颜色
@@ -107,7 +117,10 @@ html {
   --layout-common-layout-bg: #444;
   /* 发送框背景 */
   --sendBox-bg-color: #333;
-  /* 侧边栏选中和hover背景 */
+  /**
+   * 侧边栏 右侧边框颜色
+   * 侧边栏/工具栏 边框颜色
+   */
   --aside-active-hover-bg: rgba(167, 182, 209, 0.1);
   /**
    * 侧边栏 右侧边框颜色
@@ -168,7 +181,10 @@ html {
   --layout-common-layout-bg: var(--custom-bg, url('../images/bg.jpg')) center center;
   /* 发送框背景 */
   --sendBox-bg-color: white;
-  /* 侧边栏选中和hover背景 */
+  /**
+   * 侧边栏 右侧边框颜色
+   * 侧边栏/工具栏 边框颜色
+   */
   --aside-active-hover-bg: rgba(98, 108, 126, 0.1);
   /**
    * 侧边栏 右侧边框颜色

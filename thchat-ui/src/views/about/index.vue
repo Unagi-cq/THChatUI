@@ -3,32 +3,25 @@
         <div class="title-section">
             <img :src="logoSrc" class="logo" alt="logo" />
 
-            <span class="title">THChatUI</span>
+            <span class="title">THChatUI<span style="font-size: 12px; color: #999;">v3.0.0</span></span>
             <p class="subtitle">欢迎使用<span>THChatUI</span>，一个基于<span>Vue</span>和<span>Element Plus</span>的Web对话管理WebUI。
             </p>
 
-            <p class="description">
+            <p>
                 THChatUI是一个专为数据敏感型个人/组织设计的大模型WebUI。<br />
                 前端采用Vue更适合中国宝宝体质~<br />
                 后端采用Python的Flask快速启动接口，项目提供了若干个调用示例(并不是必须的)。<br />
                 不需额外数据库，数据存浏览器缓存中。<br />
             </p>
 
-            <div class="button-group">
+            <div>
                 <el-button @click="openLink('https://github.com/Unagi-cq/THChatUI/tree/main')">查看仓库</el-button>
                 <el-button @click="openLink('https://github.com/Unagi-cq/THChatUI/issues')">问题反馈</el-button>
                 <el-button @click="openLink('https://blog.csdn.net/qq_43592352')">关注我的博客</el-button>
-                <el-tooltip
-                    effect="light"
-                    placement="bottom"
-                    :hide-after="0"
-                >
+                <el-tooltip effect="light" placement="bottom" :hide-after="0">
                     <template #content>
-                        <img 
-                            src="https://i.miji.bid/2025/02/25/a91b0353789a3195638a127cf84b6c67.png" 
-                            alt="公众号二维码" 
-                            class="qrcode-image"
-                        />
+                        <img src="https://i.miji.bid/2025/02/25/a91b0353789a3195638a127cf84b6c67.png" alt="公众号二维码"
+                            class="qrcode-image" />
                     </template>
                     <el-button>关注我的公众号</el-button>
                 </el-tooltip>
@@ -38,6 +31,27 @@
         <!-- 更新日志 -->
         <div class="changelog-section">
             <h2>更新日志</h2>
+
+            <div class="version-block">
+                <h3>v3.0.0 - 2025.05.03 - 代码优化</h3>
+                <ul>
+                    <li>Notice: 代码实现上，个人觉得可读性和低入手难度比层层封装到大家看不懂代码更重要。</li>
+                    <li>[del] 移除了对多语言的配置，降低代码阅读难度，如需要请移至分支2.0.3查看</li>
+                    <li>[del] 移除了对移动云平台的支持，如需要请移至分支2.0.3查看</li>
+                    <li>[upd] 重构了各个平台的调用代码</li>
+                    <li>[upd] 项目中SVG从代码改为图片存储</li>
+                    <li>[upd] 调整了项目中的注释、文件结构和代码结构</li>
+                </ul>
+
+                <h3>v3.0.0 - 2025.05.03 - 功能优化</h3>
+                <ul>
+                    <li>[upd] 优化了设置弹窗的UI</li>
+                    <li>[upd] 优化了API KEY配置和模型配置的UI</li>
+                    <li>[upd] 优化了思考内容折叠样式</li>
+                    <li>[add] 新增了对硅基流动平台的支持</li>
+                    <li>[add] 新增了对TavilySearch联网搜索的支持</li>
+                </ul>
+            </div>
 
             <div class="version-block">
                 <h3>v2.0.3 - 2025.03.16</h3>
@@ -157,8 +171,7 @@ export default {
     name: "About",
     data() {
         return {
-            // 二维码显示
-            qrCodeVisible: false
+
         }
     },
     computed: {
@@ -175,13 +188,6 @@ export default {
          */
         openLink(url) {
             window.open(url, '_blank');
-        },
-        
-        /**
-         * 切换二维码显示状态
-         */
-        showQrCode() {
-            this.qrCodeVisible = !this.qrCodeVisible;
         }
     }
 };
@@ -218,7 +224,6 @@ export default {
         }
 
         >.subtitle {
-            font-size: 14px;
             font-weight: 400;
 
             span {
@@ -231,7 +236,6 @@ export default {
      * 日志
      */
     .changelog-section {
-        font-size: 14px;
         text-align: left;
 
         .version-block h3 {

@@ -64,7 +64,7 @@ PC端界面如下：
 
 [THChatUI国内加速体验地址](http://localchatui.wuxitianyouqi.com/#/)
 [THChatUI永久体验地址](https://unagi-cq.github.io/THChatUI/#/)
-> 【注】THChatUI在线体验版只提供了讯飞星火Lite模型调用，阿里云灵积、智谱AI平台、百度千帆、月之暗面、OpenAI的模型调用需要去对应平台申请Key并填入设置中，Key只会保存在本地浏览器缓存中，绝对安全。
+> 【注】THChatUI在线体验版只提供了讯飞星火Lite模型调用，阿里云百炼、智谱AI平台、百度千帆、月之暗面、OpenAI的模型调用需要去对应平台申请Key并填入设置中，Key只会保存在本地浏览器缓存中，绝对安全。
 
 [THChatUI代码仓库](https://github.com/Unagi-cq/THChatUI)
 > 【注】代码仓提供了前端项目和后端接口示例。

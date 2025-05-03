@@ -2,118 +2,102 @@
     <div class="container">
         <!-- 用户消息 -->
         <div class="user-message" v-show="query">
-            <div class="avatar-header">
-                <img class="avatar" :src="avatar_list.user" alt="User Avatar">
-                <span class="avatar-name">{{ $t('ChatCard.user_name') }}</span>
-            </div>
-            <p :class="{ 'collapse-p': !isExpanded }" ref="queryText">
-                {{ query }}
-            </p>
+            <!-- 用户上传的文件展示 -->
             <div v-if="files && files.length > 0" class="uploaded-files">
                 <el-image v-for="x in files" style="width: 100px; height: 100px" :src="x.base64" :zoom-rate="1.2"
                     :max-scale="7" :min-scale="0.2" :preview-src-list="files.map(file => file.base64)"
                     :initial-index="0" fit="cover" />
             </div>
-            <el-icon v-if="isTruncatable" @click="isExpanded = !isExpanded" class="collapse-icon">
-                <ArrowDown v-if="!isExpanded" />
-                <ArrowUp v-else />
-            </el-icon>
+            <!-- 用户文字提问 -->
+            <div class="message-content">
+                <p :class="{ 'collapse-p': !queryExpanded }" ref="queryText">{{ query }}</p>
+                <el-icon v-if="queryTruncatable" @click="queryExpanded = !queryExpanded" class="collapse-icon">
+                    <ArrowDown v-if="!queryExpanded" />
+                    <ArrowUp v-else />
+                </el-icon>
+            </div>
         </div>
 
-        <div>
-            <!-- 机器人消息 -->
-            <div class="bot-message">
-                <!-- 头像 名称 -->
-                <div class="avatar-header">
-                    <img v-if="avatar_list[series]" class="avatar" :src="avatar_list[series]" alt="Bot Avatar">
-                    <img v-else class="avatar" :src="avatar_list.local" alt="Default Bot Avatar">
-                    <span class="avatar-name">{{ modelName }}</span>
-                </div>
-                <!-- 召回内容卡片 -->
-                <div v-if="recall && recall.length > 0" class="recall-content">
-                    <div class="recall-header">{{ $t('ChatCard.knowledge_base') }}</div>
-                    <div v-for="(item, index) in recall" :key="index" class="recall-item" 
-                        @click="toggleRecallItem(index)">
-                        <div class="recall-title">
-                            {{ item.filename }}
-                            <span class="recall-score">{{ $t('ChatCard.relevance_score', { score: (item.score * 100).toFixed(1) }) }}</span>
-                        </div>
-                        <div class="recall-text" :class="{ 'recall-collapse': !expandedRecalls[index] }">{{ item.content }}</div>
+        <!-- 机器人消息 -->
+        <div class="bot-message">
+            <!-- 头像 名称 -->
+            <div class="avatar-header">
+                <SvgIcon :icon-class="series" class="avatar" />
+                <span class="avatar-name">{{ modelName }}</span>
+            </div>
+            <!-- 召回内容卡片 -->
+            <div v-if="recall && recall.length > 0" class="recall-content">
+                <div class="recall-header">以下是知识库检索到的内容：</div>
+                <div v-for="(item, index) in recall" :key="index" class="recall-item" @click="toggleRecallItem(index)">
+                    <div class="recall-title">
+                        {{ item.filename }}
+                        <span class="recall-score">相关性分数: {{ (item.score * 100).toFixed(1) }}%</span>
+                    </div>
+                    <div class="recall-text" :class="{ 'recall-collapse': !recallExpandeds[index] }">{{ item.content }}
                     </div>
                 </div>
-                <!-- 思考内容 -->
-                <div v-if="reason" class="reason-content">
-                    <v-md-preview :text="'>**思考内容**\n' + reason.split('\n').map(line => `> ${line}`).join('\n')"></v-md-preview>
+            </div>
+            <!-- 网络搜索结果 -->
+            <div v-if="webSearchResults && webSearchResults.length > 0" class="web-search-content">
+                <div class="web-search-header">以下是网络搜索结果：</div>
+                <div v-for="(item, index) in webSearchResults" :key="index" class="web-search-item" @click="toggleWebSearchItem(index)">
+                    <div class="web-search-title">
+                        <a :href="item.url" target="_blank" class="web-search-link" @click.stop>{{ item.title }}</a>
+                        <span class="web-search-score">搜索匹配度: {{ (item.score * 100).toFixed(1) }}%</span>
+                    </div>
+                    <div class="web-search-text" :class="{ 'web-search-collapse': !webSearchExpandeds[index] }">{{ item.content }}</div>
                 </div>
-                <!-- 回答内容 -->   
-                <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess" v-if="modelType === 'llm' || modelType === 'vim'"></v-md-preview>
-                <!-- 图片生成 -->
-                <div class="uploaded-files" v-if="modelType === 'igm'">
-                    <template v-if="answer">
-                        <el-image v-for="(image, index) in [answer]" :key="index" style="width: 100px; height: 100px"
-                            :src="image" :zoom-rate="1.2" :max-scale="7" :min-scale="0.2" :preview-src-list="[answer]"
-                            :initial-index="0" fit="cover" />
+            </div>
+            <!-- 思考内容 -->
+            <div v-if="reason" class="reason-content">
+                <div class="reason-header" @click="reasonExpanded = !reasonExpanded">
+                    思考内容
+                    <el-icon class="reason-collapse-icon">
+                        <ArrowDown v-if="!reasonExpanded" />
+                        <ArrowUp v-else />
+                    </el-icon>
+                </div>
+                <div v-show="reasonExpanded">
+                    <v-md-preview :text="reason.split('\n').map(line => `> ${line}`).join('\n')"></v-md-preview>
+                </div>
+            </div>
+            <!-- 回答内容 -->
+            <v-md-preview :text="answer" @copy-code-success="handleCopyCodeSuccess"
+                v-if="modelType === 'llm' || modelType === 'vim'"></v-md-preview>
+            <!-- 图片生成 -->
+            <div class="uploaded-files" v-if="modelType === 'igm'">
+                <template v-if="answer">
+                    <el-image v-for="(image, index) in [answer]" :key="index" style="width: 100px; height: 100px"
+                        :src="image" :zoom-rate="1.2" :max-scale="7" :min-scale="0.2" :preview-src-list="[answer]"
+                        :initial-index="0" fit="cover" />
+                </template>
+                <el-skeleton animated variant="image" v-else>
+                    <template #template>
+                        <el-skeleton-item variant="image" style="width: 100px; height: 100px; border-radius: 10px;" />
                     </template>
-                    <el-skeleton animated variant="image" v-else>
-                        <template #template>
-                            <el-skeleton-item class="avatar" variant="image" style="width: 100px; height: 100px; border-radius: 10px;" />
-                        </template>
-                    </el-skeleton>
-                </div>
-            </div>
-            <!-- 回答统计 -->
-            <div class="answer-stats" v-if="chat_detail && responseTime && finishTime">
-                <el-tooltip :content="$t('ChatCard.copyMarkdownTooltip')" placement="bottom">
-                    <svg @click="copyMarkdown" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
-                        height="14" fill="none">
-                        <path
-                            d="M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z"
-                            stroke="currentColor" stroke-width="1.5" />
-                        <path d="M11 7L17 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                        <path d="M7 7L8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                        <path d="M7 12L8 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                        <path d="M7 17L8 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                        <path d="M11 12L17 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                        <path d="M11 17L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                    </svg>
-                </el-tooltip>
-                <el-tooltip :content="$t('ChatCard.copyPlainTextTooltip')" placement="bottom">
-                    <svg @click="copyPlainText" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14"
-                        height="14" fill="none">
-                        <path
-                            d="M9 15C9 12.1716 9 10.7574 9.87868 9.87868C10.7574 9 12.1716 9 15 9L16 9C18.8284 9 20.2426 9 21.1213 9.87868C22 10.7574 22 12.1716 22 15V16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H15C12.1716 22 10.7574 22 9.87868 21.1213C9 20.2426 9 18.8284 9 16L9 15Z"
-                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <path
-                            d="M16.9999 9C16.9975 6.04291 16.9528 4.51121 16.092 3.46243C15.9258 3.25989 15.7401 3.07418 15.5376 2.90796C14.4312 2 12.7875 2 9.5 2C6.21252 2 4.56878 2 3.46243 2.90796C3.25989 3.07417 3.07418 3.25989 2.90796 3.46243C2 4.56878 2 6.21252 2 9.5C2 12.7875 2 14.4312 2.90796 15.5376C3.07417 15.7401 3.25989 15.9258 3.46243 16.092C4.51121 16.9528 6.04291 16.9975 9 16.9999"
-                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </el-tooltip>
-                <el-tooltip :content="$t('ChatCard.deleteConversationTooltip')" placement="bottom">
-                    <svg @click="deleteQA" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"
-                        fill="none">
-                        <path d="M14.9994 15L9 9M9.00064 15L15 9" stroke="currentColor" stroke-width="1.5"
-                            stroke-linecap="round" stroke-linejoin="round" />
-                        <path
-                            d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z"
-                            stroke="currentColor" stroke-width="1.5" />
-                    </svg>
-                </el-tooltip>
-                <span>{{ $t('ChatCard.characterCount', { count: answer.length }) }}</span>
-                <span>{{ finishTime - responseTime }} ms</span>
-            </div>
-            <div class="answer-stats" v-else-if="chat_detail">
-                <el-tooltip :content="$t('ChatCard.deleteConversationTooltip')" placement="bottom">
-                    <svg @click="deleteQA" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"
-                        fill="none">
-                        <path d="M14.9994 15L9 9M9.00064 15L15 9" stroke="currentColor" stroke-width="1.5"
-                            stroke-linecap="round" stroke-linejoin="round" />
-                        <path
-                            d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z"
-                            stroke="currentColor" stroke-width="1.5" />
-                    </svg>
-                </el-tooltip>
+                </el-skeleton>
             </div>
         </div>
+        <!-- 回答统计 -->
+        <div class="answer-stats" v-if="chat_detail && responseTime && finishTime">
+            <el-tooltip :content="'复制 Markdown'" placement="bottom">
+                <SvgIcon @click="copyMarkdown" icon-class="copyMD" style="width: 15px; height: 15px;" />
+            </el-tooltip>
+            <el-tooltip :content="'复制纯文本'" placement="bottom">
+                <SvgIcon @click="copyPlainText" icon-class="copyPT" style="width: 15px; height: 15px;" />
+            </el-tooltip>
+            <el-tooltip :content="'删除对话'" placement="bottom">
+                <SvgIcon @click="deleteQA" icon-class="deleteQA" style="width: 15px; height: 15px;" />
+            </el-tooltip>
+            <span>字数统计: {{ answer.length }} 字符</span>
+            <span>{{ finishTime - responseTime }} ms</span>
+        </div>
+        <div class="answer-stats" v-else-if="chat_detail">
+            <el-tooltip :content="'删除对话'" placement="bottom">
+                <SvgIcon @click="deleteQA" icon-class="deleteQA" style="width: 15px; height: 15px;" />
+            </el-tooltip>
+        </div>
+
     </div>
 </template>
 
@@ -125,14 +109,18 @@ export default {
     name: 'ChatCard',
     data() {
         return {
-            // 是否展开
-            isExpanded: false,
+            // 用户文本是否展开
+            queryExpanded: false,
             // 用户文本最大显示高度
-            maxHeight: 60,
+            maxQueryHeight: 60,
             // 用户文本是否可折叠
-            isTruncatable: false,
+            queryTruncatable: false,
             // 召回内容是否可折叠
-            expandedRecalls: [],
+            recallExpandeds: [],
+            // 网络搜索结果是否可折叠
+            webSearchExpandeds: [],
+            // 思考内容是否展开
+            reasonExpanded: true,
         }
     },
     props: {
@@ -157,34 +145,21 @@ export default {
         // 召回内容
         recall: Array,
         // 思考内容
-        reason: String
+        reason: String,
+        // 联网搜索内容
+        webSearchResults: Array
     },
     computed: {
         // 是否开启回答统计
         chat_detail() {
             return this.$store.state.setting.chat_detail;
-        },
-        // 使用计算属性动态获取头像
-        avatar_list() {
-            return {
-                user: new URL('@/assets/images/user.png', import.meta.url).href,
-                qwen: new URL('@/assets/images/qwen.jpg', import.meta.url).href,
-                baichuan: new URL('@/assets/images/baichuan.png', import.meta.url).href,
-                xunfei: new URL('@/assets/images/xunfei.svg', import.meta.url).href,
-                zhipu: new URL('@/assets/images/zhipu.png', import.meta.url).href,
-                wenxin: new URL('@/assets/images/wenxin.png', import.meta.url).href,
-                yi: new URL('@/assets/images/yi.svg', import.meta.url).href,
-                moonshot: new URL('@/assets/images/moonshot.svg', import.meta.url).href,
-                volcengine: new URL('@/assets/images/volcengine.png', import.meta.url).href,
-                local: new URL('@/assets/images/logo.png', import.meta.url).href
-            }
         }
     },
     mounted() {
         this.$nextTick(() => {
             const queryTextElement = this.$refs.queryText;
-            if (queryTextElement.scrollHeight > this.maxHeight) {
-                this.isTruncatable = true;
+            if (queryTextElement.scrollHeight > this.maxQueryHeight) {
+                this.queryTruncatable = true;
             }
         });
     },
@@ -194,7 +169,7 @@ export default {
          */
         handleCopyCodeSuccess() {
             this.$notify({
-                title: this.$t('ChatCard.notifications.codeCopySuccess'),
+                title: '代码复制成功！',
                 type: 'success',
             });
         },
@@ -241,8 +216,8 @@ export default {
             const success = await this.copyToClipboard(this.answer);
             this.$notify({
                 title: success
-                    ? this.$t('ChatCard.notifications.markdownCopySuccess')
-                    : this.$t('ChatCard.notifications.markdownCopyFailed'),
+                    ? 'Markdown复制成功！'
+                    : '复制失败！',
                 type: success ? 'success' : 'error',
             });
         },
@@ -258,8 +233,8 @@ export default {
             const success = await this.copyToClipboard(plainText);
             this.$notify({
                 title: success
-                    ? this.$t('ChatCard.notifications.plainTextCopySuccess')
-                    : this.$t('ChatCard.notifications.plainTextCopyFailed'),
+                    ? '纯文本复制成功！'
+                    : '复制失败！',
                 type: success ? 'success' : 'error',
             });
         },
@@ -275,7 +250,14 @@ export default {
          * 切换单个recall项的展开状态
          */
         toggleRecallItem(index) {
-            this.expandedRecalls[index] = !this.expandedRecalls[index];
+            this.recallExpandeds[index] = !this.recallExpandeds[index];
+        },
+
+        /**
+         * 切换单个网络搜索结果的展开状态
+         */
+        toggleWebSearchItem(index) {
+            this.webSearchExpandeds[index] = !this.webSearchExpandeds[index];
         }
     },
     watch: {
@@ -283,7 +265,28 @@ export default {
         recall: {
             immediate: true,
             handler(newVal) {
-                this.expandedRecalls = new Array(newVal?.length || 0).fill(false);
+                this.recallExpandeds = new Array(newVal?.length || 0).fill(false);
+            }
+        },
+        // 当webSearchResults数据变化时重置展开状态
+        webSearchResults: {
+            immediate: true,
+            handler(newVal) {
+                this.webSearchExpandeds = new Array(newVal?.length || 0).fill(false);
+            }
+        },
+        // 当qaId变化时重置所有状态
+        qaId: {
+            immediate: true,
+            handler() {
+                this.queryExpanded = false;
+                this.queryTruncatable = false;
+                this.$nextTick(() => {
+                    const queryTextElement = this.$refs.queryText;
+                    if (queryTextElement && queryTextElement.scrollHeight > this.maxQueryHeight) {
+                        this.queryTruncatable = true;
+                    }
+                });
             }
         }
     }
@@ -315,172 +318,103 @@ export default {
 }
 
 /**
- * 用户和机器人头像的共同样式
- * 设置圆形头像
+ * 上传文件区域样式
  */
-.user-message img,
-.bot-message img {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    object-fit: cover;
+.uploaded-files {
+    margin-top: 8px;
+    max-width: 80%; // 与消息内容保持一致的最大宽度
 }
 
 /**
  * 用户消息文本样式
  * 设置文本换行和断词规则
  */
-.user-message p {
-    width: 100%;
-    padding: 0.4rem 0 0 0;
-    margin: 0;
-    text-align: left;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    word-break: break-word;
-}
+.user-message {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; // 靠右对齐
+    padding: 0.3rem 0;
 
-/**
- * Markdown预览区域样式
- */
-:deep(.v-md-editor-preview) {
-    width: 100%;
-    text-align: left;
-
-    // 代码块水平滚动条样式
-    pre {
-        overflow-x: auto;
-        scrollbar-width: none;
+    .message-content {
+        position: relative;
+        max-width: 80%; // 限制最大宽度
+        background-color: var(--aside-active-hover-bg); // 背景
+        border-radius: 8px;
+        padding: 8px 12px;
     }
-}
 
-/**
- * Markdown内容区域内边距
- */
-:deep(.vuepress-markdown-body:not(.custom)) {
-    padding: 0.4rem 0 0.1rem 0;
-}
-
-/**
- * 移动端适配
- */
-@media (max-width: 419px) {
-    :deep(.vuepress-markdown-body div[class*=v-md-pre-wrapper-]) {
+    p {
+        width: 100%;
+        padding: 0;
         margin: 0;
+        text-align: left;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    /**
+    * 折叠相关样式
+    */
+    .collapse {
+
+        // 折叠段落
+        &-p {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: none;
+        }
+
+        // 折叠图标
+        &-icon {
+            position: absolute;
+            bottom: 5px;
+            right: -14px;
+            color: var(--common-color);
+            cursor: pointer;
+        }
     }
 }
 
 /**
- * 消息文本的基本样式
- */
-.user-message p,
-:deep(.vuepress-markdown-body) {
-    font-size: 13px;
-    color: var(--common-color);
-    background: none;
-    word-wrap: break-word;
-}
-
-:deep(.vuepress-markdown-body) blockquote {
-    color: var(--common-color);
-    opacity: 0.5;
-    font-size: 13px;
-}
-
-/**
- * 头像区域样式
+ * Bot头像区域样式
  */
 .avatar-header {
     display: flex;
     align-items: center;
     gap: 8px;
 
-    // 头像边框
     >.avatar {
-        border: 1px solid var(--common-color);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: var(--sendBox-bg-color);
     }
 
     // 用户名样式
     >.avatar-name {
-        font-size: 13px;
+        font-size: 16px;
         color: var(--common-color);
         font-weight: bold;
     }
 }
 
 /**
- * 底部统计信息样式
- */
-.answer-stats {
-    font-size: 10px;
-    color: var(--answer-stats-color);
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 10px;
-
-    // 图标样式
-    svg {
-        vertical-align: middle;
-        cursor: pointer;
-
-        &:hover {
-            color: var(--el-color-primary);
-        }
-    }
-}
-
-/**
- * 折叠相关样式
- */
-.collapse {
-    // 折叠段落
-    &-p {
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-height: none;
-    }
-
-    // 折叠图标
-    &-icon {
-        position: absolute;
-        bottom: 5px;
-        right: -14px;
-        font-size: 13px;
-        color: var(--common-color);
-        cursor: pointer;
-    }
-}
-
-/**
- * 上传文件区域样式
- */
-.uploaded-files {
-    margin-top: 8px;
-}
-
-/**
- * 图片圆角样式
- */
-.el-image {
-    border-radius: 10px;
-}
-
-/**
  * 召回内容相关样式
  */
 .recall {
+
     // 召回内容容器
     &-content {
         margin: 8px 0 0 0;
         padding: 10px;
         border-radius: 8px;
         background-color: var(--recall-bg-color);
-        font-size: 13px;
     }
 
     // 召回标题
@@ -515,7 +449,6 @@ export default {
 
     // 相关度分数
     &-score {
-        font-size: 12px;
         color: var(--recall-item-title-color);
         font-weight: normal;
     }
@@ -528,6 +461,190 @@ export default {
     }
 
     // 折叠的召回文本
+    &-collapse {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/**
+ * 思考内容相关样式
+ */
+.reason {
+    &-content {
+        width: 100%;
+        margin-top: 8px;
+    }
+
+    &-header {
+        border-radius: 8px;
+        padding: 8px;
+        background-color: var(--recall-bg-color);
+        color: var(--common-color);
+        font-weight: bold;
+        margin-bottom: 2px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    &-collapse-icon {
+        color: var(--common-color);
+        cursor: pointer;
+    }
+}
+
+/**
+ * Markdown预览区域样式
+ */
+:deep(.v-md-editor-preview) {
+    width: 100%;
+    text-align: left;
+
+    // 代码块水平滚动条样式
+    pre {
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+}
+
+/**
+ * Markdown内容区域内边距
+ */
+:deep(.vuepress-markdown-body:not(.custom)) {
+    padding: 0.4rem 0 0.1rem 0;
+}
+
+/**
+ * Markdown内容区域块引用样式
+ */
+:deep(.vuepress-markdown-body) blockquote {
+    color: var(--common-color);
+    opacity: 0.5;
+    font-size: 14px;
+    font-family: var(--thchatui-font-family);
+}
+
+/**
+ * Markdown移动端适配
+ */
+@media (max-width: 419px) {
+    :deep(.vuepress-markdown-body div[class*=v-md-pre-wrapper-]) {
+        margin: 0;
+    }
+}
+
+/**
+ * 消息文本的基本样式
+ */
+.user-message p,
+:deep(.vuepress-markdown-body) {
+    font-size: 14px;
+    color: var(--common-color);
+    background: none;
+    word-wrap: break-word;
+    font-family: var(--thchatui-font-family);
+}
+
+/**
+ * 底部统计信息样式
+ */
+.answer-stats {
+    color: var(--answer-stats-color);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+
+    // 图标样式
+    svg {
+        vertical-align: middle;
+        cursor: pointer;
+        outline: none;
+
+        &:hover {
+            color: var(--el-color-primary);
+        }
+    }
+}
+
+/**
+ * 图片圆角样式
+ */
+.el-image {
+    border-radius: 10px;
+}
+
+/**
+ * 网络搜索结果相关样式
+ */
+.web-search {
+    
+    &-content {
+        margin: 8px 0 0 0;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: var(--recall-bg-color);
+    }
+
+    &-header {
+        color: var(--common-color);
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    &-item {
+        margin-bottom: 8px;
+        padding: 8px;
+        border-radius: 4px;
+        background-color: var(--recall-item-bg-color);
+        cursor: pointer;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+    }
+
+    &-link {
+        color: var(--el-color-primary);
+        font-weight: bold;
+        text-decoration: none;
+        flex: 1;
+        width: 100px;
+        margin-right: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    &-score {
+        color: var(--recall-item-title-color);
+        font-weight: normal;
+        white-space: nowrap;
+    }
+
+    &-text {
+        color: var(--answer-stats-color);
+        line-height: 1.5;
+        position: relative;
+    }
+
     &-collapse {
         display: -webkit-box;
         -webkit-line-clamp: 2;

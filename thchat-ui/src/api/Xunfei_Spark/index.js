@@ -3,7 +3,6 @@
  * 接口采用WebSocket请求方式，不需要跨域配置
  */
 import CryptoJS from "crypto-js";
-import {preProcess} from "@/util/config";
 import store from '../../store';
 
 // 四个必要参数 这里的是spark lite模型 官方已经完全免费 可无限调用
@@ -23,9 +22,8 @@ const API_KEY = "414d88c1dadf5c3abb761766d5be1f14";
  * @param {Function} onclose - 连接关闭回调
  * @param {Function} onerror - 错误处理回调
  */
-export async function fetchAPI({prompt, history, files, controller, onopen, onmessage, onclose, onerror}) {
+export async function fetchAPI({ prompt, history, files, controller, onopen, onmessage, onclose, onerror }) {
     let model_version = store.state.setting.model_config.version;
-    let pre_method = store.state.setting.model_config.pre_method;
 
     return new Promise((resolve, reject) => {
         let fullMsg = "";
@@ -33,11 +31,11 @@ export async function fetchAPI({prompt, history, files, controller, onopen, onme
         webSocket.onmessage = (e) => {
             try {
                 const resultData = e.data;
-                
+
                 const jsonData = JSON.parse(resultData);
                 if (jsonData.header.code === 0) {
                     const msg = getContent(jsonData);
-                    
+
                     fullMsg += msg;
                     onmessage(msg);
                     if (jsonData.header.status === 2) {
@@ -68,7 +66,7 @@ export async function fetchAPI({prompt, history, files, controller, onopen, onme
         };
         webSocket.onopen = () => {
             onopen();
-            let body = preProcess(model_version, prompt, history, pre_method);
+            let body = preProcess(model_version, prompt, history);
             body["header"] = {
                 "app_id": APPID,
                 "uid": "fd3f47e40d",
@@ -106,4 +104,62 @@ function getContent(jsonData) {
         console.error("Get content error:", e);
     }
     return content;
+}
+
+/**
+ * 前处理(入参)规则处理
+ * @param {string} model_version - 模型版本标识
+ * @param {string} prompt - 用户当前的输入内容
+ * @param {Array} history - 历史对话记录数组
+ */
+function preProcess(model_version, prompt, history) {
+    let body = {
+        parameter: {
+            chat: {
+                domain: "general",
+                temperature: 0.5,
+                max_tokens: 1024,
+            },
+        },
+        payload: {
+            message: {
+                text: buildLLMMessage(prompt, history)
+            },
+        },
+    }
+    return body;
+}
+
+/**
+ * 构建LLM文本对话消息
+ * @param {string} prompt - 用户当前的输入内容
+ * @param {Array} history - 历史对话记录数组
+ */
+function buildLLMMessage(prompt, history) {
+    function getHistory(history) {
+        const array = [];
+        // 排除最后一条 history，因为是本次刚发的消息
+        for (let i = 0; i < history.length - 1; i++) {
+            const chat = history[i];
+            array.push({
+                "role": "user",
+                "content": chat.query
+            });
+            array.push({
+                "role": "assistant",
+                "content": chat.answer
+            });
+        }
+        return array;
+    }
+    let arr = getHistory(history)
+    arr.push({
+        "role": "user",
+        "content": prompt
+    })
+    return arr;
+}
+
+export function postProcess(event) {
+    return { content: event };
 }

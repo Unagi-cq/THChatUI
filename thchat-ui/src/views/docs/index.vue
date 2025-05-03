@@ -5,8 +5,8 @@
 
             <el-col :xs="24" :sm="24" :md="24" :lg="18" :xl="12">
                 <h2 class="doc-title">文档中心</h2>
-                
-                <el-tabs tab-position="top" style="height: 200px" class="demo-tabs centered-tabs">
+
+                <el-tabs tab-position="top" class="demo-tabs centered-tabs">
                     <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                         <el-tab-pane label="介绍">
                             <v-md-preview :text="intro_md" @copy-code-success="handleCopyCodeSuccess"></v-md-preview>
@@ -50,16 +50,13 @@ export default {
             senior_md: seniorContent
         }
     },
-    created() {
-        
-    },
     methods: {
         /**
          * 复制代码成功
          */
-         handleCopyCodeSuccess() {
+        handleCopyCodeSuccess() {
             this.$notify({
-                title: this.$t('ChatCard.notifications.codeCopySuccess'),
+                title: "代码复制成功！",
                 type: 'success',
             });
         },
@@ -94,7 +91,7 @@ export default {
 /**
  * Markdown内容区域内边距
  */
- :deep(.vuepress-markdown-body:not(.custom)) {
+:deep(.vuepress-markdown-body:not(.custom)) {
     padding: 0.4rem 0 0.1rem 0;
 }
 
@@ -115,5 +112,6 @@ export default {
     color: var(--common-color);
     background: none;
     word-wrap: break-word;
+    font-family: var(--thchatui-font-family);
 }
 </style>

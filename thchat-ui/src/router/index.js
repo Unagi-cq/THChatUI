@@ -7,11 +7,10 @@ import Layout from '@/layout'
 const routes = [
     {
         path: '/',
-        name: 'index',
         component: Layout,
         children: [
             {
-                path: '', // 默认子路由
+                path: '',
                 name: 'index',
                 component: () => import('@/views/AppMain.vue')
             }
@@ -19,7 +18,6 @@ const routes = [
     },
     {
         path: '/docs',
-        name: 'docs',
         component: Layout,
         children: [
             {
@@ -31,13 +29,34 @@ const routes = [
     },
     {
         path: '/kb',
-        name: 'kb',
         component: Layout,
         children: [
             {
                 path: '', // 默认子路由
                 name: 'kb',
                 component: () => import('@/views/kb/index.vue')
+            }
+        ]
+    },
+    {
+        path: '/agent',
+        component: Layout,
+        children: [
+            {
+                path: '', // 默认子路由
+                name: 'agent',
+                component: () => import('@/views/agent/index.vue')
+            }
+        ]
+    },
+    {
+        path: '/mcp',
+        component: Layout,
+        children: [
+            {
+                path: '', // 默认子路由
+                name: 'mcp',
+                component: () => import('@/views/mcp/index.vue')
             }
         ]
     }

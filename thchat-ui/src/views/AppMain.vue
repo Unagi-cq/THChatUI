@@ -3,19 +3,21 @@
 
         <el-row :gutter="24" justify="center" style="margin-left: 0;margin-right: 0;">
 
-            <el-col :md="18" :sm="22" :xs="22">
+            <el-col :md="16" :sm="22" :xs="22">
                 <ChatCard :qaId="c['qaId']" :query="c['query']" :answer="c['answer']" :modelName="c['modelName']"
                     :series="c['series']" :responseTime="c['responseTime']" :finishTime="c['finishTime']"
                     :files="c['files']" :modelType="c['modelType']" :recall="c['recall']" :reason="c['reason']"
+                    :webSearchResults="c['webSearchResults']"
                     v-for="c in active_session_qa_data" />
 
                 <div class="title-container" v-if="is_show">
-                    <div class="title-line">{{ $t('AppMain.title') }} <span>THChatUI</span></div>
-                    <div class="sub-title-line">{{ $t('AppMain.welcome') }}</div>
+                    <div class="title-line">LLM的轻量级Web会话管理方案 <span>THChatUI</span></div>
+                    <div class="sub-title-line">嗨喽~朋友！🤖
+                        欢迎使用THChatUI。Github发布页未配置代理，阿里、百度、火山方舟平台体验请移步至国内镜像源：http://localchatui.wuxitianyouqi.com/</div>
                     <div class="sub-title-line">
                         <el-link type="primary" href="https://unagi-cq.github.io/THChatUI/#/docs"
                             @click="goTo('/about')">
-                            {{ $t('AppMain.viewDocs') }}
+                            查看文档
                         </el-link>
                     </div>
                 </div>
@@ -116,7 +118,7 @@ export default {
     watch: {
         "$store.state.app.chat": {
             deep: true,
-            handler: function(newVal, oldVal) {
+            handler: function (newVal, oldVal) {
                 const isAtBottom = this.$refs.homeRef.scrollTop + this.$refs.homeRef.clientHeight >= this.$refs.homeRef.scrollHeight - 200;
                 if (isAtBottom) {
                     this.scrollToBottom();
@@ -125,7 +127,7 @@ export default {
         },
         "$store.state.app.active": {
             deep: true,
-            handler: function() {
+            handler: function () {
                 this.scrollToBottom();
             }
         },
@@ -133,12 +135,12 @@ export default {
             this.scrollToBottom();
         },
         currentLive2dModel: {
-            handler: function() {
+            handler: function () {
                 this.initLive2d();
             }
         },
         live2dEnabled: {
-            handler: function() {
+            handler: function () {
                 this.initLive2d();
             }
         }
@@ -215,11 +217,15 @@ export default {
 #live2d {
     // border: 1px solid #000;
     width: 200px;
-    position: fixed; /* 改为固定定位 */
-    bottom: 82px; /* 固定在底部 */
-    right: -20px; /* 固定在右侧 */
-    z-index: 100; /* 确保在其他元素上层 */
-    
+    position: fixed;
+    /* 改为固定定位 */
+    bottom: 82px;
+    /* 固定在底部 */
+    right: -20px;
+    /* 固定在右侧 */
+    z-index: 100;
+    /* 确保在其他元素上层 */
+
     /* 在小屏幕设备上隐藏live2d */
     @media screen and (max-width: 768px) {
         display: none;

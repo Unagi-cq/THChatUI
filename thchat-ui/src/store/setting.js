@@ -5,6 +5,7 @@
  */
 import cache from '@/util/cache';
 import bg from '@/assets/images/bg2.jpg'
+import { model_list } from '@/api/config';
 
 const settingStorage = JSON.parse(localStorage.getItem('settingStorage')) || ''
 
@@ -20,22 +21,8 @@ const defaultSettings = {
     bg: bg,
     // 是否显示回答统计
     chat_detail: true,
-    // api_key
-    api_key_map: {
-        Ali_DashScope: "",
-        Baidu_QianFan: "",
-        Moonshot_AI: "",
-        Xunfei_Spark: "",
-        Zhipu_BigModel: "",
-        TT_Volcengine: "",
-        Yidong_CMECloud: "",
-        OpenAI: {
-            endpoint: "",
-            api_key: "",
-            model_name: ""
-        },
-        Local: ""
-    },
+    // 模型列表
+    model_list: model_list,
     // 平台
     platform: 'Xunfei_Spark',
     // 是否多轮对话
@@ -46,16 +33,10 @@ const defaultSettings = {
     model_config: {
         // 模型类型
         type: "llm",
-        // 模型名称
-        name: "Spark Lite 🆓",
         // 模型系列
         series: "xunfei",
         // 模型版本
-        version: "spark lite",
-        // 前处理组索引
-        pre_method: "text_xunfei",
-        // 后处理组索引
-        post_method: "add"
+        version: "spark lite"
     },
     /******************************** 系统默认参数 ********************************/
     // 输入框单次上传的文件数量
@@ -78,9 +59,13 @@ const defaultSettings = {
     /******************************** 联网搜索参数 ********************************/
     // 是否启用联网搜索
     web_search_enabled: false,
+    // 是否使用TavilySearch
+    is_tavily_search: false,
+    // TavilySearch key
+    tavily_search_key: "",
     /******************************** 看板娘设置 ********************************/
     // 是否启用看板娘
-    live2d_enabled: true,
+    live2d_enabled: false,
     // 看板娘模型索引
     live2d_model_index: 0,
     // 看板娘模型

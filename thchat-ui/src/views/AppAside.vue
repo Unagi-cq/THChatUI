@@ -10,32 +10,26 @@
         <!-- 聊天选项卡 Start -->
         <div class="chats">
             <div class="chats-header">
-                <span>{{ $t('AppAside.chat_header_title') }}</span>
+                <span>对话</span>
                 <el-icon class="header-icon" @click="startNewSession">
                     <Plus />
                 </el-icon>
             </div>
-            <div class="session flex" v-for="x in tab.getAllTabs()" key="x.uuid" :class="{ active: x.uuid === active }"
-                @click="pickTab(x.uuid)">
-                <div class="title">
-                    <span>{{ x.title }}</span>
-                    <div class="btn-box" v-if="x.uuid === active">
-                        <svg @click.stop="delTab(x.uuid)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            width="16" height="16" fill="none">
-                            <path
-                                d="M19.5 5.5L18.8803 15.5251C18.7219 18.0864 18.6428 19.3671 18.0008 20.2879C17.6833 20.7431 17.2747 21.1273 16.8007 21.416C15.8421 22 14.559 22 11.9927 22C9.42312 22 8.1383 22 7.17905 21.4149C6.7048 21.1257 6.296 20.7408 5.97868 20.2848C5.33688 19.3626 5.25945 18.0801 5.10461 15.5152L4.5 5.5"
-                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                            <path
-                                d="M3 5.5H21M16.0557 5.5L15.3731 4.09173C14.9196 3.15626 14.6928 2.68852 14.3017 2.39681C14.215 2.3321 14.1231 2.27454 14.027 2.2247C13.5939 2 13.0741 2 12.0345 2C10.9688 2 10.436 2 9.99568 2.23412C9.8981 2.28601 9.80498 2.3459 9.71729 2.41317C9.32164 2.7167 9.10063 3.20155 8.65861 4.17126L8.05292 5.5"
-                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                            <path d="M9.5 16.5L9.5 10.5" stroke="currentColor" stroke-width="1.5"
-                                stroke-linecap="round" />
-                            <path d="M14.5 16.5L14.5 10.5" stroke="currentColor" stroke-width="1.5"
-                                stroke-linecap="round" />
-                        </svg>
+            <template v-for="group in groupedTabs" :key="group.title">
+                <div class="chats-header" style="padding: 10px 6px 2px 6px;font-weight: 600;">
+                    <span style="font-size: 12px; color: var(--answer-stats-color);">{{ group.title }}</span>
+                </div>
+                <div class="session flex" v-for="x in group.tabs" :key="x.uuid" :class="{ active: x.uuid === active }"
+                    @click="pickTab(x.uuid)">
+                    <div class="title">
+                        <span>{{ x.title }}</span>
+                        <div class="btn-box" v-if="x.uuid === active">
+                            <SvgIcon @click.stop="delTab(x.uuid)" icon-class="trash" class="icon"
+                                style="width: 16px; height: 16px;" />
+                        </div>
                     </div>
                 </div>
-            </div>
+            </template>
         </div>
         <!-- 聊天选项卡 End -->
 
@@ -43,74 +37,35 @@
         <div class="optionBar">
             <div class="options">
                 <div class="option" @click="goToPage('/kb')">
-                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
-                        fill="none">
-                        <path
-                            d="M7 6.00085H16.75C18.8567 6.00085 19.91 6.00085 20.6667 6.50644C20.9943 6.72532 21.2755 7.00657 21.4944 7.33414C22 8.09081 22 9.14416 22 11.2509C22 14.7621 22 16.5176 21.1573 17.7788C20.975 18.0517 20.7666 18.3054 20.5355 18.5364M3.46447 18.5364C2 17.072 2 14.7149 2 10.0009V6.94512C2 5.12865 2 4.22041 2.38032 3.53891C2.65142 3.05312 3.05227 2.65227 3.53806 2.38117C4.21956 2.00085 5.1278 2.00085 6.94427 2.00085C8.10802 2.00085 8.6899 2.00085 9.19926 2.19186C10.3622 2.62797 10.8418 3.68443 11.3666 4.73398L12 6.00085"
-                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                        <path
-                            d="M10.4499 12.0009V13.9799M6.96289 15.5012H9.01487M14.986 15.5012H17.0379M14.986 18.4745H17.0379M6.96289 18.4745H9.01487M10.4499 20.0201V21.9991M13.4754 20.0201V21.9991M13.4646 12.0009V13.9799M10.0149 19.9684H13.986C14.5382 19.9684 14.986 19.5207 14.986 18.9684V14.9799C14.986 14.4276 14.5382 13.9799 13.986 13.9799H10.0149C9.46258 13.9799 9.01487 14.4276 9.01487 14.9799V18.9684C9.01487 19.5207 9.46258 19.9684 10.0149 19.9684Z"
-                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                    </svg>
-                    <div class="option-text red-dot-wrapper">{{ $t('AppAside.tool_kb_name') }}</div>
+                    <SvgIcon icon-class="kb" class="icon" style="width: 20px; height: 20px;" />
+                    <div class="option-text red-dot-wrapper">知识库</div>
                 </div>
-                <div class="divider">
-                    <div class="border"></div>
+                <div class="option" @click="goToDialog('/mcp')">
+                    <SvgIcon icon-class="mcp" class="icon" style="width: 20px; height: 20px;" />
+                    <div class="option-text">MCP</div>
                 </div>
-                <div class="option" @click="goToDialog('/setting')">
-                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
-                        fill="none">
-                        <path
-                            d="M15.5 11.5C15.5 13.433 13.933 15 12 15C10.067 15 8.5 13.433 8.5 11.5C8.5 9.567 10.067 8 12 8C13.933 8 15.5 9.567 15.5 11.5Z"
-                            stroke="currentColor" stroke-width="1.5" />
-                        <path
-                            d="M21 13.5995C21.3155 13.5134 21.6503 13.4669 22 13.4669V9.53324C19.1433 9.53324 17.2857 6.43041 18.732 3.96691L15.2679 2.0001C13.8038 4.49405 10.1978 4.49395 8.73363 2L5.26953 3.96681C6.71586 6.43035 4.85673 9.53324 2 9.53324V13.4669C4.85668 13.4669 6.71425 16.5697 5.26795 19.0332L8.73205 21C9.46434 19.7527 10.7321 19.1289 12 19.1286"
-                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <path
-                            d="M18.5 15L18.7579 15.697C19.0961 16.611 19.2652 17.068 19.5986 17.4014C19.932 17.7348 20.389 17.9039 21.303 18.2421L22 18.5L21.303 18.7579C20.389 19.0961 19.932 19.2652 19.5986 19.5986C19.2652 19.932 19.0961 20.389 18.7579 21.303L18.5 22L18.2421 21.303C17.9039 20.389 17.7348 19.932 17.4014 19.5986C17.068 19.2652 16.611 19.0961 15.697 18.7579L15 18.5L15.697 18.2421C16.611 17.9039 17.068 17.7348 17.4014 17.4014C17.7348 17.068 17.9039 16.611 18.2421 15.697L18.5 15Z"
-                            stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-                    </svg>
-                    <div class="option-text">{{ $t('AppAside.tool_setting_name') }}</div>
+                <div class="option" @click="goToDialog('/agent')">
+                    <SvgIcon icon-class="agent" class="icon" style="width: 20px; height: 20px;" />
+                    <div class="option-text">智能体</div>
                 </div>
                 <div class="option" @click="goToPage('/docs')">
-                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
-                        fill="none">
-                        <path
-                            d="M12 11.5C12.4955 11.5 12.9562 11.3015 13.8775 10.9045L14.5423 10.618C16.1808 9.91202 17 9.55902 17 9C17 8.44098 16.1808 8.08798 14.5423 7.38197L13.8775 7.09549C12.9562 6.6985 12.4955 6.5 12 6.5C11.5045 6.5 11.0438 6.6985 10.1225 7.09549L9.45768 7.38197C7.81923 8.08798 7 8.44098 7 9C7 9.55902 7.81923 9.91202 9.45768 10.618L10.1225 10.9045C11.0438 11.3015 11.5045 11.5 12 11.5ZM12 11.5V17.5"
-                            stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-                        <path
-                            d="M17 9V15C17 15.559 16.1808 15.912 14.5423 16.618L13.8775 16.9045C12.9562 17.3015 12.4955 17.5 12 17.5C11.5045 17.5 11.0438 17.3015 10.1225 16.9045L9.45768 16.618C7.81923 15.912 7 15.559 7 15V9"
-                            stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-                        <path
-                            d="M9.14426 2.5C6.48724 2.56075 4.93529 2.81456 3.87493 3.87493C2.81456 4.93529 2.56075 6.48724 2.5 9.14426M14.8557 2.5C17.5128 2.56075 19.0647 2.81456 20.1251 3.87493C21.1854 4.93529 21.4392 6.48724 21.5 9.14426M14.8557 21.5C17.5128 21.4392 19.0647 21.1854 20.1251 20.1251C21.1854 19.0647 21.4392 17.5128 21.5 14.8557M9.14426 21.5C6.48724 21.4392 4.93529 21.1854 3.87493 20.1251C2.81456 19.0647 2.56075 17.5128 2.5 14.8557"
-                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    <div class="option-text">{{ $t('AppAside.tool_docs_name') }}</div>
+                    <SvgIcon icon-class="docs" class="icon" style="width: 20px; height: 20px;" />
+                    <div class="option-text">文档</div>
                 </div>
-                <div class="divider">
-                    <div class="border"></div>
+                <div class="option" @click="goToDialog('/setting')">
+                    <SvgIcon icon-class="setting" class="icon" style="width: 20px; height: 20px;" />
+                    <div class="option-text">设置</div>
                 </div>
                 <div class="option" @click="goToDialog('/about')">
-                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
-                        fill="none">
-                        <path
-                            d="M2.5 16.5C2.5 17.4293 2.5 17.894 2.57686 18.2804C2.89249 19.8671 4.13288 21.1075 5.71964 21.4231C6.10603 21.5 6.57069 21.5 7.5 21.5M21.5 16.5C21.5 17.4293 21.5 17.894 21.4231 18.2804C21.1075 19.8671 19.8671 21.1075 18.2804 21.4231C17.894 21.5 17.4293 21.5 16.5 21.5M21.5 7.5C21.5 6.57069 21.5 6.10603 21.4231 5.71964C21.1075 4.13288 19.8671 2.89249 18.2804 2.57686C17.894 2.5 17.4293 2.5 16.5 2.5M2.5 7.5C2.5 6.57069 2.5 6.10603 2.57686 5.71964C2.89249 4.13288 4.13288 2.89249 5.71964 2.57686C6.10603 2.5 6.57069 2.5 7.5 2.5"
-                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <path
-                            d="M12 8.5V6.5M10 11.5V12M14 11.5V12M11 8.5H13C14.8856 8.5 15.8284 8.5 16.4142 9.08579C17 9.67157 17 10.6144 17 12.5V12.5C17 14.3856 17 15.3284 16.4142 15.9142C15.8284 16.5 14.8856 16.5 13 16.5H11C9.11438 16.5 8.17157 16.5 7.58579 15.9142C7 15.3284 7 14.3856 7 12.5V12.5C7 10.6144 7 9.67157 7.58579 9.08579C8.17157 8.5 9.11438 8.5 11 8.5Z"
-                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    <div class="option-text">{{ $t('AppAside.tool_about_name') }}</div>
+                    <SvgIcon icon-class="about" class="icon" style="width: 20px; height: 20px;" />
+                    <div class="option-text">关于</div>
                 </div>
             </div>
         </div>
         <!-- 工具栏 End -->
 
         <!-- 自定义弹窗 -->
-        <CustomDialog
-            v-model="dialogVisible"
-            :title="dialogTitle"
-        >
+        <CustomDialog v-model="dialogVisible" :title="dialogTitle" :class="dialogClass">
             <component :is="currentComponent"></component>
         </CustomDialog>
     </div>
@@ -135,7 +90,8 @@ export default {
             isCollapsed: false,
             dialogVisible: false,
             dialogTitle: '',
-            currentComponent: null
+            currentComponent: null,
+            dialogClass: ''
         }
     },
     computed: {
@@ -153,6 +109,48 @@ export default {
         logoSrc() {
             const theme = this.$store.state.setting.theme
             return theme === 'dark' ? logoLight : logoDark
+        },
+        groupedTabs() {
+            const tabs = this.tab.getAllTabs();
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            const yesterday = today - 24 * 60 * 60 * 1000;
+            const lastWeek = today - 7 * 24 * 60 * 60 * 1000;
+            const lastMonth = today - 30 * 24 * 60 * 60 * 1000;
+
+            const groups = [
+                { title: '今天', tabs: [] },
+                { title: '过去7天', tabs: [] },
+                { title: '过去30天', tabs: [] }
+            ];
+
+            const monthGroups = new Map(); // 用于存储按月分组的数据
+
+            tabs.forEach(tab => {
+                const timestamp = parseInt(tab.uuid);
+                if (timestamp >= today) {
+                    groups[0].tabs.push(tab);
+                } else if (timestamp >= lastWeek) {
+                    groups[1].tabs.push(tab);
+                } else if (timestamp >= lastMonth) {
+                    groups[2].tabs.push(tab);
+                } else {
+                    const date = new Date(timestamp);
+                    const monthKey = `${date.getFullYear()}年${date.getMonth() + 1}月`;
+                    if (!monthGroups.has(monthKey)) {
+                        monthGroups.set(monthKey, []);
+                    }
+                    monthGroups.get(monthKey).push(tab);
+                }
+            });
+
+            // 将月份分组添加到结果中
+            monthGroups.forEach((tabs, monthKey) => {
+                groups.push({ title: monthKey, tabs });
+            });
+
+            // 过滤掉没有会话的分组
+            return groups.filter(group => group.tabs.length > 0);
         }
     },
     methods: {
@@ -232,11 +230,11 @@ export default {
             const componentMap = {
                 '/setting': {
                     component: 'Setting',
-                    title: this.$t('AppAside.tool_setting_name')
+                    title: '设置'
                 },
                 '/about': {
                     component: 'About',
-                    title: this.$t('AppAside.tool_about_name') + ' - 本页面暂不配置多语言'
+                    title: '关于'
                 }
             }
 
@@ -248,6 +246,11 @@ export default {
                 this.dialogTitle = componentMap[path].title
                 this.currentComponent = componentMap[path].component
                 this.dialogVisible = true
+                if (path === '/setting') {
+                    this.dialogClass = 'big-page'
+                } else {
+                    this.dialogClass = ''
+                }
             } else {
                 this.goToPage(path)
             }
@@ -307,7 +310,6 @@ $animation-time: 0.3s;
  * 聊天选项卡
  */
 .chats {
-    font-size: 14px;
     flex: 1;
     padding: 2px;
     overflow-y: auto;
@@ -325,7 +327,6 @@ $animation-time: 0.3s;
         padding: 5px;
 
         span {
-            font-size: 12px;
             color: var(--answer-stats-color);
         }
 
@@ -341,7 +342,7 @@ $animation-time: 0.3s;
     }
 
     .session {
-        padding: 10px 6px 10px 10px;
+        padding: 8px 6px 8px 6px;
         margin-bottom: 2px;
         cursor: pointer;
 
@@ -380,111 +381,46 @@ $animation-time: 0.3s;
  */
 .optionBar {
     width: 100%;
+    font-size: 12px;
     border-top: 1px solid var(--app-small-border-color);
-    padding: 6px 0;
+    padding: 4px 0;
 
     .options {
-        width: 250px;
+        width: 100%;
         margin: 0 auto;
         display: grid;
-        grid-template-columns: 1fr auto 1fr;
-        grid-template-rows: 1fr 1fr;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, 1fr);
         gap: 2px;
         align-items: center;
         transition: width $animation-time ease;
 
         .option {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             cursor: pointer;
-            padding: 10px 18px;
-            margin: 0 8px;
+            padding: 8px 0;
+            margin: 0;
 
             &:hover {
                 @include hover-active-effect;
             }
 
             .icon {
-                width: 25px;
-                height: 25px;
-                margin-right: 4px;
+                width: 24px;
+                height: 24px;
+                margin: 0 0 4px 0;
             }
 
             .option-text {
-                font-size: 13px;
                 font-weight: 600;
                 line-height: 16px;
-                width: 40px;
+                width: auto;
+                text-align: center;
             }
         }
-
-        .divider {
-            grid-column: 2;
-            justify-self: center;
-            height: 100%;
-            display: flex;
-            align-items: center;
-
-            .border {
-                width: 1px;
-                height: 70%;
-                background-color: var(--app-small-border-color);
-            }
-        }
-    }
-}
-
-/**
- * 弹窗
- */
-:global(.el-dialog) {
-    border-radius: 15px;
-    background: var(--layout-common-layout-bg);
-    overflow: hidden;
-    position: relative;
-    max-width: 600px;
-    min-width: 300px;
-    margin: 15vh auto !important;
-    max-height: 70vh;
-    display: flex;
-    flex-direction: column;
-}
-
-:global(.el-dialog::after) {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 110%;
-    height: 110%;
-    z-index: 1;
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    pointer-events: none;
-}
-
-:global(.el-dialog__header),
-:global(.el-dialog__body) {
-    position: relative;
-    z-index: 2;
-}
-
-:global(.el-dialog__body) {
-    flex: 1;
-    overflow-y: auto;
-    scrollbar-width: none;
-}
-
-@media screen and (max-width: 768px) {
-    :global(.el-dialog) {
-        width: 95% !important;
-    }
-}
-
-@media screen and (min-width: 1200px) {
-    :global(.el-dialog) {
-        width: 60% !important;
     }
 }
 </style>

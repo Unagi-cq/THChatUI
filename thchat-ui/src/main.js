@@ -14,6 +14,7 @@ import store from './store'
 import plugins from './plugins' // 引入第三方的插件或组件
 import components from "@/components"  // 引入自定义的组件
 import '@/assets/styles/index.scss' // 全局css
+import '@/assets/icons' // 引入SVG图标
 
 const app = createApp(App)
 
