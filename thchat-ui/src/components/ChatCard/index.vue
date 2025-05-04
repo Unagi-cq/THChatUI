@@ -373,7 +373,7 @@ export default {
         // 折叠图标
         &-icon {
             position: absolute;
-            bottom: 5px;
+            bottom: 0px;
             right: -14px;
             color: var(--common-color);
             cursor: pointer;

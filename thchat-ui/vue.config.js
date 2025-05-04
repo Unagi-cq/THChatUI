@@ -5,7 +5,7 @@ module.exports = defineConfig({
     // github action打包之后 访问的资源路径以仓库名开头 因此这里要做一下区分
     publicPath: process.env.DEPLOY_ENV === 'GH_PAGES'
         ? '/THChatUI/'
-        : '/',
+        : './',
     transpileDependencies: true,
     devServer: {
         client: {
