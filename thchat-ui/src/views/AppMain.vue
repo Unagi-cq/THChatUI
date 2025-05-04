@@ -13,7 +13,7 @@
                 <div class="title-container" v-if="is_show">
                     <div class="title-line">LLM的轻量级Web会话管理方案 <span>THChatUI</span></div>
                     <div class="sub-title-line">嗨喽~朋友！🤖
-                        欢迎使用THChatUI。Github发布页未配置代理，阿里、百度、火山方舟平台体验请移步至国内镜像源：http://localchatui.wuxitianyouqi.com/</div>
+                        欢迎使用THChatUI。Github发布页未配置代理，阿里、百度、火山方舟平台体验请移步至国内镜像源：http://47.98.255.222/#/ </div>
                     <div class="sub-title-line">
                         <el-link type="primary" href="https://unagi-cq.github.io/THChatUI/#/docs"
                             @click="goTo('/about')">

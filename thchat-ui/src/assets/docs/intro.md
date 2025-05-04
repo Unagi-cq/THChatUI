@@ -61,6 +61,7 @@ THChatUI V3是一个专为**数据敏感型个人/组织/公司**设计的**开�
 
 ### 在线体验与代码仓库
 
+[THChatUI国内加速体验地址](http://47.98.255.222/#/)
 [THChatUI永久体验地址](https://unagi-cq.github.io/THChatUI/#/)
 > 【注】THChatUI在线体验版只提供了讯飞星火Lite模型调用，阿里云百炼、智谱AI平台、百度千帆、月之暗面、OpenAI的模型调用需要去对应平台申请Key并填入设置中，Key只会保存在本地浏览器缓存中，绝对安全。
 

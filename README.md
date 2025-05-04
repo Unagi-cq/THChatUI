@@ -3,7 +3,7 @@
 
 <div align="center">
 
-[![GitHub](https://img.shields.io/badge/Demo-%F0%9F%9A%80%20GitHub-blue)](https://unagi-cq.github.io/THChatUI/#/) [![Docs](https://img.shields.io/badge/Document-%F0%9F%9A%80%20GitHub-blue)](https://unagi-cq.github.io/THChatUI/#/docs)
+[![GitHub](https://img.shields.io/badge/Demo-%F0%9F%9A%80%20GitHub-blue)](https://unagi-cq.github.io/THChatUI/#/) [![China](https://img.shields.io/badge/Demo-%F0%9F%9A%80%20China-red)](http://47.98.255.222/#/) [![Docs](https://img.shields.io/badge/Document-%F0%9F%9A%80%20GitHub-blue)](https://unagi-cq.github.io/THChatUI/#/docs)
 
 </div>
 
@@ -73,6 +73,7 @@ THChatUI V3 是一个专为**数据敏感型个人/组织/公司**设计的**开
 
 ### 在线体验与代码仓库
 
+[THChatUI国内加速体验地址](http://47.98.255.222/#/)
 [THChatUI永久体验地址](https://unagi-cq.github.io/THChatUI/#/)
 > 【注】THChatUI在线体验版只提供了讯飞星火Lite模型调用，其他平台的模型调用需要去对应平台申请Key并填入设置中，Key只会保存在本地浏览器缓存中，绝对安全。
 
