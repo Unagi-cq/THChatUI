@@ -28,7 +28,7 @@ jobs:
         run: npm run electron:dist
 
       - name: 上传文件
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: THChatUI-${{ matrix.platform }}
           path: ./thchat-ui/dist_electron/**
