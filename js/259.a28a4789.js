@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkTHChatUI"]=self["webpackChunkTHChatUI"]||[]).push([[259],{77259:function(e,a,t){t.r(a),t.d(a,{default:function(){return d}});var n=t(56768);const s={class:"placeholder"};var u={__name:"index",setup(e){return(e,a)=>((0,n.uX)(),(0,n.CE)("div",s," 智能体 敬请期待 "))}},c=t(71241);const r=(0,c.A)(u,[["__scopeId","data-v-126e609e"]]);var d=r}}]);
+//# sourceMappingURL=259.a28a4789.js.map

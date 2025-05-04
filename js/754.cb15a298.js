@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkTHChatUI"]=self["webpackChunkTHChatUI"]||[]).push([[754],{59754:function(e,a,t){t.r(a),t.d(a,{default:function(){return d}});var n=t(56768);const c={class:"placeholder"};var s={__name:"index",setup(e){return(e,a)=>((0,n.uX)(),(0,n.CE)("div",c," MCP 敬请期待 "))}},u=t(71241);const r=(0,u.A)(s,[["__scopeId","data-v-647d174c"]]);var d=r}}]);
+//# sourceMappingURL=754.cb15a298.js.map
