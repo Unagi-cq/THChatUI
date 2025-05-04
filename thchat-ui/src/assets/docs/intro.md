@@ -2,7 +2,7 @@
 
 ## 简介
 
-THChatUI V2.0.0是一个专为**数据敏感型个人/组织/公司**设计的**开源大模型对话WebUI**，基于Vue和Element Plus开发，可简便快捷的接入本地大模型，保护信息安全。本项目基于Apache 2.0协议开源。
+THChatUI V3是一个专为**数据敏感型个人/组织/公司**设计的**开源大模型对话WebUI**，基于Vue和Element Plus开发，可简便快捷的接入本地大模型，保护信息安全。本项目基于Apache 2.0协议开源。
 
 前端采用Vue更适合中国宝宝体质~
 
@@ -22,16 +22,16 @@ THChatUI V2.0.0是一个专为**数据敏感型个人/组织/公司**设计的**
 - 会话管理：支持会话创建、删除、编辑
 - 知识库管理：支持文件管理、文件上传、文件分片、文本召回、知识库问答(RAG)
 - 多轮对话：支持多轮对话、对话轮数配置
-- 联网搜索：支持联网搜索
+- 联网搜索：支持使用LLM内置联网搜索、Tavily Search外挂联网搜索
 - 多平台集成，支持以下平台模型的调用：
     - 阿里云百炼
     - 百度千帆
+    - 轨基流动
     - 月之暗面
     - 讯飞星火
     - 智谱AI
     - OpenAI(包括类OpenAI式服务)
     - 火山方舟(DeepSeek R1)
-    - 移动云
 - 系统主题切换：支持浅色、深色、毛玻璃三种主题，支持自定义背景图片
 - 响应式设计：支持PC、移动端
 - 多模态：
@@ -40,6 +40,8 @@ THChatUI V2.0.0是一个专为**数据敏感型个人/组织/公司**设计的**
     - 支持图片绘制模型
 - 国际化：支持简中、英文
 - APIKEY管理：支持APIKEY的添加、删除、编辑
+- 模型管理：可手动添加各个平台的模型
+- 看板娘：支持看板娘，提供了200+模型
 
 ### 设计特性
 本项目具有以下特性：
@@ -51,18 +53,14 @@ THChatUI V2.0.0是一个专为**数据敏感型个人/组织/公司**设计的**
 
 ## 界面展示
 
-PC端界面如下：
 
-<img src="https://i.miji.bid/2025/01/12/1bb5f241e49587fd1129dfa81f596939.png" alt="THChatUI" align="middle" width="800" />
-
-移动端界面如下：
-
-<img src="https://i.miji.bid/2025/01/12/a4ebf4e86a9dfd410aa8432639414ac7.png" alt="THChatUI" align="middle" height="400" />
+| PC端 | 移动端 |
+|------|----------|
+| <img src="https://raw.githubusercontent.com/Unagi-cq/THChatUI/refs/heads/main/doc_img/four_website_shot.png" alt="THChatUI" align="middle" width="400" /> | <img src="https://raw.githubusercontent.com/Unagi-cq/THChatUI/refs/heads/main/doc_img/two_m_shot.png" alt="THChatUI" align="middle" width="300" /> |
 
 
 ### 在线体验与代码仓库
 
-[THChatUI国内加速体验地址](http://localchatui.wuxitianyouqi.com/#/)
 [THChatUI永久体验地址](https://unagi-cq.github.io/THChatUI/#/)
 > 【注】THChatUI在线体验版只提供了讯飞星火Lite模型调用，阿里云百炼、智谱AI平台、百度千帆、月之暗面、OpenAI的模型调用需要去对应平台申请Key并填入设置中，Key只会保存在本地浏览器缓存中，绝对安全。
 

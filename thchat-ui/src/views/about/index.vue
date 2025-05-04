@@ -20,8 +20,7 @@
                 <el-button @click="openLink('https://blog.csdn.net/qq_43592352')">关注我的博客</el-button>
                 <el-tooltip effect="light" placement="bottom" :hide-after="0">
                     <template #content>
-                        <img src="https://i.miji.bid/2025/02/25/a91b0353789a3195638a127cf84b6c67.png" alt="公众号二维码"
-                            class="qrcode-image" />
+                        <img src="https://raw.githubusercontent.com/Unagi-cq/THChatUI/refs/heads/main/doc_img/qr_code.png" alt="公众号二维码" class="qrcode-image" />
                     </template>
                     <el-button>关注我的公众号</el-button>
                 </el-tooltip>

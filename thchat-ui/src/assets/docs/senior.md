@@ -23,26 +23,15 @@ THChatUI运行时，数据存储在两个地方：
 ```json
 {
     "settingStorage": {
+        /******************************** 系统设置弹窗对应的参数 ********************************/
         // 系统主题
         theme: 'light',
         // 背景图片
         bg: bg,
         // 是否显示回答统计
         chat_detail: true,
-        // api_key
-        api_key_map: {
-            Ali_DashScope: "",
-            Baidu_QianFan: "",
-            Moonshot_AI: "",
-            Xunfei_Spark: "",
-            Zhipu_BigModel: "",
-            OpenAI: {
-                endpoint: "",
-                api_key: "",
-                model_name: ""
-            },
-            Local: ""
-        },
+        // 模型列表
+        model_list: model_list,
         // 平台
         platform: 'Xunfei_Spark',
         // 是否多轮对话
@@ -53,23 +42,19 @@ THChatUI运行时，数据存储在两个地方：
         model_config: {
             // 模型类型
             type: "llm",
-            // 模型名称
-            name: "Spark Lite 🆓",
             // 模型系列
             series: "xunfei",
             // 模型版本
-            version: "spark lite",
-            // 前处理组索引
-            pre_method: "text_xunfei",
-            // 后处理组索引
-            post_method: "add"
+            version: "spark lite"
         },
+        /******************************** 系统默认参数 ********************************/
         // 输入框单次上传的文件数量
         upload_limit: 1,
         // 输入框可上传的文件类型 暂未接入其他多模态模型 所以只填图片
         upload_type: "image/",
         // 输入框限制文件大小 2MB
         upload_size: 2,
+        /******************************** 知识库参数 ********************************/
         // 一个chunk的最长字符数
         chunk_size: 500,
         // 限制文件大小 5MB
@@ -80,8 +65,20 @@ THChatUI运行时，数据存储在两个地方：
         selected_repoId: '',
         // 知识库启用状态
         kb_enabled: false,
+        /******************************** 联网搜索参数 ********************************/
         // 是否启用联网搜索
-        web_search_enabled: false
+        web_search_enabled: false,
+        // 是否使用TavilySearch
+        is_tavily_search: false,
+        // TavilySearch key
+        tavily_search_key: "",
+        /******************************** 看板娘设置 ********************************/
+        // 是否启用看板娘
+        live2d_enabled: false,
+        // 看板娘模型索引
+        live2d_model_index: 0,
+        // 看板娘模型
+        live2d_model: "https://raw.githubusercontent.com/zenghongtu/live2d-model-assets/master/assets/moc/22.xmas.1/22.2017.newyear.model.json"
     }
 }
 ```
