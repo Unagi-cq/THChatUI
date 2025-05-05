@@ -15,7 +15,9 @@
             <!-- 用户输入统计/操作 -->
             <div class="user-stats" v-if="query">
                 <el-tooltip :content="queryExpanded ? '收起' : '展开'" placement="bottom" v-if="queryTruncatable">
-                    <SvgIcon @click="queryExpanded = !queryExpanded" :icon-class="queryExpanded ? 'circle-arrow-up' : 'circle-arrow-down'" style="width: 15px; height: 15px;" />
+                    <SvgIcon @click="queryExpanded = !queryExpanded"
+                        :icon-class="queryExpanded ? 'circle-arrow-up' : 'circle-arrow-down'"
+                        style="width: 15px; height: 15px;" />
                 </el-tooltip>
                 <el-tooltip :content="'复制用户输入'" placement="bottom">
                     <SvgIcon @click="copyUserQuery" icon-class="copyPT" style="width: 15px; height: 15px;" />
@@ -45,12 +47,14 @@
             <!-- 网络搜索结果 -->
             <div v-if="webSearchResults && webSearchResults.length > 0" class="web-search-content">
                 <div class="web-search-header">以下是网络搜索结果：</div>
-                <div v-for="(item, index) in webSearchResults" :key="index" class="web-search-item" @click="toggleWebSearchItem(index)">
+                <div v-for="(item, index) in webSearchResults" :key="index" class="web-search-item"
+                    @click="toggleWebSearchItem(index)">
                     <div class="web-search-title">
                         <a :href="item.url" target="_blank" class="web-search-link" @click.stop>{{ item.title }}</a>
                         <span class="web-search-score">搜索匹配度: {{ (item.score * 100).toFixed(1) }}%</span>
                     </div>
-                    <div class="web-search-text" :class="{ 'web-search-collapse': !webSearchExpandeds[index] }">{{ item.content }}</div>
+                    <div class="web-search-text" :class="{ 'web-search-collapse': !webSearchExpandeds[index] }">{{
+                        item.content }}</div>
                 </div>
             </div>
             <!-- 思考内容 -->
@@ -94,7 +98,10 @@
             <el-tooltip :content="'删除对话'" placement="bottom">
                 <SvgIcon @click="deleteQA" icon-class="deleteQA" style="width: 15px; height: 15px;" />
             </el-tooltip>
-            <span>字数统计: {{ answer.length }} 字符</span>
+            <el-tooltip v-if="isLast" :content="'重新生成'" placement="bottom">
+                <SvgIcon @click="regenerate" icon-class="refresh" style="width: 15px; height: 15px;" />
+            </el-tooltip>
+            <span>{{ answer.length }} words</span>
             <span>{{ finishTime - responseTime }} ms</span>
         </div>
         <div class="answer-stats" v-else-if="chat_detail">
@@ -152,7 +159,12 @@ export default {
         // 思考内容
         reason: String,
         // 联网搜索内容
-        webSearchResults: Array
+        webSearchResults: Array,
+        // 是否为最后一个ChatCard
+        isLast: {
+            type: Boolean,
+            default: false
+        }
     },
     computed: {
         // 是否开启回答统计
@@ -274,6 +286,13 @@ export default {
                 title: success ? '用户输入复制成功！' : '复制失败！',
                 type: success ? 'success' : 'error',
             });
+        },
+
+        /**
+         * 重新生成
+         */
+        regenerate() {
+            this.$emit('regenerate', this.qaId);
         },
     },
     watch: {
@@ -600,7 +619,7 @@ export default {
  * 网络搜索结果相关样式
  */
 .web-search {
-    
+
     &-content {
         margin: 8px 0 0 0;
         padding: 10px;

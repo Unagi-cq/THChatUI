@@ -4,11 +4,22 @@
         <el-row :gutter="24" justify="center" style="margin-left: 0;margin-right: 0;">
 
             <el-col :md="16" :sm="22" :xs="22">
-                <ChatCard :qaId="c['qaId']" :query="c['query']" :answer="c['answer']" :modelName="c['modelName']"
-                    :series="c['series']" :responseTime="c['responseTime']" :finishTime="c['finishTime']"
-                    :files="c['files']" :modelType="c['modelType']" :recall="c['recall']" :reason="c['reason']"
+                <ChatCard 
+                    :qaId="c['qaId']" 
+                    :query="c['query']" 
+                    :answer="c['answer']" 
+                    :modelName="c['modelName']"
+                    :series="c['series']" 
+                    :responseTime="c['responseTime']" 
+                    :finishTime="c['finishTime']"
+                    :files="c['files']" 
+                    :modelType="c['modelType']" 
+                    :recall="c['recall']" 
+                    :reason="c['reason']"
                     :webSearchResults="c['webSearchResults']"
-                    v-for="c in active_session_qa_data" />
+                    :isLast="active_session_qa_data[active_session_qa_data.length-1] === c"
+                    v-for="c in active_session_qa_data"
+                    @regenerate="regenerateQA" />
 
                 <div class="title-container" v-if="is_show">
                     <div class="title-line">LLM的轻量级Web会话管理方案 <span>THChatUI</span></div>
@@ -30,6 +41,7 @@
 
 <script>
 import loadLive2d from 'live2d-helper'
+import eventBus from '@/eventBus'
 
 export default {
     name: 'AppMain',
@@ -113,6 +125,23 @@ export default {
          */
         goTo(path) {
             this.$router.push(path)
+        },
+        /**
+         * 重新生成最后一个问题的回答
+         */
+        regenerateQA(qaId) {
+            // 找到对应的QA对象
+            const qa = this.active_session_qa_data.find(item => item.qaId === qaId);
+            if (!qa) return;
+            // 清空相关内容
+            qa.answer = '';
+            qa.reason = '';
+            qa.recall = [];
+            qa.webSearchResults = [];
+            qa.responseTime = undefined;
+            qa.finishTime = undefined;
+            // 通过eventBus触发重新生成事件
+            eventBus.emit('regenerate', qa);
         }
     },
     watch: {

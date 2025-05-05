@@ -57,6 +57,7 @@ import chatStoreHelper from "@/schema/chatStoreHelper";
 import { QA, Session } from "@/schema/chat";
 import { Segment, useDefault } from 'segmentit';
 import { TavilySearch } from "@langchain/tavily";
+import eventBus from '@/eventBus';
 
 const segmentit = useDefault(new Segment());
 
@@ -75,10 +76,15 @@ export default {
     mounted() {
         // 添加粘贴事件监听
         document.addEventListener('paste', this.handlePaste);
+        // 先移除再注册，防止重复
+        eventBus.off('regenerate', this.handleRegenerate);
+        eventBus.on('regenerate', this.handleRegenerate);
     },
     beforeDestroy() {
         // 移除粘贴事件监听
         document.removeEventListener('paste', this.handlePaste);
+        // 移除eventBus监听
+        eventBus.off('regenerate', this.handleRegenerate);
     },
     computed: {
         // 当前激活的聊天选项卡uuid
@@ -210,23 +216,29 @@ export default {
         /**
          * 提交聊天请求并处理响应
          */
-        async onSubmitChat() {
-            this.query = this.query.trim();
-
-            if (this.query === '') {
-                return;
+        async onSubmitChat(queryParam, filesParam, qaIdParam) {
+            // 如果是点击事件对象，重置为 undefined
+            if (queryParam && queryParam instanceof Event) {
+                queryParam = undefined;
             }
 
-            // 深拷贝
-            let [query, qaId, files] = [
-                this.query,
-                Date.now(),
-                JSON.parse(JSON.stringify(this.uploadedFiles))
-            ];
-
-            // 重置输入
-            this.query = ''
-            this.uploadedFiles = []
+            let query, qaId, files;
+            if (queryParam !== undefined) {
+                query = queryParam;
+                qaId = qaIdParam || Date.now();
+                files = filesParam ? JSON.parse(JSON.stringify(filesParam)) : [];
+            } else {
+                this.query = this.query.trim();
+                if (this.query === '') {
+                    return;
+                }
+                query = this.query;
+                qaId = Date.now();
+                files = JSON.parse(JSON.stringify(this.uploadedFiles));
+                // 重置输入
+                this.query = '';
+                this.uploadedFiles = [];
+            }
 
             let qa = new QA(qaId, query, "", files, undefined, undefined, this.model_config.series, this.model_config.version, this.model_config.type);
 
@@ -249,9 +261,11 @@ export default {
              */
             let history = [];
             if (this.$store.state.setting.memory) {
+                let endIndex = this.active_session_qa_data.length - 1;
+                let n = this.$store.state.setting.memory_limit;
                 // 只保留最近memory_limit条有效对话
                 history = this.active_session_qa_data
-                    .slice((this.$store.state.setting.memory_limit + 1) * -1)
+                    .slice(Math.max(endIndex - n, 0), Math.max(endIndex, 0))
                     .filter(item => item.answer && item.answer.trim());
             }
 
@@ -544,6 +558,14 @@ export default {
             return allChunks
                 .slice(0, this.$store.state.setting.recall_count)
                 .filter(chunk => chunk.score > 0.6);
+        },
+
+        /**
+         * 处理重新生成事件
+         */
+        handleRegenerate(qa) {
+            // 重新生成时，直接用qa对象的query和qaId重新发起请求
+            this.onSubmitChat(qa.query, qa.files, qa.qaId);
         }
     }
 }

@@ -24,6 +24,7 @@
     "live2d-helper": "^1.0.1",
     "mammoth": "^1.9.0",
     "marked": "^15.0.6",
+    "mitt": "^3.0.1",
     "openai": "^4.77.4",
     "pdfjs-dist": "^5.2.133",
     "segmentit": "^2.0.3",

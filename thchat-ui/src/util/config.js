@@ -15,7 +15,6 @@
  */
 function preProcess(model_version, prompt, history, pre_method, files, is_search) {
     let body = {};
-    console.log(is_search);
     switch (pre_method) {
         // 阿里平台的文本输入格式
         case "text_ali":
