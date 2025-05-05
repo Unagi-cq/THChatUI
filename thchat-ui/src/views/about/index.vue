@@ -35,6 +35,7 @@
                 <ul>
                     <li>[add] 新增了Electron打包成桌面应用功能</li>
                     <li>[add] 新增了用户输入复制按钮</li>
+                    <li>[add] 新增了Google AI平台（Gemini） 要在本地用梯子才能连上Google服务器</li>
                     <li>[fix] 解决了SSE请求无限报错重试bug</li>
                     <li>[fix] 修复了多模态模型无法多轮对话bug</li>
                 </ul>

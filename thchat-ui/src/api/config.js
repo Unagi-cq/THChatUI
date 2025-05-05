@@ -36,6 +36,26 @@ module.exports = {
                 }
             }
         },
+        "Azure":
+        {
+            platform_name: "Azure",
+            avatar: "azure",
+            list: [],
+            model_config: {
+                form_items: [
+                    { label: "模型类型", key: "type", options: ["llm"] },
+                    { label: "模型调用名称", key: "version" },
+                    { label: "模型调用地址", key: "endpoint" },
+                    { label: "API-KEY", key: "api_key" }
+                ],
+                rules: {
+                    type: [{ required: true, message: '请选择模型类型' }],
+                    version: [{ required: true, message: '请输入模型调用名称，模型的官方调用名称' }],
+                    endpoint: [{ required: true, message: '请输入模型调用地址' }],
+                    api_key: [{ required: true, message: '请输入API-KEY' }],
+                }
+            }
+        },
         "Baidu_QianFan":
         {
             platform_name: "百度千帆",
@@ -63,6 +83,58 @@ module.exports = {
                 }
             }
         },
+        "Google_AI": {
+            platform_name: "谷歌AI",
+            avatar: "google",
+            list: [
+                { type: "llm", series: "gemini", version: "gemini-2.5-pro-preview-03-25" },
+                { type: "llm", series: "gemini", version: "gemini-2.0-flash" },
+                { type: "llm", series: "gemini", version: "gemini-1.5-flash" },
+                { type: "llm", series: "gemini", version: "gemini-1.5-pro" },
+                { type: "vim", series: "gemini", version: "gemini-2.5-pro-preview-03-25" },
+                { type: "vim", series: "gemini", version: "gemini-2.0-flash" },
+                { type: "vim", series: "gemini", version: "gemini-1.5-flash" },
+                { type: "vim", series: "gemini", version: "gemini-1.5-pro" },
+            ],
+            api_key_config: {
+                api_key: "",
+                apply_url: "https://aistudio.google.com/app/apikey"
+            },
+            model_config: {
+                form_items: [
+                    { label: "模型类型", key: "type", options: ["llm", "vim"] },
+                    { label: "模型调用名称", key: "version" }
+                ],
+                rules: {
+                    type: [{ required: true, message: '请选择模型类型' }],
+                    version: [{ required: true, message: '请输入模型调用名称，模型的官方调用名称' }]
+                }
+            }
+        },
+        "Moonshot_AI":
+        {
+            platform_name: "月之暗面",
+            avatar: "moonshot",
+            list: [
+                { type: "llm", series: "moonshot", version: "moonshot-v1-8k" },
+                { type: "llm", series: "moonshot", version: "moonshot-v1-32k" },
+                { type: "llm", series: "moonshot", version: "moonshot-v1-128k" }
+            ],
+            api_key_config: {
+                api_key: "",
+                apply_url: "https://platform.moonshot.cn/console/api-keys"
+            },
+            model_config: {
+                form_items: [
+                    { label: "模型类型", key: "type", options: ["llm"] },
+                    { label: "模型调用名称", key: "version" },
+                ],
+                rules: {
+                    type: [{ required: true, message: '请选择模型类型' }],
+                    version: [{ required: true, message: '请输入模型调用名称，模型的官方调用名称' }],
+                }
+            }
+        },
         "SiliconFlow":
         {
             platform_name: "硅基流动",
@@ -86,22 +158,25 @@ module.exports = {
                 }
             }
         },
-        "Moonshot_AI":
+        "TT_Volcengine":
         {
-            platform_name: "月之暗面",
-            avatar: "moonshot",
+            platform_name: "火山方舟",
+            avatar: "volcengine",
             list: [
-                { type: "llm", series: "moonshot", version: "moonshot-v1-8k" },
-                { type: "llm", series: "moonshot", version: "moonshot-v1-32k" },
-                { type: "llm", series: "moonshot", version: "moonshot-v1-128k" }
+                { type: "llm", series: "volcengine", version: "doubao-1-5-pro-32k-250115" },
+                { type: "llm", series: "volcengine", version: "deepseek-v3-250324" },
+                { type: "llm", series: "volcengine", version: "doubao-1-5-lite-32k-250115" },
+                { type: "llm", series: "volcengine", version: "doubao-1-5-thinking-pro-250415" },
+                { type: "llm", series: "volcengine", version: "deepseek-r1-250120" },
+                { type: "vim", series: "volcengine", version: "doubao-1.5-vision-pro-250328" }
             ],
             api_key_config: {
                 api_key: "",
-                apply_url: "https://platform.moonshot.cn/console/api-keys"
+                apply_url: "https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey"
             },
             model_config: {
                 form_items: [
-                    { label: "模型类型", key: "type", options: ["llm"] },
+                    { label: "模型类型", key: "type", options: ["llm", "vim"] },
                     { label: "模型调用名称", key: "version" },
                 ],
                 rules: {
@@ -148,53 +223,6 @@ module.exports = {
                 rules: {
                     type: [{ required: true, message: '请选择模型类型' }],
                     version: [{ required: true, message: '请输入模型调用名称，模型的官方调用名称' }],
-                }
-            }
-        },
-        "TT_Volcengine":
-        {
-            platform_name: "火山方舟",
-            avatar: "volcengine",
-            list: [
-                { type: "llm", series: "volcengine", version: "doubao-1-5-pro-32k-250115" },
-                { type: "llm", series: "volcengine", version: "deepseek-v3-250324" },
-                { type: "llm", series: "volcengine", version: "doubao-1-5-lite-32k-250115" },
-                { type: "llm", series: "volcengine", version: "doubao-1-5-thinking-pro-250415" },
-                { type: "llm", series: "volcengine", version: "deepseek-r1-250120" },
-                { type: "vim", series: "volcengine", version: "doubao-1.5-vision-pro-250328" }
-            ],
-            api_key_config: {
-                api_key: "",
-                apply_url: "https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey"
-            },
-            model_config: {
-                form_items: [
-                    { label: "模型类型", key: "type", options: ["llm", "vim"] },
-                    { label: "模型调用名称", key: "version" },
-                ],
-                rules: {
-                    type: [{ required: true, message: '请选择模型类型' }],
-                    version: [{ required: true, message: '请输入模型调用名称，模型的官方调用名称' }],
-                }
-            }
-        },
-        "Azure":
-        {
-            platform_name: "Azure",
-            avatar: "azure",
-            list: [],
-            model_config: {
-                form_items: [
-                    { label: "模型类型", key: "type", options: ["llm"] },
-                    { label: "模型调用名称", key: "version" },
-                    { label: "模型调用地址", key: "endpoint" },
-                    { label: "API-KEY", key: "api_key" }
-                ],
-                rules: {
-                    type: [{ required: true, message: '请选择模型类型' }],
-                    version: [{ required: true, message: '请输入模型调用名称，模型的官方调用名称' }],
-                    endpoint: [{ required: true, message: '请输入模型调用地址' }],
-                    api_key: [{ required: true, message: '请输入API-KEY' }],
                 }
             }
         },
