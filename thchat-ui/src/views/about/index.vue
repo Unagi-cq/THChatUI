@@ -32,6 +32,16 @@
             <h2>更新日志</h2>
 
             <div class="version-block">
+                <h3>v3.0.1 - 2025.05.05</h3>
+                <ul>
+                    <li>[add] 新增了Electron打包成桌面应用功能</li>
+                    <li>[add] 新增了用户输入复制按钮</li>
+                    <li>[fix] 解决了SSE请求无限报错重试bug</li>
+                    <li>[fix] 修复了多模态模型无法多轮对话bug</li>
+                </ul>
+            </div>
+
+            <div class="version-block">
                 <h3>v3.0.0 - 2025.05.03 - 代码优化</h3>
                 <ul>
                     <li>Notice: 代码实现上，个人觉得可读性和低入手难度比层层封装到大家看不懂代码更重要。</li>

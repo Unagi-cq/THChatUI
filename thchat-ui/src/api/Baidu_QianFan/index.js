@@ -143,7 +143,9 @@ function buildVIMMessage(prompt, history, files) {
             const chat = history[i];
             array.push({
                 "role": "user",
-                "content": [{ "text": chat.query }]
+                "content": chat.files && chat.files[0] && chat.files[0].base64 ?
+                    [{ "type": "image_url", "image_url": { "url": chat.files[0].base64 } }, { "text": chat.query }] :
+                    [{ "text": chat.query }]
             });
             array.push({
                 "role": "assistant",

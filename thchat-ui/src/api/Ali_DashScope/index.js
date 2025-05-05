@@ -151,7 +151,9 @@ function buildVIMMessage(prompt, history, files) {
             const chat = history[i];
             array.push({
                 "role": "user",
-                "content": [{ "text": chat.query }]
+                "content": chat.files && chat.files[0] && chat.files[0].base64 ? 
+                    [{"image": chat.files[0].base64}, { "text": chat.query }] :
+                    [{ "text": chat.query }]
             });
             array.push({
                 "role": "assistant",
@@ -182,11 +184,13 @@ function buildVIMMessage(prompt, history, files) {
 }
 
 export function postProcess(event) {
-    const data = JSON.parse(event.data).output.choices[0].message;
+    var data = JSON.parse(event.data).output.choices[0];
 
     if (data.finish_reason === "stop") {
         return { usage: data.usage };
     }
+
+    data = data.message;
 
     if (data.reasoning_content) {
         return { reasoning_content: data.reasoning_content };
