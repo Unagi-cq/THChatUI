@@ -386,9 +386,9 @@ export default {
                         chatStoreHelper.addQA(this.active, qa);
                     },
                     onerror: (error) => {
-                        console.log('close', error)
                         this.stopChat()
                         this.$message.error('系统错误：' + error)
+                        throw new Error('系统错误：' + error)
                     }
                 });
             } catch (e) {
