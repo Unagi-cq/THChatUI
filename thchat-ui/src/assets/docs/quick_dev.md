@@ -4,6 +4,8 @@ THChatUI不仅提供了为开发者提供了前端项目，还提供了基于Pyt
 
 这些接口提供了最简洁的实现方式（文件名含_simple_）与基于langchain的实现方式（文件名含_langchain_），并且分别提供了普通聊天、知识库检索、联网搜索、多模态输入和图片生成5种类型的接口示例。
 
+目前支持以下平台：<b>Web PC端、Web 移动端、Wins桌面端。</b>
+
 
 ### 安装
 在安装项目前，请先移步[node中文官网](https://nodejs.cn/download/)安装node.js环境，理论上v14以上版本皆可，建议安装最新版，截至目前，node已经更新至v20.12.2。
@@ -129,6 +131,18 @@ location ^~ /ali/remote/
 > 【注】 本地运行调试时不需要额外配置。`/ali/remote/` 是和前端项目的vue.config.js文件里的代理前缀对应的。
 
 后端接口部署就很简单了，配置好python3.10环境，安装好包，直接运行就行。
+
+### Electron桌面应用打包
+
+除了Web应用的支持，本项目还支持打包成各个平台（Windows、Linux、MacOS）的可执行文件。目前支持Wins桌面应用。
+
+桌面应用打包：
+
+```bash
+npm run electron:dist
+```
+
+打包后，`thchat-ui`目录下会有`dist_electron`文件夹，可以双击其中的setup程序将THChatUI安装到电脑上。
 
 ### 项目目录与代码实现
 请参考：[THChatUI V2 代码视频讲解教程](https://www.bilibili.com/video/BV1xTcVezEKP/)

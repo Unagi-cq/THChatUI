@@ -1,5 +1,5 @@
 <h1 align="center">LM的Web会话管理方案<span style="color: #2454ff;">THChatUI</span>
-<span style="font-size: 10px;">v3.0.0</span></h1>
+<span style="font-size: 10px;">v3.0.1</span></h1>
 
 <div align="center">
 
@@ -20,6 +20,10 @@ THChatUI V3 是一个专为**数据敏感型个人/组织/公司**设计的**开
 后端采用Python的Flask快速启动接口，项目提供了若干个调用示例(并不是必须的)。
 
 不需额外数据库，数据存浏览器**IndexedDB**中。
+
+目前支持以下平台：<b>Web PC端、Web 移动端、Wins桌面端。</b>
+
+Wins桌面端请移步至[发布页](https://github.com/Unagi-cq/THChatUI/releases/)下载。
 
 <img src="https://raw.githubusercontent.com/Unagi-cq/THChatUI/refs/heads/main/doc_img/v3_page.png" alt="THChatUI" align="middle" width="800" />
 
@@ -66,9 +70,9 @@ THChatUI V3 是一个专为**数据敏感型个人/组织/公司**设计的**开
 
 ## 界面展示
 
-| PC端 | 移动端 |
-|------|----------|
-| <img src="https://raw.githubusercontent.com/Unagi-cq/THChatUI/refs/heads/main/doc_img/four_website_shot.png" alt="THChatUI" align="middle" width="400" /> | <img src="https://raw.githubusercontent.com/Unagi-cq/THChatUI/refs/heads/main/doc_img/two_m_shot.png" alt="THChatUI" align="middle" width="300" /> |
+| Web PC端 | Web 移动端 | Windows 桌面端 |
+|------|----------|----------|
+| <img src="https://raw.githubusercontent.com/Unagi-cq/THChatUI/refs/heads/main/doc_img/four_website_shot.png" alt="THChatUI" align="middle" width="400" /> | <img src="https://raw.githubusercontent.com/Unagi-cq/THChatUI/refs/heads/main/doc_img/two_m_shot.png" alt="THChatUI" align="middle" width="300" /> | <img src="https://raw.githubusercontent.com/Unagi-cq/THChatUI/refs/heads/main/doc_img/win_app_shot.png" alt="THChatUI" align="middle" width="400" /> |
 
 
 ### 在线体验与代码仓库

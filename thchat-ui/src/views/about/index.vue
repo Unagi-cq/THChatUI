@@ -3,9 +3,8 @@
         <div class="title-section">
             <img :src="logoSrc" class="logo" alt="logo" />
 
-            <span class="title">THChatUI<span style="font-size: 12px; color: #999;">v3.0.0</span></span>
-            <p class="subtitle">欢迎使用<span>THChatUI</span>，一个基于<span>Vue</span>和<span>Element Plus</span>的Web对话管理WebUI。
-            </p>
+            <span class="title">THChatUI<span style="font-size: 12px; color: #999;">v3.0.1</span></span>
+            <p class="subtitle">欢迎使用<span>THChatUI</span>，一个基于<span>Vue</span>和<span>Element Plus</span>的Web对话管理WebUI。目前支持以下平台：<b>Web PC端、Web 移动端、Wins桌面端。</b></p>
 
             <p>
                 THChatUI是一个专为数据敏感型个人/组织设计的大模型WebUI。<br />
