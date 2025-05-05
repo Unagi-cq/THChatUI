@@ -11,10 +11,15 @@
             <!-- 用户文字提问 -->
             <div class="message-content">
                 <p :class="{ 'collapse-p': !queryExpanded }" ref="queryText">{{ query }}</p>
-                <el-icon v-if="queryTruncatable" @click="queryExpanded = !queryExpanded" class="collapse-icon">
-                    <ArrowDown v-if="!queryExpanded" />
-                    <ArrowUp v-else />
-                </el-icon>
+            </div>
+            <!-- 用户输入统计/操作 -->
+            <div class="user-stats" v-if="query">
+                <el-tooltip :content="queryExpanded ? '收起' : '展开'" placement="bottom" v-if="queryTruncatable">
+                    <SvgIcon @click="queryExpanded = !queryExpanded" :icon-class="queryExpanded ? 'circle-arrow-up' : 'circle-arrow-down'" style="width: 15px; height: 15px;" />
+                </el-tooltip>
+                <el-tooltip :content="'复制用户输入'" placement="bottom">
+                    <SvgIcon @click="copyUserQuery" icon-class="copyPT" style="width: 15px; height: 15px;" />
+                </el-tooltip>
             </div>
         </div>
 
@@ -258,7 +263,18 @@ export default {
          */
         toggleWebSearchItem(index) {
             this.webSearchExpandeds[index] = !this.webSearchExpandeds[index];
-        }
+        },
+
+        /**
+         * 复制用户输入
+         */
+        async copyUserQuery() {
+            const success = await this.copyToClipboard(this.query);
+            this.$notify({
+                title: success ? '用户输入复制成功！' : '复制失败！',
+                type: success ? 'success' : 'error',
+            });
+        },
     },
     watch: {
         // 当recall数据变化时重置展开状态
@@ -653,5 +669,14 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+}
+
+/**
+ * 用户输入统计/操作
+ */
+.user-stats {
+    @extend .answer-stats;
+    margin-top: 8px;
+    margin-bottom: 4px;
 }
 </style>
