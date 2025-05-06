@@ -13,7 +13,7 @@ const settingStorage = JSON.parse(localStorage.getItem('settingStorage')) || ''
  * defaultSettings 是项目初次运行时的默认配置
  * 想让项目结构精简一点 所以没有单独写成一个配置文件
  */
-const defaultSettings = {
+export const defaultSettings = {
     /******************************** 系统设置弹窗对应的参数 ********************************/
     // 系统主题
     theme: 'light',

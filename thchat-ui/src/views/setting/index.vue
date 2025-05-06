@@ -312,6 +312,8 @@
 import bg from '@/assets/images/bg.jpg'
 import bg2 from '@/assets/images/bg2.jpg'
 import live2dModels from '@/util/live2d_models.js'
+import cache from '@/util/cache'
+import { defaultSettings } from '@/store/setting'
 
 export default {
     name: 'Setting',
@@ -584,7 +586,7 @@ export default {
          */
         clearLocalStorage() {
             this.$confirm(
-                "确定要清空所有本地缓存吗？这将会清除所有聊天记录。",
+                "确定要清空所有本地缓存吗？这将会清除所有API KEY、模型配置，聊天记录将会保留。",
                 "警告",
                 {
                     confirmButtonText: "确定",
@@ -592,7 +594,7 @@ export default {
                     type: 'warning'
                 }
             ).then(() => {
-                this.$store.dispatch('clearAll');
+                cache.local.setJSON('settingStorage', defaultSettings);
                 this.$notify({
                     title: "成功",
                     message: "本地缓存已清空",
