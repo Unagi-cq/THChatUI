@@ -1,5 +1,6 @@
 <template>
     <div v-if="isExternal" :style="styleExternalIcon" class="svg-external-icon svg-icon" />
+    <img v-else-if="iconName === '#icon-dify'" src="@/assets/images/dify.png" class="svg-icon" />
     <svg v-else :class="svgClass">
         <use :xlink:href="iconName" />
     </svg>

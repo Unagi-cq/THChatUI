@@ -427,8 +427,6 @@ export default {
     >.avatar {
         width: 30px;
         height: 30px;
-        border-radius: 50%;
-        background-color: var(--sendBox-bg-color);
     }
 
     // 用户名样式

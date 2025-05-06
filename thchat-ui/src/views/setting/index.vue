@@ -1131,7 +1131,6 @@ export default {
                     .model-avatar {
                         width: 20px;
                         height: 20px;
-                        border-radius: 6px;
                         display: flex;
                         justify-content: center;
 

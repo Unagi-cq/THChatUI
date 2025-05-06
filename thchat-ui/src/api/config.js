@@ -83,6 +83,24 @@ module.exports = {
                 }
             }
         },
+        "Dify": {
+            platform_name: "Dify",
+            avatar: "dify",
+            list: [],
+            model_config: {
+                form_items: [
+                    { label: "模型类型", key: "type", options: ["llm"] },
+                    { label: "API-KEY", key: "api_key" },
+                    { label: "Base-URL", key: "base_url" },
+                    { label: "应用名称", key: "version" }
+                ],
+                rules: {
+                    type: [{ required: true, message: '请选择模型类型' }],
+                    api_key: [{ required: true, message: '请输入API-KEY' }],
+                    base_url: [{ required: true, message: '请输入Base-URL' }]
+                }
+            }
+        },
         "Google_AI": {
             platform_name: "谷歌AI",
             avatar: "google",
