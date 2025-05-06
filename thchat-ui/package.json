@@ -1,6 +1,6 @@
 {
   "name": "THChatUI",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "author": "Unagi-cq <baiwen_88@qq.com>",
   "description": "THChatUI 是一个基于 Vue2 + ElementUI 的LLM WebUI。",
   "private": true,
@@ -11,7 +11,7 @@
     "electron": "electron .",
     "electron:dev": "npm run build && electron .",
     "electron:pack": "electron-builder --dir",
-    "electron:dist": "electron-builder"
+    "electron:dist": "npm run build && electron-builder"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",

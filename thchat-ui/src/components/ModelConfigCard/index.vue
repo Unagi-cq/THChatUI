@@ -1,6 +1,7 @@
 <template>
     <div class="add-model-form">
-        <el-form :model="formData" :rules="rules" ref="modelForm" label-width="120px">
+        <div class="meto-tip" v-if="meto">{{ meto }}</div>
+        <el-form :model="formData" :rules="rules" ref="modelForm" label-width="120px" label-position="left">
             <el-form-item v-for="item in formItems" :key="item.key" :prop="item.key">
                 <template #label>
                     {{ item.label }}
@@ -57,7 +58,8 @@ export default {
         return {
             formData: {},
             formItems: [],
-            rules: {}
+            rules: {},
+            meto: ""
         }
     },
     watch: {
@@ -72,6 +74,7 @@ export default {
                     this.rules = platformConfig.model_config.rules || {}
                     // 初始化表单数据
                     this.formData = { "series": platformConfig.avatar }
+                    this.meto = platformConfig.model_config.meto
                 }
             },
             deep: true,
@@ -114,6 +117,20 @@ export default {
         color: #909399;
         cursor: pointer;
     }
+}
+
+.meto-tip {
+    background: #f4f8fb;
+    color: #409eff;
+    border-left: 4px solid #409eff;
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin-bottom: 18px;
+    font-size: 12px;
+    line-height: 1.6;
+    word-break: break-all;
+    box-shadow: 0 2px 8px rgba(64,158,255,0.06);
+    transition: background 0.3s;
 }
 
 .dialog-footer {

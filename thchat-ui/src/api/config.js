@@ -92,13 +92,14 @@ module.exports = {
                     { label: "模型类型", key: "type", options: ["llm"] },
                     { label: "API-KEY", key: "api_key" },
                     { label: "Base-URL", key: "base_url" },
-                    { label: "应用名称", key: "version" }
+                    { label: "应用名称", key: "version" , tooltip: "自己起一个名字，方便在THChatUI平台展示"}
                 ],
                 rules: {
                     type: [{ required: true, message: '请选择模型类型' }],
                     api_key: [{ required: true, message: '请输入API-KEY' }],
                     base_url: [{ required: true, message: '请输入Base-URL' }]
-                }
+                },
+                meto: "目前只支持Dify平台【聊天助手】【Agent】【Chatflow】三个模式的引入，即仅支持/chat-messages接口，不支持【工作流】。"
             }
         },
         "Google_AI": {

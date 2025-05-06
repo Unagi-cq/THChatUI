@@ -1,5 +1,5 @@
 <h1 align="center">LM的Web会话管理方案<span style="color: #2454ff;">THChatUI</span>
-<span style="font-size: 10px;">v3.0.1</span></h1>
+<span style="font-size: 10px;">v3.0.2</span></h1>
 
 <div align="center">
 

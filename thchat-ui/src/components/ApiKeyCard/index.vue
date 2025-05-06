@@ -1,7 +1,7 @@
 <template>
     <div class="api-key-form">
         <el-form :model="formData" label-width="120px">
-            <el-form-item v-for="(value, key) in filteredFormData" :key="key" :label="formatLabel(key)">
+            <el-form-item v-for="(value, key) in filteredFormData" :key="key" :label="formatLabel(key)" label-position="left">
                 <el-input v-if="key === 'api_key'" v-model="formData[key]" :type="showKey ? 'text' : 'password'">
                     <template #suffix>
                         <el-icon class="cursor-pointer" @click="showKey = !showKey">
