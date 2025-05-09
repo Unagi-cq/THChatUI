@@ -48,7 +48,7 @@ export default {
             // 是否激活侧边栏
             active: false,
             // 侧边栏宽度
-            asideWidth: '250px'
+            asideWidth: '240px'
         }
     },
     components: {
@@ -70,7 +70,7 @@ export default {
          */
         toggleSidebar() {
             this.active = !this.active;
-            this.asideWidth = this.asideWidth === '0px' ? '250px' : '0px';
+            this.asideWidth = this.asideWidth === '0px' ? '240px' : '0px';
             // 更新CSS变量以改变竖条的位置
             document.documentElement.style.setProperty('--sidebar-width', this.asideWidth);
         },
@@ -88,7 +88,7 @@ export default {
                 this.asideWidth = '0px'
             } else {
                 this.active = false
-                this.asideWidth = '250px'
+                this.asideWidth = '240px'
             }
             document.documentElement.style.setProperty('--sidebar-width', this.asideWidth);
         }
@@ -101,7 +101,7 @@ export default {
 /**
  * 变量定义
  */
-$animation-time: 0.3s; // 动画时间
+$animation-time: 0.1s; // 动画时间
 $vertical-divider-width: 30px; // 竖条的宽度
 
 /**
@@ -119,7 +119,7 @@ $vertical-divider-width: 30px; // 竖条的宽度
             width: var(--sidebar-width);
             height: 100%;
             overflow-y: hidden;
-            transition: all $animation-time;
+            transition: width $animation-time;
             border-right: 1px solid var(--app-small-border-color);
             scrollbar-width: none;
 

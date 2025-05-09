@@ -84,7 +84,6 @@ export default {
 	max-height: 70vh;
 	display: flex;
 	flex-direction: column;
-	transition: all 0.2s ease-in-out;
 }
 
 /* 自定义大尺寸弹窗页面的大小 */

@@ -75,6 +75,8 @@ html {
    * 召回模块单条召回文本分数颜色
    */
   --recall-item-title-color: #636363;
+  /* 侧边栏背景 */
+  --aside-bg: url('../images/aside_light_bg.png') no-repeat;
 }
 
 /* 暗黑 主题样式 */
@@ -136,6 +138,8 @@ html {
    * 召回模块单条召回文本分数颜色
    */
   --recall-item-title-color: #aaaaaa;
+  /* 侧边栏背景 */
+  --aside-bg: url('../images/aside_dark_bg.png') no-repeat;
 }
 
 /* 毛玻璃 主题样式 */

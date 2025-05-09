@@ -261,11 +261,6 @@ export default {
 
 <style lang="scss" scoped>
 /**
- * 变量定义
- */
-$animation-time: 0.3s;
-
-/**
  * 通用的hover和active效果定义
  */
 @mixin hover-active-effect {
@@ -285,6 +280,7 @@ $animation-time: 0.3s;
     display: flex;
     flex-direction: column;
     align-items: center;
+    background: var(--aside-bg);
 }
 
 /**
@@ -393,7 +389,6 @@ $animation-time: 0.3s;
         grid-template-rows: repeat(2, 1fr);
         gap: 2px;
         align-items: center;
-        transition: width $animation-time ease;
 
         .option {
             display: flex;
