@@ -154,6 +154,29 @@ module.exports = {
                 }
             }
         },
+        "RagFlow":
+        {
+            platform_name: "RagFlow",
+            avatar: "ragflow",
+            list: [],
+            api_key_config: {
+                api_key: "",
+                apply_url: "https://demo.ragflow.io/user-setting/api"
+            },
+            model_config: {
+                form_items: [
+                    { label: "模型类型", key: "type", options: ["llm"] },
+                    { label: "调用地址", key: "endpoint", tooltip: "RagFlow平台的模型调用地址，填如 https://demo.ragflow.io" },
+                    { label: "ChatID", key: "chat_id" },
+                    { label: "应用名称", key: "version" , tooltip: "自己起一个名字，方便在THChatUI平台展示"}
+                ],
+                rules: {
+                    type: [{ required: true, message: '请选择模型类型' }],
+                    endpoint: [{ required: true, message: '请输入模型调用地址' }],
+                    chat_id: [{ required: true, message: '请输入Chat_ID' }]
+                }
+            }
+        },
         "SiliconFlow":
         {
             platform_name: "硅基流动",
