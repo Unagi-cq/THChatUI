@@ -1,54 +1,59 @@
 <template>
-    <div class="search-container">
-        <!--    输入框    -->
-        <el-input placeholder="请输入你的问题或需求，按'↑'可快捷复制问题" v-model="query" :autosize="{ minRows: 1, maxRows: 8 }"
-            resize="none" @keydown.enter="onEnterKeyDown" @keydown.up="onEnterKeyUp" type="textarea"
-            :class="{ 'has-files': uploadedFiles.length > 0 }">
-        </el-input>
+    <el-row :gutter="24" justify="center" style="margin-left: 0;margin-right: 0;">
+        <el-col :md="16">
+            <div class="search-container">
+                <!--    输入框    -->
+                <el-input placeholder="请输入你的问题或需求，按'↑'可快捷复制问题" v-model="query" :autosize="{ minRows: 2, maxRows: 8 }"
+                    resize="none" @keydown.enter="onEnterKeyDown" @keydown.up="onEnterKeyUp" type="textarea"
+                    :class="{ 'has-files': uploadedFiles.length > 0 }">
+                </el-input>
 
-        <div class="left-icons" v-if="uploadedFiles.length === 0">
-            <!-- 上传图标 -->
-            <el-upload action="" :show-file-list="false" :auto-upload="false" accept="image/*" :multiple="false"
-                :on-change="handleImageUpload" :limit="upload_limit" :disabled="uploadedFiles.length >= upload_limit">
-                <SvgIcon icon-class="upload" style="width: 20px; height: 20px;" />
-            </el-upload>
-            <!-- 知识库图标 -->
-            <div class="web-search-icon-wrapper" :class="{ 'selected': knowledgeEnabled }"
-                @click="knowledgeEnabled = !knowledgeEnabled">
-                <SvgIcon icon-class="knowledge" style="width: 20px; height: 20px;" />
-                <span v-if="knowledgeEnabled" class="search-text rag">{{ selectedRepo?.name }}</span>
-            </div>
-            <!-- 联网图标 -->
-            <div class="web-search-icon-wrapper" :class="{ 'selected': webSearchEnabled }"
-                @click="webSearchEnabled = !webSearchEnabled">
-                <SvgIcon icon-class="web-search" style="width: 20px; height: 20px;" />
-                <span v-if="webSearchEnabled" class="search-text">联网搜索</span>
-            </div>
-        </div>
+                <div class="left-icons" v-if="uploadedFiles.length === 0">
+                    <!-- 上传图标 -->
+                    <el-upload action="" :show-file-list="false" :auto-upload="false" accept="image/*" :multiple="false"
+                        :on-change="handleImageUpload" :limit="upload_limit"
+                        :disabled="uploadedFiles.length >= upload_limit">
+                        <SvgIcon icon-class="upload" style="width: 20px; height: 20px;" />
+                    </el-upload>
+                    <!-- 知识库图标 -->
+                    <div class="web-search-icon-wrapper" :class="{ 'selected': knowledgeEnabled }"
+                        @click="knowledgeEnabled = !knowledgeEnabled">
+                        <SvgIcon icon-class="knowledge" style="width: 20px; height: 20px;" />
+                        <span v-if="knowledgeEnabled" class="search-text rag">{{ selectedRepo?.name }}</span>
+                    </div>
+                    <!-- 联网图标 -->
+                    <div class="web-search-icon-wrapper" :class="{ 'selected': webSearchEnabled }"
+                        @click="webSearchEnabled = !webSearchEnabled">
+                        <SvgIcon icon-class="web-search" style="width: 20px; height: 20px;" />
+                        <span v-if="webSearchEnabled" class="search-text">联网搜索</span>
+                    </div>
+                </div>
 
-        <div class="right-icons">
-            <!--    发送ICON    -->
-            <el-button type="primary" @click="onSubmitChat" v-if="controller === undefined"
-                class="right-send-stop-button">
-                <SvgIcon icon-class="send" style="width: 16px; height: 16px;" />
-            </el-button>
-            <!--    停止发送ICON    -->
-            <el-button type="danger" @click="stopChat" v-if="controller !== undefined" class="right-send-stop-button">
-                <SvgIcon icon-class="stop" style="width: 16px; height: 16px;" />
-            </el-button>
-        </div>
+                <div class="right-icons">
+                    <!--    发送ICON    -->
+                    <el-button type="primary" @click="onSubmitChat" v-if="controller === undefined"
+                        class="right-send-stop-button">
+                        <SvgIcon icon-class="send" style="width: 16px; height: 16px;" />
+                    </el-button>
+                    <!--    停止发送ICON    -->
+                    <el-button type="danger" @click="stopChat" v-if="controller !== undefined"
+                        class="right-send-stop-button">
+                        <SvgIcon icon-class="stop" style="width: 16px; height: 16px;" />
+                    </el-button>
+                </div>
 
-        <!-- 文件预览容器 -->
-        <div class="file-preview-container" v-if="uploadedFiles.length > 0">
-            <div class="file-preview-item" v-for="(file, index) in uploadedFiles" :key="index">
-                <img :src="file.base64" alt="uploaded file" />
-                <div class="delete-icon" @click="removeFile(index)">
-                    <SvgIcon icon-class="delete" style="width: 16px; height: 16px;" />
+                <!-- 文件预览容器 -->
+                <div class="file-preview-container" v-if="uploadedFiles.length > 0">
+                    <div class="file-preview-item" v-for="(file, index) in uploadedFiles" :key="index">
+                        <img :src="file.base64" alt="uploaded file" />
+                        <div class="delete-icon" @click="removeFile(index)">
+                            <SvgIcon icon-class="delete" style="width: 16px; height: 16px;" />
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-
+        </el-col>
+    </el-row>
 </template>
 
 <script>
@@ -597,7 +602,7 @@ $icon-length: 32px;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    min-height: 40px;
+    min-height: 80px;
 }
 
 /**

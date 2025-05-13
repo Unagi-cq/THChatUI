@@ -3,7 +3,7 @@
 
         <el-row :gutter="24" justify="center" style="margin-left: 0;margin-right: 0;">
 
-            <el-col :md="16" :sm="22" :xs="22">
+            <el-col :md="16">
                 <ChatCard 
                     :qaId="c['qaId']" 
                     :query="c['query']" 
@@ -49,7 +49,8 @@ export default {
         return {
             isLive2dLoading: false,
             live2dError: null,
-            live2dInstance: null  // 添加实例引用
+            live2dInstance: null,  // 添加实例引用
+            selectedQAIndex: null
         }
     },
     computed: {
@@ -73,6 +74,11 @@ export default {
         // 当前看板娘模型
         currentLive2dModel() {
             return this.$store.state.setting.live2d_model || null;
+        },
+        selectedQA() {
+            if (!this.active_session_qa_data.length) return {};
+            const idx = this.selectedQAIndex ?? (this.active_session_qa_data.length - 1);
+            return this.active_session_qa_data[idx] || {};
         }
     },
     methods: {

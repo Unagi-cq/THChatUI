@@ -21,14 +21,27 @@
                     <app-header />
                 </el-header>
                 <el-container class="main-bg">
-                    <!-- 主要内容 -->
-                    <el-main>
-                        <router-view />
-                    </el-main>
-                    <!-- 页脚 -->
-                    <el-footer>
-                        <app-footer />
-                    </el-footer>
+                    <el-row :gutter="24" justify="center" class="main-row">
+                        <!-- 主内容区 -->
+                        <el-col :md="20" :sm="22" :xs="24" class="main-col">
+                            <el-main>
+                                <router-view />
+                            </el-main>
+                            <SendBox v-if="isHidden" />
+                            <!-- 页脚 -->
+                            <el-footer>
+                                <app-footer />
+                            </el-footer>
+                        </el-col>
+
+                        <el-col :md="4" :sm="0" :xs="0" v-if="recallSidebarData.visible">
+                            <RecallSidebar 
+                                :recallList="recallSidebarData.recallList"
+                                :webSearchResults="recallSidebarData.webSearchResults" 
+                                @close="closeRecallSidebar" />
+                        </el-col>
+                    </el-row>
+
                 </el-container>
             </el-container>
             <!-- 右边窗口 End -->
@@ -40,6 +53,7 @@
 import AppAside from '../views/AppAside.vue'
 import AppHeader from '../views/AppHeader.vue'
 import AppFooter from '../views/AppFooter.vue'
+import eventBus from '@/eventBus'
 
 export default {
     name: 'Layout',
@@ -48,7 +62,12 @@ export default {
             // 是否激活侧边栏
             active: false,
             // 侧边栏宽度
-            asideWidth: '240px'
+            asideWidth: '240px',
+            recallSidebarData: {
+                recallList: [],
+                webSearchResults: [],
+                visible: false
+            }
         }
     },
     components: {
@@ -59,9 +78,18 @@ export default {
     created() {
         this.handleResize()
     },
+    computed: {
+        isHidden() {
+            return this.$router.currentRoute.value.name === 'index';
+        }
+    },
     mounted() {
         // 监听窗口大小变化
         window.addEventListener('resize', this.handleResize);
+        eventBus.on('showRecallSidebar', this.handleShowRecallSidebar);
+    },
+    beforeUnmount() {
+        eventBus.off('showRecallSidebar', this.handleShowRecallSidebar);
     },
     methods: {
         /**
@@ -91,6 +119,39 @@ export default {
                 this.asideWidth = '240px'
             }
             document.documentElement.style.setProperty('--sidebar-width', this.asideWidth);
+        },
+        handleShowRecallSidebar(data) {
+            this.recallSidebarData = {
+                ...data,
+                visible: true
+            };
+        },
+        closeRecallSidebar() {
+            this.recallSidebarData.visible = false;
+        },
+        /**
+         * 清空RecallSidebar数据
+         */
+        clearRecallSidebarData() {
+            this.recallSidebarData = {
+                recallList: [],
+                webSearchResults: [],
+                visible: false
+            };
+        }
+    },
+    watch: {
+        // 监听路由变化，当路由改变时清空RecallSidebar数据
+        '$route': {
+            handler() {
+                this.clearRecallSidebarData();
+            }
+        },
+        // 监听active状态变化，当active改变时清空RecallSidebar数据
+        "$store.state.app.active": {
+            handler() {
+                this.clearRecallSidebarData();
+            }
         }
     }
 }
@@ -137,12 +198,24 @@ $vertical-divider-width: 30px; // 竖条的宽度
             display: flex;
             flex-direction: column;
 
+            .main-col {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
             >.el-container {
-                flex: 1;
                 overflow: hidden;
             }
         }
     }
+}
+
+.main-row,
+.el-container {
+    height: 100%;
+    min-height: 0;
+    position: relative;
 }
 
 .el-header {
@@ -165,7 +238,7 @@ $vertical-divider-width: 30px; // 竖条的宽度
 .el-footer {
     color: grey;
     text-align: center;
-    height: 92px;
+    height: auto;
 }
 
 /**

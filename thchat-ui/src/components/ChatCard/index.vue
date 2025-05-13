@@ -43,6 +43,7 @@
                     <div class="recall-text" :class="{ 'recall-collapse': !recallExpandeds[index] }">{{ item.content }}
                     </div>
                 </div>
+                <el-button type="text" @click="viewAllRecall">查看全部</el-button>
             </div>
             <!-- 网络搜索结果 -->
             <div v-if="webSearchResults && webSearchResults.length > 0" class="web-search-content">
@@ -56,6 +57,7 @@
                     <div class="web-search-text" :class="{ 'web-search-collapse': !webSearchExpandeds[index] }">{{
                         item.content }}</div>
                 </div>
+                <el-button type="text" @click="viewAllWebSearch">查看全部</el-button>
             </div>
             <!-- 思考内容 -->
             <div v-if="reason" class="reason-content">
@@ -116,6 +118,7 @@
 <script>
 import { marked } from 'marked';
 import chatStoreHelper from '@/schema/chatStoreHelper';
+import eventBus from '@/eventBus';
 
 export default {
     name: 'ChatCard',
@@ -294,6 +297,26 @@ export default {
         regenerate() {
             this.$emit('regenerate', this.qaId);
         },
+
+        /**
+         * 查看召回内容
+         */
+        viewAllRecall() {
+            eventBus.emit('showRecallSidebar', {
+                recallList: this.recall,
+                webSearchResults: []
+            });
+        },
+
+        /**
+         * 查看联网搜索结果
+         */
+        viewAllWebSearch() {
+            eventBus.emit('showRecallSidebar', {
+                recallList: [],
+                webSearchResults: this.webSearchResults
+            });
+        }
     },
     watch: {
         // 当recall数据变化时重置展开状态

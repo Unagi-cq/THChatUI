@@ -268,7 +268,8 @@ export default {
     &.active,
     &:hover {
         background: var(--aside-active-hover-bg);
-        border-radius: 10px;
+        border-radius: 8px;
+        font-weight: 600;
     }
 }
 
@@ -307,10 +308,9 @@ export default {
  */
 .chats {
     flex: 1;
-    padding: 2px;
+    padding: 20px;
     overflow-y: auto;
     scrollbar-width: none;
-    width: 240px;
 
     &::-webkit-scrollbar {
         display: none;
@@ -338,7 +338,7 @@ export default {
     }
 
     .session {
-        padding: 8px 6px 8px 6px;
+        padding: 6px 6px 6px 6px;
         margin-bottom: 2px;
         cursor: pointer;
 

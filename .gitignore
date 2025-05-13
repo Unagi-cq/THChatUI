@@ -1,3 +1,7 @@
 /.vscode/*
 
 /thchat-ui/node_modules/*
+
+/thchat-ui/dist/*
+
+/thchat-ui/dist_electron/*
