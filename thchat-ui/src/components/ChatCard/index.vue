@@ -302,7 +302,7 @@ export default {
          * 查看召回内容
          */
         viewAllRecall() {
-            eventBus.emit('showRecallSidebar', {
+            eventBus.emit('showSideBar', {
                 recallList: this.recall,
                 webSearchResults: []
             });
@@ -312,7 +312,7 @@ export default {
          * 查看联网搜索结果
          */
         viewAllWebSearch() {
-            eventBus.emit('showRecallSidebar', {
+            eventBus.emit('showSideBar', {
                 recallList: [],
                 webSearchResults: this.webSearchResults
             });

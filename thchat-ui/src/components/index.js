@@ -4,7 +4,7 @@ import CustomDialog from './CustomDialog'
 import SvgIcon from './SvgIcon'
 import ApiKeyCard from './ApiKeyCard'
 import ModelConfigCard from './ModelConfigCard'
-import RecallSidebar from './RecallSidebar'
+import SideBar from './SideBar'
 
 
 const ComponentList = [
@@ -14,7 +14,7 @@ const ComponentList = [
     SvgIcon,
     ApiKeyCard,
     ModelConfigCard,
-    RecallSidebar
+    SideBar
 ]
 const components = {
     install (app) {

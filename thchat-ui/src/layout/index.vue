@@ -34,11 +34,11 @@
                             </el-footer>
                         </el-col>
 
-                        <el-col :md="4" :sm="0" :xs="0" v-if="recallSidebarData.visible">
-                            <RecallSidebar 
-                                :recallList="recallSidebarData.recallList"
-                                :webSearchResults="recallSidebarData.webSearchResults" 
-                                @close="closeRecallSidebar" />
+                        <el-col :md="4" :sm="0" :xs="0" v-if="sideBarData.visible">
+                            <SideBar 
+                                :recallList="sideBarData.recallList"
+                                :webSearchResults="sideBarData.webSearchResults" 
+                                @close="closeSideBar" />
                         </el-col>
                     </el-row>
 
@@ -63,7 +63,7 @@ export default {
             active: false,
             // 侧边栏宽度
             asideWidth: '240px',
-            recallSidebarData: {
+            sideBarData: {
                 recallList: [],
                 webSearchResults: [],
                 visible: false
@@ -86,10 +86,10 @@ export default {
     mounted() {
         // 监听窗口大小变化
         window.addEventListener('resize', this.handleResize);
-        eventBus.on('showRecallSidebar', this.handleShowRecallSidebar);
+        eventBus.on('showSideBar', this.handleShowSideBar);
     },
     beforeUnmount() {
-        eventBus.off('showRecallSidebar', this.handleShowRecallSidebar);
+        eventBus.off('showSideBar', this.handleShowSideBar);
     },
     methods: {
         /**
@@ -120,20 +120,20 @@ export default {
             }
             document.documentElement.style.setProperty('--sidebar-width', this.asideWidth);
         },
-        handleShowRecallSidebar(data) {
-            this.recallSidebarData = {
+        handleShowSideBar(data) {
+            this.sideBarData = {
                 ...data,
                 visible: true
             };
         },
-        closeRecallSidebar() {
-            this.recallSidebarData.visible = false;
+        closeSideBar() {
+            this.sideBarData.visible = false;
         },
         /**
-         * 清空RecallSidebar数据
+         * 清空SideBar数据
          */
-        clearRecallSidebarData() {
-            this.recallSidebarData = {
+        clearSideBarData() {
+            this.sideBarData = {
                 recallList: [],
                 webSearchResults: [],
                 visible: false
@@ -141,16 +141,16 @@ export default {
         }
     },
     watch: {
-        // 监听路由变化，当路由改变时清空RecallSidebar数据
+        // 监听路由变化，当路由改变时清空SideBar数据
         '$route': {
             handler() {
-                this.clearRecallSidebarData();
+                this.clearSideBarData();
             }
         },
-        // 监听active状态变化，当active改变时清空RecallSidebar数据
+        // 监听active状态变化，当active改变时清空SideBar数据
         "$store.state.app.active": {
             handler() {
-                this.clearRecallSidebarData();
+                this.clearSideBarData();
             }
         }
     }
@@ -216,6 +216,12 @@ $vertical-divider-width: 30px; // 竖条的宽度
     height: 100%;
     min-height: 0;
     position: relative;
+}
+
+.main-bg, .main-row {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .el-header {

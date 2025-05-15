@@ -40,7 +40,7 @@
 
 <script>
 export default {
-    name: 'RecallSidebar',
+    name: 'SideBar',
     props: {
         recallList: {
             type: Array,
@@ -59,11 +59,11 @@ export default {
     background: var(--recall-bg-color, #ffffff);
     width: 20%;
     position: absolute;
-    right: 0;
+    right: 20px;
     top: 50%;
     transform: translateY(-50%);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border-radius: 12px 0 0 12px;
+    border-radius: 12px;
     font-size: 14px;
     overflow: hidden;
     height: 90%;
