@@ -3,11 +3,15 @@
         <div class="recall-header">
             <div v-if="recallList.length" class="title-container">
                 <h3>召回内容</h3>
-                <SvgIcon @click="$emit('close')" icon-class="close" class="close-icon" />
+                <div class="header-icons">
+                    <SvgIcon icon-class="close" class="close-icon" @click="$emit('close')" />
+                </div>
             </div>
             <div v-else-if="webSearchResults.length" class="title-container">
                 <h3>联网搜索结果</h3>
-                <SvgIcon @click="$emit('close')" icon-class="close" class="close-icon" />
+                <div class="header-icons">
+                    <SvgIcon icon-class="close" class="close-icon" @click="$emit('close')" />
+                </div>
             </div>
         </div>
         <div class="recall-content">
@@ -49,6 +53,10 @@ export default {
         webSearchResults: {
             type: Array,
             default: () => []
+        },
+        isMobile: {
+            type: Boolean,
+            default: false
         }
     }
 }
@@ -72,10 +80,32 @@ export default {
     border-left: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+/* 在移动端全屏SideBar中，去除边距和圆角 */
+.mobile-sidebar .recall-sidebar {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    right: 0;
+    top: 0;
+    transform: none;
+    box-shadow: none;
+    border-radius: 0;
+    border-left: none;
+}
+
 /* 在 md 尺寸下 */
 @media (max-width: 1500px) {
     .recall-sidebar {
         width: 25%;
+    }
+}
+
+/* 在 xs 尺寸下 */
+@media (max-width: 767px) {
+    .recall-sidebar {
+        width: 100%;
+        right: 0;
+        height: 100%;
     }
 }
 
@@ -104,6 +134,23 @@ export default {
 
 .close-icon:hover {
     opacity: 1;
+}
+
+.back-icon {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    opacity: 0.6;
+    margin-right: 10px;
+}
+
+.back-icon:hover {
+    opacity: 1;
+}
+
+.header-icons {
+    display: flex;
+    align-items: center;
 }
 
 .recall-content {
@@ -162,6 +209,7 @@ export default {
 .search-result-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
 }
 
 .result-title {

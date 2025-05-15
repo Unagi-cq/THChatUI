@@ -23,7 +23,17 @@
                 <el-container class="main-bg">
                     <el-row :gutter="24" justify="center" class="main-row">
                         <!-- 主内容区 -->
-                        <el-col :md="20" :sm="22" :xs="24" class="main-col">
+                        <el-col v-if="isChatPage" :md="20" :sm="22" :xs="24" class="main-col">
+                            <el-main>
+                                <router-view />
+                            </el-main>
+                            <SendBox v-if="isHidden" />
+                            <!-- 页脚 -->
+                            <el-footer>
+                                <app-footer />
+                            </el-footer>
+                        </el-col>
+                        <el-col v-else class="main-col">
                             <el-main>
                                 <router-view />
                             </el-main>
@@ -34,10 +44,11 @@
                             </el-footer>
                         </el-col>
 
-                        <el-col :md="4" :sm="0" :xs="0" v-if="sideBarData.visible">
+                        <el-col :md="4" :sm="0" :xs="0" v-if="sideBarData.visible && !isMobileScreen">
                             <SideBar 
                                 :recallList="sideBarData.recallList"
                                 :webSearchResults="sideBarData.webSearchResults" 
+                                :isMobile="false"
                                 @close="closeSideBar" />
                         </el-col>
                     </el-row>
@@ -46,6 +57,14 @@
             </el-container>
             <!-- 右边窗口 End -->
         </el-container>
+    </div>
+    <!-- 移动端全屏SideBar -->
+    <div class="mobile-sidebar" v-if="sideBarData.visible && isMobileScreen">
+        <SideBar 
+            :recallList="sideBarData.recallList"
+            :webSearchResults="sideBarData.webSearchResults" 
+            :isMobile="true"
+            @close="closeSideBar" />
     </div>
 </template>
 
@@ -67,7 +86,8 @@ export default {
                 recallList: [],
                 webSearchResults: [],
                 visible: false
-            }
+            },
+            isMobileScreen: false
         }
     },
     components: {
@@ -81,15 +101,22 @@ export default {
     computed: {
         isHidden() {
             return this.$router.currentRoute.value.name === 'index';
+        },
+        isChatPage() {
+            const currentRoute = this.$router.currentRoute.value.name;
+            // 这里根据路由名称判断，只有index路由是聊天页面
+            return currentRoute === 'index';
         }
     },
     mounted() {
         // 监听窗口大小变化
         window.addEventListener('resize', this.handleResize);
         eventBus.on('showSideBar', this.handleShowSideBar);
+        this.checkMobileScreen();
     },
     beforeUnmount() {
         eventBus.off('showSideBar', this.handleShowSideBar);
+        window.removeEventListener('resize', this.handleResize);
     },
     methods: {
         /**
@@ -114,9 +141,11 @@ export default {
                 // 如果是XS尺寸
                 this.active = true
                 this.asideWidth = '0px'
+                this.isMobileScreen = true;
             } else {
                 this.active = false
                 this.asideWidth = '240px'
+                this.isMobileScreen = false;
             }
             document.documentElement.style.setProperty('--sidebar-width', this.asideWidth);
         },
@@ -138,6 +167,9 @@ export default {
                 webSearchResults: [],
                 visible: false
             };
+        },
+        checkMobileScreen() {
+            this.isMobileScreen = window.matchMedia('(max-width: 767px)').matches;
         }
     },
     watch: {
@@ -288,6 +320,20 @@ $vertical-divider-width: 30px; // 竖条的宽度
 /* 添加遮罩层样式 */
 .overlay {
     display: none; // 默认隐藏
+}
+
+/* 移动端全屏SideBar样式 */
+.mobile-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    background-color: var(--layout-common-layout-bg);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
 }
 
 /* 在 xs 尺寸下 */
