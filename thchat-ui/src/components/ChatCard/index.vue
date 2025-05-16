@@ -32,33 +32,13 @@
                 <SvgIcon :icon-class="series" class="avatar" />
                 <span class="avatar-name">{{ modelName }}</span>
             </div>
+            
             <!-- 召回内容卡片 -->
-            <div v-if="recall && recall.length > 0" class="recall-content">
-                <div class="recall-header">以下是知识库检索到的内容：</div>
-                <div v-for="(item, index) in recall" :key="index" class="recall-item" @click="toggleRecallItem(index)">
-                    <div class="recall-title">
-                        {{ item.filename }}
-                        <span class="recall-score">相关性分数: {{ (item.score * 100).toFixed(1) }}%</span>
-                    </div>
-                    <div class="recall-text" :class="{ 'recall-collapse': !recallExpandeds[index] }">{{ item.content }}
-                    </div>
-                </div>
-                <el-button type="text" @click="viewAllRecall">查看全部</el-button>
-            </div>
+            <SearchResultCard v-if="recall && recall.length > 0" :items="recall" type="recall" />
+            
             <!-- 网络搜索结果 -->
-            <div v-if="webSearchResults && webSearchResults.length > 0" class="web-search-content">
-                <div class="web-search-header">以下是网络搜索结果：</div>
-                <div v-for="(item, index) in webSearchResults" :key="index" class="web-search-item"
-                    @click="toggleWebSearchItem(index)">
-                    <div class="web-search-title">
-                        <a :href="item.url" target="_blank" class="web-search-link" @click.stop>{{ item.title }}</a>
-                        <span class="web-search-score">搜索匹配度: {{ (item.score * 100).toFixed(1) }}%</span>
-                    </div>
-                    <div class="web-search-text" :class="{ 'web-search-collapse': !webSearchExpandeds[index] }">{{
-                        item.content }}</div>
-                </div>
-                <el-button type="text" @click="viewAllWebSearch">查看全部</el-button>
-            </div>
+            <SearchResultCard v-if="webSearchResults && webSearchResults.length > 0" :items="webSearchResults" type="web-search" />
+            
             <!-- 思考内容 -->
             <div v-if="reason" class="reason-content">
                 <div class="reason-header" @click="reasonExpanded = !reasonExpanded">
@@ -119,9 +99,16 @@
 import { marked } from 'marked';
 import chatStoreHelper from '@/schema/chatStoreHelper';
 import eventBus from '@/eventBus';
+import { ArrowDown, ArrowUp } from '@element-plus/icons-vue';
+import SearchResultCard from './SearchResultCard.vue';
 
 export default {
     name: 'ChatCard',
+    components: {
+        ArrowDown,
+        ArrowUp,
+        SearchResultCard
+    },
     data() {
         return {
             // 用户文本是否展开
@@ -130,10 +117,6 @@ export default {
             maxQueryHeight: 60,
             // 用户文本是否可折叠
             queryTruncatable: false,
-            // 召回内容是否可折叠
-            recallExpandeds: [],
-            // 网络搜索结果是否可折叠
-            webSearchExpandeds: [],
             // 思考内容是否展开
             reasonExpanded: true,
         }
@@ -267,20 +250,6 @@ export default {
         },
 
         /**
-         * 切换单个recall项的展开状态
-         */
-        toggleRecallItem(index) {
-            this.recallExpandeds[index] = !this.recallExpandeds[index];
-        },
-
-        /**
-         * 切换单个网络搜索结果的展开状态
-         */
-        toggleWebSearchItem(index) {
-            this.webSearchExpandeds[index] = !this.webSearchExpandeds[index];
-        },
-
-        /**
          * 复制用户输入
          */
         async copyUserQuery() {
@@ -296,43 +265,9 @@ export default {
          */
         regenerate() {
             this.$emit('regenerate', this.qaId);
-        },
-
-        /**
-         * 查看召回内容
-         */
-        viewAllRecall() {
-            eventBus.emit('showSideBar', {
-                recallList: this.recall,
-                webSearchResults: []
-            });
-        },
-
-        /**
-         * 查看联网搜索结果
-         */
-        viewAllWebSearch() {
-            eventBus.emit('showSideBar', {
-                recallList: [],
-                webSearchResults: this.webSearchResults
-            });
         }
     },
     watch: {
-        // 当recall数据变化时重置展开状态
-        recall: {
-            immediate: true,
-            handler(newVal) {
-                this.recallExpandeds = new Array(newVal?.length || 0).fill(false);
-            }
-        },
-        // 当webSearchResults数据变化时重置展开状态
-        webSearchResults: {
-            immediate: true,
-            handler(newVal) {
-                this.webSearchExpandeds = new Array(newVal?.length || 0).fill(false);
-            }
-        },
         // 当qaId变化时重置所有状态
         qaId: {
             immediate: true,
@@ -461,73 +396,6 @@ export default {
 }
 
 /**
- * 召回内容相关样式
- */
-.recall {
-
-    // 召回内容容器
-    &-content {
-        margin: 8px 0 0 0;
-        padding: 10px;
-        border-radius: 8px;
-        background-color: var(--recall-bg-color);
-    }
-
-    // 召回标题
-    &-header {
-        color: var(--common-color);
-        font-weight: bold;
-        margin-bottom: 8px;
-    }
-
-    // 召回项目
-    &-item {
-        margin-bottom: 8px;
-        padding: 8px;
-        border-radius: 4px;
-        background-color: var(--recall-item-bg-color);
-        cursor: pointer;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-    }
-
-    // 召回项目标题
-    &-title {
-        color: var(--recall-item-title-color);
-        font-weight: bold;
-        margin-bottom: 4px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    // 相关度分数
-    &-score {
-        color: var(--recall-item-title-color);
-        font-weight: normal;
-    }
-
-    // 召回文本
-    &-text {
-        color: var(--answer-stats-color);
-        line-height: 1.5;
-        position: relative;
-    }
-
-    // 折叠的召回文本
-    &-collapse {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
-
-/**
  * 思考内容相关样式
  */
 .reason {
@@ -637,86 +505,26 @@ export default {
 }
 
 /**
- * 网络搜索结果相关样式
- */
-.web-search {
-
-    &-content {
-        margin: 8px 0 0 0;
-        padding: 10px;
-        border-radius: 8px;
-        background-color: var(--recall-bg-color);
-    }
-
-    &-header {
-        color: var(--common-color);
-        font-weight: bold;
-        margin-bottom: 8px;
-    }
-
-    &-item {
-        margin-bottom: 8px;
-        padding: 8px;
-        border-radius: 4px;
-        background-color: var(--recall-item-bg-color);
-        cursor: pointer;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-    }
-
-    &-title {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 4px;
-    }
-
-    &-link {
-        color: var(--el-color-primary);
-        font-weight: bold;
-        text-decoration: none;
-        flex: 1;
-        width: 100px;
-        margin-right: 10px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        &:hover {
-            text-decoration: underline;
-        }
-    }
-
-    &-score {
-        color: var(--recall-item-title-color);
-        font-weight: normal;
-        white-space: nowrap;
-    }
-
-    &-text {
-        color: var(--answer-stats-color);
-        line-height: 1.5;
-        position: relative;
-    }
-
-    &-collapse {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
-
-/**
  * 用户输入统计/操作
  */
 .user-stats {
-    @extend .answer-stats;
+    color: var(--answer-stats-color);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
     margin-top: 8px;
     margin-bottom: 4px;
+
+    // 图标样式
+    svg {
+        vertical-align: middle;
+        cursor: pointer;
+        outline: none;
+
+        &:hover {
+            color: var(--el-color-primary);
+        }
+    }
 }
 </style>
