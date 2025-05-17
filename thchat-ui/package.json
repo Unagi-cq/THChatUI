@@ -1,6 +1,6 @@
 {
   "name": "THChatUI",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "author": "Unagi-cq <baiwen_88@qq.com>",
   "description": "THChatUI 是一个基于 Vue2 + ElementUI 的LLM WebUI。",
   "private": true,
