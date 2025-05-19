@@ -74,6 +74,20 @@
       "target": [
         "nsis"
       ]
-    }
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "differentialPackage": true
+    },
+    "compression": "maximum",
+    "asar": true,
+    "removePackageScripts": true,
+    "extraResources": [],
+    "extraFiles": [],
+    "npmRebuild": false,
+    "buildDependenciesFromSource": true
   }
 }
