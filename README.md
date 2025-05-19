@@ -142,6 +142,7 @@ thchat-serve
 │  │      3_langchain_SparkLLM_chat.py
 │  │      4_langchain_TongyiQwen_chat.py
 │  │      5_langchain_ZHIPUAI_chat.py
+│  │      6_langgraph_ZHIPUAI_chat.py
 │  ├─rag
 │  │      1_simple_local_rag.py
 │  │      4_langchain_TongyiQwen_rag.py
@@ -158,7 +159,7 @@ thchat-serve
 
 在对话（llm）中，提供了普通聊天（chat）、知识库检索（rag）、联网搜索（search）示例。
 
-每一种请求方式都提供了最简洁的实现方式（文件名含_simple_）和基于langchain的实现方式（文件名含_langchain_）。
+每一种请求方式都提供了最简洁的实现方式（文件名含_simple_）和基于langchain、langgraph的实现方式（文件名含_langchain_等）。
 每一种请求方式都提供了加载本地模型的写法示例（安全、免费、要显卡）与用KEY请求第三方远程模型的写法示例（安全未知、收费、无须显卡资源）。
 
 后端文件的运行需要python3.10环境。先创建conda镜像，可以执行：

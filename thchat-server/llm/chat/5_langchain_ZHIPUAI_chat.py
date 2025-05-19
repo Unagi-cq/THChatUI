@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 from typing import List, Optional
-from langchain.pydantic_v1 import Field
+from pydantic import Field
 from fastapi import FastAPI
 from langchain_community.chat_models import ChatZhipuAI
 from langchain_core.runnables import RunnableParallel, RunnableLambda
