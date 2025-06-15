@@ -29,7 +29,7 @@ html {
 
   /* AppMain 背景样式 */
   .main-bg {
-    background-color: #efefef;
+    background-color: #f8f9fc;
     color: #333;
   }
 
@@ -53,7 +53,7 @@ html {
    */
   --answer-stats-color: #888;
   /* 布局背景 */
-  --layout-common-layout-bg: #efefef;
+  --layout-common-layout-bg: #f8f9fc;
   /* 发送框背景 */
   --sendBox-bg-color: white;
   /* 
@@ -67,7 +67,7 @@ html {
    */
   --app-small-border-color: #ccc;
   /* 召回模块背景颜色 */
-  --recall-bg-color: #f5f7fa;
+  --thinking-bg-color: #e6e6e6;
   /* 召回模块单条召回文本背景颜色 */
   --recall-item-bg-color: #f0f2f5;
   /* 
@@ -75,8 +75,134 @@ html {
    * 召回模块单条召回文本分数颜色
    */
   --recall-item-title-color: #636363;
-  /* 侧边栏背景 */
-  --aside-bg: url('../images/aside_light_bg.png') no-repeat;
+
+
+  /* 滚动条相关变量 */
+  --scrollbar-thumb-bg: rgba(36, 84, 255, 0.2);
+  --scrollbar-thumb-hover-bg: rgba(36, 84, 255, 0.4);
+
+  /* 组件 SideBar 样式变量 */
+  --components-sidebar-bg: rgba(255, 255, 255, 0.75);
+  --components-sidebar-bg-mobile: rgba(255, 255, 255);
+  --components-sidebar-header-text: #303133;
+  --components-sidebar-header-accent: #409eff;
+  --components-sidebar-item-bg: rgba(36, 84, 255, 0.04);
+  --components-sidebar-item-border: rgba(0, 0, 0, 0.03);
+  --components-sidebar-item-score-color: #666;
+  --components-sidebar-item-accent: #409eff;
+  --components-sidebar-result-title-color: #409eff;
+  --components-sidebar-result-content-color: #303133;
+  --components-sidebar-result-url-color: #409eff;
+
+  /* 组件 SearchResultCard 样式变量 */
+  --components-searchresultcard-content-bg: transparent;
+  --components-searchresultcard-header-bg: var(--sendBox-bg-color);
+  --components-searchresultcard-header-text: var(--common-color);
+  --components-searchresultcard-item-bg: var(--page-mcp-sidebar-bg);
+  --components-searchresultcard-item-border: var(--page-mcp-sidebar-border);
+  --components-searchresultcard-item-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --components-searchresultcard-title-color: var(--page-mcp-header-text);
+  --components-searchresultcard-link-color: var(--page-mcp-header-accent);
+  --components-searchresultcard-score-color: var(--recall-item-title-color);
+  --components-searchresultcard-text-color: var(--page-mcp-text-color);
+  --components-searchresultcard-btn-bg: linear-gradient(135deg, transparent 0%, rgba(var(--page-mcp-server-active-accent-rgb), 0.05) 100%);
+  --components-searchresultcard-btn-border: var(--page-mcp-sidebar-border);
+  --components-searchresultcard-btn-color: var(--page-mcp-header-accent);
+  --components-searchresultcard-btn-hover-bg: linear-gradient(135deg, rgba(var(--page-mcp-server-active-accent-rgb), 0.1) 0%, rgba(var(--page-mcp-server-active-accent-rgb), 0.15) 100%);
+  --components-searchresultcard-btn-hover-border: var(--page-mcp-header-accent);
+  --components-searchresultcard-btn-hover-color: var(--page-mcp-server-active-color);
+  --components-searchresultcard-carousel-bg: linear-gradient(135deg, var(--page-mcp-sidebar-bg) 0%, rgba(var(--page-mcp-server-active-accent-rgb), 0.05) 100%);
+  --components-searchresultcard-carousel-border: var(--page-mcp-sidebar-border);
+  --components-searchresultcard-carousel-shadow: 0 2px 8px 0 var(--page-mcp-sidebar-shadow);
+  --components-searchresultcard-carousel-color: var(--page-mcp-text-color);
+  --components-searchresultcard-carousel-hover-border: var(--page-mcp-header-accent);
+  --components-searchresultcard-carousel-hover-shadow: 0 6px 20px rgba(var(--page-mcp-server-active-accent-rgb), 0.4);
+
+  /* 标准页面 通用 样式 */
+  --standard-page-bg-color: #fff;
+
+  .standard-page-container {
+    color: #303133;
+    transition: all 0.3s ease;
+
+    .standard-page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #ebeef5;
+      position: relative;
+
+      h4 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 600;
+        color: #303133;
+        position: relative;
+        padding-left: 16px;
+      }
+
+      h4::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 60%;
+        width: 4px;
+        background-color: #409eff;
+        border-radius: 2px;
+      }
+    }
+
+    .standard-page-stats {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+      color: #888;
+
+      span {
+        padding: 6px 12px;
+        background-color: #ffffff;
+        border-radius: 20px;
+      }
+    }
+  }
+
+  /* 页面 views/mcp 样式 */
+  --page-mcp-text-color: #303133;
+  --page-mcp-sidebar-bg: #ffffff;
+  --page-mcp-sidebar-border: #e4e7ed;
+  --page-mcp-sidebar-shadow: rgba(0, 0, 0, 0.08);
+  --page-mcp-content-shadow: rgba(0, 0, 0, 0.08);
+  --page-mcp-empty-text-color: #909399;
+  --page-mcp-header-border: #ebeef5;
+  --page-mcp-header-text: #303133;
+  --page-mcp-header-accent: #409eff;
+  --page-mcp-form-label: #303133;
+  --page-mcp-server-hover-bg: #f5f7fa;
+  --page-mcp-server-active-bg: #ecf5ff;
+  --page-mcp-server-active-color: #409eff;
+  --page-mcp-server-active-shadow: rgba(64, 158, 255, 0.15);
+  --page-mcp-server-active-accent: #409eff;
+  --page-mcp-server-active-accent-rgb: 64,
+  158,
+  255;
+  --page-mcp-button-hover-shadow: rgba(64, 158, 255, 0.25);
+  --page-mcp-actions-border: #ebeef5;
+
+  /* 页面 AppHeader 样式变量 */
+  --page-appheader-title-color: var(--common-color);
+  --page-appheader-hover-underline: var(--page-mcp-server-active-accent);
+  --page-appheader-title-focus-bg: var(--aside-active-hover-bg);
+  --page-appheader-icon-color: var(--common-color);
+
+  /* 页面 AppAside 样式变量 */
+  --page-appaside-logo-gradient: linear-gradient(90deg, #409eff 0%, #66b1ff 50%, #a0cfff 100%);
+  --page-appaside-active-hover-bg: rgba(98, 108, 126, 0.1);
+  --page-appaside-bg: url('../images/aside_light_bg.png') no-repeat;
+  --page-appaside-chats-header-color: #5b86e5;
 }
 
 /* 暗黑 主题样式 */
@@ -130,7 +256,7 @@ html {
    */
   --app-small-border-color: #555;
   /* 召回模块背景颜色 */
-  --recall-bg-color: #343434;
+  --thinking-bg-color: #343434;
   /* 召回模块单条召回文本背景颜色 */
   --recall-item-bg-color: #444;
   /* 
@@ -138,8 +264,133 @@ html {
    * 召回模块单条召回文本分数颜色
    */
   --recall-item-title-color: #aaaaaa;
-  /* 侧边栏背景 */
-  --aside-bg: url('../images/aside_dark_bg.png') no-repeat;
+
+  /* 滚动条相关变量 */
+  --scrollbar-thumb-bg: rgba(225, 231, 239, 0.2);
+  --scrollbar-thumb-hover-bg: rgba(221, 231, 243, 0.4);
+
+  /* 组件 SideBar 样式变量 */
+  --components-sidebar-bg: #252525;
+  --components-sidebar-bg-mobile: #252525;
+  --components-sidebar-header-text: #f0f0f0;
+  --components-sidebar-header-accent: #55a4ff;
+  --components-sidebar-item-bg: rgba(188, 188, 188, 0.173);
+  --components-sidebar-item-border: #3a3a3a;
+  --components-sidebar-item-score-color: #d8d8d8;
+  --components-sidebar-item-accent: #55a4ff;
+  --components-sidebar-result-title-color: #55a4ff;
+  --components-sidebar-result-content-color: #e6e6e6;
+  --components-sidebar-result-url-color: #55a4ff;
+
+  /* 组件 SearchResultCard 样式变量 */
+  --components-searchresultcard-content-bg: transparent;
+  --components-searchresultcard-header-bg: var(--sendBox-bg-color);
+  --components-searchresultcard-header-text: var(--common-color);
+  --components-searchresultcard-item-bg: var(--page-mcp-sidebar-bg);
+  --components-searchresultcard-item-border: var(--page-mcp-sidebar-border);
+  --components-searchresultcard-item-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --components-searchresultcard-title-color: var(--page-mcp-header-text);
+  --components-searchresultcard-link-color: var(--page-mcp-header-accent);
+  --components-searchresultcard-score-color: var(--recall-item-title-color);
+  --components-searchresultcard-text-color: var(--page-mcp-text-color);
+  --components-searchresultcard-btn-bg: linear-gradient(135deg, transparent 0%, rgba(var(--page-mcp-server-active-accent-rgb), 0.05) 100%);
+  --components-searchresultcard-btn-border: var(--page-mcp-sidebar-border);
+  --components-searchresultcard-btn-color: var(--page-mcp-header-accent);
+  --components-searchresultcard-btn-hover-bg: linear-gradient(135deg, rgba(var(--page-mcp-server-active-accent-rgb), 0.1) 0%, rgba(var(--page-mcp-server-active-accent-rgb), 0.15) 100%);
+  --components-searchresultcard-btn-hover-border: var(--page-mcp-header-accent);
+  --components-searchresultcard-btn-hover-color: var(--page-mcp-server-active-color);
+  --components-searchresultcard-carousel-bg: linear-gradient(135deg, var(--page-mcp-sidebar-bg) 0%, rgba(var(--page-mcp-server-active-accent-rgb), 0.05) 100%);
+  --components-searchresultcard-carousel-border: var(--page-mcp-sidebar-border);
+  --components-searchresultcard-carousel-shadow: 0 2px 8px 0 var(--page-mcp-sidebar-shadow);
+  --components-searchresultcard-carousel-color: var(--page-mcp-text-color);
+  --components-searchresultcard-carousel-hover-border: var(--page-mcp-header-accent);
+  --components-searchresultcard-carousel-hover-shadow: 0 6px 20px rgba(var(--page-mcp-server-active-accent-rgb), 0.4);
+
+  /* 标准页面 通用 样式 */
+  --standard-page-bg-color: #333;
+
+  .standard-page-container {
+    color: #e6e6e6;
+    transition: all 0.3s ease;
+
+    .standard-page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #3a3a3a;
+      position: relative;
+
+      h4 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 600;
+        color: #f0f0f0;
+        position: relative;
+        padding-left: 16px;
+      }
+
+      h4::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 60%;
+        width: 4px;
+        background-color: #55a4ff;
+        border-radius: 2px;
+      }
+    }
+
+    .standard-page-stats {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+      color: #888;
+
+      span {
+        padding: 6px 12px;
+        background-color: #252525;
+        border-radius: 20px;
+      }
+    }
+  }
+
+  /* 页面 views/mcp 样式 */
+  --page-mcp-text-color: #e6e6e6;
+  --page-mcp-sidebar-bg: #252525;
+  --page-mcp-sidebar-border: #3a3a3a;
+  --page-mcp-sidebar-shadow: rgba(0, 0, 0, 0.25);
+  --page-mcp-content-shadow: rgba(0, 0, 0, 0.3);
+  --page-mcp-empty-text-color: #a0a0a0;
+  --page-mcp-header-border: #3a3a3a;
+  --page-mcp-header-text: #f0f0f0;
+  --page-mcp-header-accent: #55a4ff;
+  --page-mcp-form-label: #d8d8d8;
+  --page-mcp-server-hover-bg: #333333;
+  --page-mcp-server-active-bg: #1c3956;
+  --page-mcp-server-active-color: #7cbdff;
+  --page-mcp-server-active-shadow: rgba(85, 164, 255, 0.2);
+  --page-mcp-server-active-accent: #55a4ff;
+  --page-mcp-server-active-accent-rgb: 85,
+  164,
+  255;
+  --page-mcp-button-hover-shadow: rgba(85, 164, 255, 0.35);
+  --page-mcp-actions-border: #3a3a3a;
+
+  /* 页面 AppHeader 样式变量 */
+  --page-appheader-title-color: var(--common-color);
+  --page-appheader-hover-underline: var(--page-mcp-server-active-accent);
+  --page-appheader-title-focus-bg: var(--aside-active-hover-bg);
+  --page-appheader-icon-color: var(--common-color);
+
+  /* 页面 AppAside 样式变量 */
+  --page-appaside-logo-gradient: linear-gradient(90deg, #e0e0e0 0%, #b0b0b0 50%, #d0d0d0 100%);
+  --page-appaside-active-hover-bg: rgba(167, 182, 209, 0.1);
+  --page-appaside-bg: url('../images/aside_dark_bg.png') no-repeat;
+  --page-appaside-chats-header-color: #f59999;
 }
 
 /* 毛玻璃 主题样式 */
@@ -196,7 +447,7 @@ html {
    */
   --app-small-border-color: #aaa;
   /* 召回模块背景颜色 */
-  --recall-bg-color: #f5f7fa;
+  --thinking-bg-color: #f5f7fa;
   /* 召回模块单条召回文本背景颜色 */
   --recall-item-bg-color: #f0f2f5;
   /* 
@@ -204,6 +455,132 @@ html {
    * 召回模块单条召回文本分数颜色
    */
   --recall-item-title-color: #636363;
+
+  /* 滚动条相关变量 */
+  --scrollbar-thumb-bg: rgba(36, 84, 255, 0.2);
+  --scrollbar-thumb-hover-bg: rgba(36, 84, 255, 0.4);
+
+  /* 组件 SideBar 样式变量 */
+  --components-sidebar-bg: rgba(255, 255, 255, 0.75);
+  --components-sidebar-bg-mobile: rgba(255, 255, 255);
+  --components-sidebar-header-text: #303133;
+  --components-sidebar-header-accent: #409eff;
+  --components-sidebar-item-bg: rgba(36, 84, 255, 0.04);
+  --components-sidebar-item-border: rgba(0, 0, 0, 0.03);
+  --components-sidebar-item-score-color: #666;
+  --components-sidebar-item-accent: #409eff;
+  --components-sidebar-result-title-color: #409eff;
+  --components-sidebar-result-content-color: #303133;
+  --components-sidebar-result-url-color: #409eff;
+
+  /* 组件 SearchResultCard 样式变量 */
+  --components-searchresultcard-content-bg: transparent;
+  --components-searchresultcard-header-bg: var(--sendBox-bg-color);
+  --components-searchresultcard-header-text: var(--common-color);
+  --components-searchresultcard-item-bg: var(--page-mcp-sidebar-bg);
+  --components-searchresultcard-item-border: var(--page-mcp-sidebar-border);
+  --components-searchresultcard-item-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --components-searchresultcard-title-color: var(--page-mcp-header-text);
+  --components-searchresultcard-link-color: var(--page-mcp-header-accent);
+  --components-searchresultcard-score-color: var(--recall-item-title-color);
+  --components-searchresultcard-text-color: var(--page-mcp-text-color);
+  --components-searchresultcard-btn-bg: linear-gradient(135deg, transparent 0%, rgba(var(--page-mcp-server-active-accent-rgb), 0.05) 100%);
+  --components-searchresultcard-btn-border: var(--page-mcp-sidebar-border);
+  --components-searchresultcard-btn-color: var(--page-mcp-header-accent);
+  --components-searchresultcard-btn-hover-bg: linear-gradient(135deg, rgba(var(--page-mcp-server-active-accent-rgb), 0.1) 0%, rgba(var(--page-mcp-server-active-accent-rgb), 0.15) 100%);
+  --components-searchresultcard-btn-hover-border: var(--page-mcp-header-accent);
+  --components-searchresultcard-btn-hover-color: var(--page-mcp-server-active-color);
+  --components-searchresultcard-carousel-bg: linear-gradient(135deg, var(--page-mcp-sidebar-bg) 0%, rgba(var(--page-mcp-server-active-accent-rgb), 0.05) 100%);
+  --components-searchresultcard-carousel-border: var(--page-mcp-sidebar-border);
+  --components-searchresultcard-carousel-shadow: 0 2px 8px 0 var(--page-mcp-sidebar-shadow);
+  --components-searchresultcard-carousel-color: var(--page-mcp-text-color);
+  --components-searchresultcard-carousel-hover-border: var(--page-mcp-header-accent);
+  --components-searchresultcard-carousel-hover-shadow: 0 6px 20px rgba(var(--page-mcp-server-active-accent-rgb), 0.4);
+
+  /* 标准页面 通用 样式 */
+  --standard-page-bg-color: rgba(255, 255, 255, 0.6);
+
+  .standard-page-container {
+    color: #303133;
+    transition: all 0.3s ease;
+
+    .standard-page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(235, 238, 245, 0.6);
+      position: relative;
+
+      h4 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 600;
+        color: #303133;
+        position: relative;
+        padding-left: 16px;
+      }
+
+      h4::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 60%;
+        width: 4px;
+        background-color: #409eff;
+        border-radius: 2px;
+      }
+    }
+
+    .standard-page-stats {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+      color: #888;
+
+      span {
+        padding: 6px 12px;
+        background-color: rgba(255, 255, 255, 0.75);
+        border-radius: 20px;
+      }
+    }
+  }
+
+  /* 页面 views/mcp 样式 */
+  --page-mcp-text-color: #303133;
+  --page-mcp-sidebar-bg: rgba(255, 255, 255, 0.75);
+  --page-mcp-sidebar-border: rgba(228, 231, 237, 0.6);
+  --page-mcp-sidebar-shadow: rgba(0, 0, 0, 0.1);
+  --page-mcp-content-shadow: rgba(0, 0, 0, 0.1);
+  --page-mcp-empty-text-color: rgba(144, 147, 153, 0.85);
+  --page-mcp-header-border: rgba(235, 238, 245, 0.6);
+  --page-mcp-header-text: #303133;
+  --page-mcp-header-accent: #409eff;
+  --page-mcp-form-label: #303133;
+  --page-mcp-server-hover-bg: rgba(245, 247, 250, 0.8);
+  --page-mcp-server-active-bg: rgba(236, 245, 255, 0.8);
+  --page-mcp-server-active-color: #409eff;
+  --page-mcp-server-active-shadow: rgba(64, 158, 255, 0.2);
+  --page-mcp-server-active-accent: #409eff;
+  --page-mcp-server-active-accent-rgb: 64,
+  158,
+  255;
+  --page-mcp-button-hover-shadow: rgba(64, 158, 255, 0.3);
+  --page-mcp-actions-border: rgba(235, 238, 245, 0.6);
+
+  /* 页面 AppHeader 样式变量 */
+  --page-appheader-title-color: var(--common-color);
+  --page-appheader-hover-underline: var(--page-mcp-server-active-accent);
+  --page-appheader-title-focus-bg: var(--aside-active-hover-bg);
+  --page-appheader-icon-color: var(--common-color);
+
+  /* 页面 AppAside 样式变量 */
+  --page-appaside-logo-gradient: linear-gradient(135deg, #36d1dc 0%, #5b86e5 50%, #8660c7 100%);
+  --page-appaside-active-hover-bg: rgba(98, 108, 126, 0.1);
+  --page-appaside-chats-header-color: #5b86e5;
 }
 
 .el-row {
@@ -225,4 +602,36 @@ html {
 
 .dashed-border {
   border: 1px dashed grey;
+}
+
+/**
+ * 全局滚动条样式
+ * 注意：该样式仅适用于WebKit内核浏览器（如Chrome、Safari、Edge等）
+ * Firefox需要使用scrollbar-width和scrollbar-color属性
+ */
+/* 通用滚动条尺寸和形状 */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+  margin: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-bg, rgba(36, 84, 255, 0.2));
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover-bg, rgba(36, 84, 255, 0.4));
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }

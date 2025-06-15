@@ -407,7 +407,7 @@ export default {
     &-header {
         border-radius: 8px;
         padding: 8px;
-        background-color: var(--recall-bg-color);
+        background-color: var(--thinking-bg-color);
         color: var(--common-color);
         font-weight: bold;
         margin-bottom: 2px;

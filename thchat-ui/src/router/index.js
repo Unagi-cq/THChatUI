@@ -59,6 +59,17 @@ const routes = [
                 component: () => import('@/views/mcp/index.vue')
             }
         ]
+    },
+    {
+        path: '/setting',
+        component: Layout,
+        children: [
+            {
+                path: '', // 默认子路由
+                name: 'setting',
+                component: () => import('@/views/setting/index.vue')
+            }
+        ]
     }
 ]
 

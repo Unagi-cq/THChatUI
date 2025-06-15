@@ -23,7 +23,7 @@
                 <el-container class="main-bg">
                     <el-row :gutter="24" justify="center" class="main-row">
                         <!-- 主内容区 -->
-                        <el-col v-if="isChatPage" :md="20" :sm="22" :xs="24" class="main-col">
+                        <el-col v-if="isChatPage" :md="20" :sm="22" :xs="24" class="main-col" style="padding-left: 0; padding-right: 0;">
                             <el-main>
                                 <router-view />
                             </el-main>
@@ -33,13 +33,13 @@
                                 <app-footer />
                             </el-footer>
                         </el-col>
-                        <el-col v-else class="main-col">
+                        <el-col v-else class="main-col" style="padding-left: 0; padding-right: 0;">
                             <el-main>
                                 <router-view />
                             </el-main>
                             <SendBox v-if="isHidden" />
                             <!-- 页脚 -->
-                            <el-footer>
+                            <el-footer v-if="isChatPage">
                                 <app-footer />
                             </el-footer>
                         </el-col>

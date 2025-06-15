@@ -1,311 +1,340 @@
 <template>
-    <el-row :gutter="24" justify="center" style="margin-left: 0;margin-right: 0;">
-        <el-col :md="22" :sm="22" :xs="22">
-            <el-tabs class="demo-tabs" :tab-position="tabPosition">
+    <div class="setting-container">
+        <div class="setting-sidebar">
+            <div class="sidebar-header">
+                <h4>设置</h4>
+            </div>
+            <div class="setting-menu">
+                <div v-for="(item, key) in settingMenus" :key="key"
+                    :class="['menu-item', { active: currentMenu === key }]" @click="selectMenu(key)">
+                    {{ item.label }}
+                </div>
+            </div>
+        </div>
 
-                <!-- 模型设置标签页 -->
-                <el-tab-pane label="模型">
-                    <el-form label-width="100" label-position="left">
-                        <!-- 第三方平台列表 -->
-                        <el-form-item label="平台">
-                            <el-radio-group v-model="platform" class="platform-radio-group">
-                                <el-radio :value="y" v-for="(x, y) in model_list" :key="y">
-                                    {{ x.platform_name }}
-                                </el-radio>
-                            </el-radio-group>
-                        </el-form-item>
-                        <!-- 文本模型选择 -->
-                        <el-form-item label="文本模型">
-                            <el-radio-group v-model="model_version" class="platform-radio-group">
-                                <el-radio :value="x.version"
-                                    v-for="x in model_list[platform].list.filter(m => m.type === 'llm')">
-                                    {{ x.version }}
-                                    <el-tag v-if="x.can_web_search" class="web-tag">Web</el-tag>
-                                </el-radio>
-                            </el-radio-group>
-                        </el-form-item>
-                        <!-- 图片理解模型选择 -->
-                        <el-form-item label="图片理解模型" v-if="model_list[platform].list.some(m => m.type === 'vim')">
-                            <el-radio-group v-model="model_version" class="platform-radio-group">
-                                <el-radio :value="x.version"
-                                    v-for="x in model_list[platform].list.filter(m => m.type === 'vim')"
-                                    class="vl-model">
-                                    {{ x.version }}
-                                </el-radio>
-                            </el-radio-group>
-                        </el-form-item>
-                        <!-- 图片生成模型选择 -->
-                        <el-form-item label="图片生成模型" v-if="model_list[platform].list.some(m => m.type === 'igm')">
-                            <el-radio-group v-model="model_version" class="platform-radio-group">
-                                <el-radio :value="x.version"
-                                    v-for="x in model_list[platform].list.filter(m => m.type === 'igm')"
-                                    class="vl-model">
-                                    {{ x.version }}
-                                </el-radio>
-                            </el-radio-group>
-                        </el-form-item>
-                    </el-form>
-                </el-tab-pane>
+        <div class="setting-content">
+            <div v-if="!currentMenu" class="empty-state">
+                请选择一个设置项
+            </div>
+            <div v-else class="setting-config">
+                <div class="config-header">
+                    <h2>{{ settingMenus[currentMenu].label }}</h2>
+                </div>
 
-                <!-- 通用设置标签页 -->
-                <el-tab-pane label="通用" class="flex-form-item">
-                    <el-form label-width="130" label-position="left">
-
-                        <!-- 系统主题 -->
-                        <el-form-item label="系统主题">
-                            <el-segmented v-model="theme" :options="[
-                                { label: '毛玻璃', value: 'glass' },
-                                { label: '深色', value: 'dark' },
-                                { label: '浅色', value: 'light' }
-                            ]">
-                                <template #default="{ item }">
-                                    <div class="flex flex-col items-center">
-                                        <div>{{ item.label }}</div>
-                                    </div>
-                                </template>
-                            </el-segmented>
-                        </el-form-item>
-                        <!-- 多轮对话 -->
-                        <el-form-item label="多轮对话" prop="memory">
-                            <el-switch v-model="memory" />
-                        </el-form-item>
-                        <!-- 多轮对话轮数 -->
-                        <el-form-item label="历史对话轮数">
-                            <el-input-number v-model="memoryLimit" :min="3" :max="8" :step="1"
-                                controls-position="right" />
-                        </el-form-item>
-                        <!-- 统计信息 -->
-                        <el-form-item label="聊天统计信息" prop="chat_detail">
-                            <el-switch v-model="chat_detail" />
-                        </el-form-item>
-                        <!-- 背景图片 -->
-                        <el-form-item label="背景图片" v-if="theme === 'glass'">
-                            <div class="preset-bg-container">
-                                <div v-for="(bgImage, index) in presetBgs" :key="index" class="preset-bg-item"
-                                    :class="{ active: currentBg === bgImage }" @click="selectPresetBg(bgImage)">
-                                    <img :src="bgImage" alt="preset background" />
-                                </div>
-                                <el-upload class="preset-bg-item avatar-uploader" action="" :show-file-list="false"
-                                    :auto-upload="false" accept="image/*" :on-change="handleBgChange">
-                                    <img v-if="currentBg && !presetBgs.includes(currentBg)" :src="currentBg"
-                                        class="preview-img" alt="background">
-                                    <el-icon v-else class="avatar-uploader-icon">
-                                        <Plus />
-                                    </el-icon>
-                                </el-upload>
+                <div class="config-form">
+                    <!-- 模型设置 -->
+                    <div v-if="currentMenu === 'model'" class="form-content">
+                        <el-form label-width="100" label-position="left">
+                            <!-- 第三方平台列表 -->
+                            <div class="form-item">
+                                <div class="form-label">平台</div>
+                                <el-radio-group v-model="platform" class="platform-radio-group">
+                                    <el-radio :value="y" v-for="(x, y) in model_list" :key="y">
+                                        {{ x.platform_name }}
+                                    </el-radio>
+                                </el-radio-group>
                             </div>
-                        </el-form-item>
-                        <!-- 清除缓存 -->
-                        <el-form-item>
-                            <el-button class="mt-2" type="warning" @click="clearLocalStorage">清空本地缓存</el-button>
-                        </el-form-item>
-                    </el-form>
+                            <!-- 文本模型选择 -->
+                            <div class="form-item">
+                                <div class="form-label">文本模型</div>
+                                <el-radio-group v-model="model_version" class="platform-radio-group">
+                                    <el-radio :value="x.version"
+                                        v-for="x in model_list[platform].list.filter(m => m.type === 'llm')">
+                                        {{ x.version }}
+                                        <el-tag v-if="x.can_web_search" class="web-tag">Web</el-tag>
+                                    </el-radio>
+                                </el-radio-group>
+                            </div>
+                            <!-- 图片理解模型选择 -->
+                            <div class="form-item" v-if="model_list[platform].list.some(m => m.type === 'vim')">
+                                <div class="form-label">图片理解模型</div>
+                                <el-radio-group v-model="model_version" class="platform-radio-group">
+                                    <el-radio :value="x.version"
+                                        v-for="x in model_list[platform].list.filter(m => m.type === 'vim')">
+                                        {{ x.version }}
+                                    </el-radio>
+                                </el-radio-group>
+                            </div>
+                            <!-- 图片生成模型选择 -->
+                            <div class="form-item" v-if="model_list[platform].list.some(m => m.type === 'igm')">
+                                <div class="form-label">图片生成模型</div>
+                                <el-radio-group v-model="model_version" class="platform-radio-group">
+                                    <el-radio :value="x.version"
+                                        v-for="x in model_list[platform].list.filter(m => m.type === 'igm')">
+                                        {{ x.version }}
+                                    </el-radio>
+                                </el-radio-group>
+                            </div>
+                        </el-form>
+                    </div>
 
-                </el-tab-pane>
-
-                <!-- API密钥设置标签页 -->
-                <el-tab-pane label="API Key" class="flex-form-item">
-                    <!-- API密钥卡片容器 -->
-                    <div class="api-key-cards">
-                        <div v-for="(x, y) in model_list" :key="y" class="api-key-card">
-                            <div class="card-header">
-                                <div class="left-section">
-                                    <div class="platform-logo">
-                                        <SvgIcon v-if="x.avatar" :icon-class="x.avatar" />
-                                        <el-icon v-else>
-                                            <Platform />
-                                        </el-icon>
+                    <!-- 通用设置 -->
+                    <div v-if="currentMenu === 'general'" class="form-content">
+                        <el-form label-width="130" label-position="left">
+                            <!-- 系统主题 -->
+                            <div class="form-item">
+                                <div class="form-label">系统主题</div>
+                                <el-segmented v-model="theme" :options="[
+                                    { label: '毛玻璃', value: 'glass' },
+                                    { label: '深色', value: 'dark' },
+                                    { label: '浅色', value: 'light' }
+                                ]">
+                                    <template #default="{ item }">
+                                        <div class="flex flex-col items-center">
+                                            <div>{{ item.label }}</div>
+                                        </div>
+                                    </template>
+                                </el-segmented>
+                            </div>
+                            <!-- 多轮对话 -->
+                            <div class="form-item">
+                                <div class="form-label">多轮对话</div>
+                                <el-switch v-model="memory" />
+                            </div>
+                            <!-- 多轮对话轮数 -->
+                            <div class="form-item">
+                                <div class="form-label">历史对话轮数</div>
+                                <el-input-number v-model="memoryLimit" :min="3" :max="8" :step="1"
+                                    controls-position="right" />
+                            </div>
+                            <!-- 统计信息 -->
+                            <div class="form-item">
+                                <div class="form-label">聊天统计信息</div>
+                                <el-switch v-model="chat_detail" />
+                            </div>
+                            <!-- 背景图片 -->
+                            <div class="form-item" v-if="theme === 'glass'">
+                                <div class="form-label">背景图片</div>
+                                <div class="preset-bg-container">
+                                    <div v-for="(bgImage, index) in presetBgs" :key="index" class="preset-bg-item"
+                                        :class="{ active: currentBg === bgImage }" @click="selectPresetBg(bgImage)">
+                                        <img :src="bgImage" alt="preset background" />
                                     </div>
-                                    <div class="platform-info">
-                                        <div class="platform-name">{{ x.platform_name }}</div>
-                                        <div class="platform-tags">
-                                            <span v-if="x.list.some(m => m.type === 'llm')"
-                                                class="custom-tag">LLM</span>
-                                            <span v-if="x.list.some(m => m.type === 'vim')"
-                                                class="custom-tag">VIM</span>
-                                            <span v-if="x.list.some(m => m.type === 'igm')"
-                                                class="custom-tag">IGM</span>
+                                    <el-upload class="preset-bg-item avatar-uploader" action="" :show-file-list="false"
+                                        :auto-upload="false" accept="image/*" :on-change="handleBgChange">
+                                        <img v-if="currentBg && !presetBgs.includes(currentBg)" :src="currentBg"
+                                            class="preview-img" alt="background">
+                                        <el-icon v-else class="avatar-uploader-icon">
+                                            <Plus />
+                                        </el-icon>
+                                    </el-upload>
+                                </div>
+                            </div>
+                            <!-- 清除缓存 -->
+                            <div class="form-item form-item-vertical">
+                                <div class="form-label">缓存管理</div>
+                                <el-button type="warning" @click="clearLocalStorage">清空本地缓存</el-button>
+                            </div>
+                        </el-form>
+                    </div>
+
+                    <!-- API密钥设置 -->
+                    <div v-if="currentMenu === 'apikey'" class="form-content">
+                        <!-- API密钥卡片容器 -->
+                        <div class="api-key-cards">
+                            <div v-for="(x, y) in model_list" :key="y" class="api-key-card">
+                                <div class="card-header">
+                                    <div class="left-section">
+                                        <div class="platform-logo">
+                                            <SvgIcon v-if="x.avatar" :icon-class="x.avatar" />
+                                            <el-icon v-else>
+                                                <Platform />
+                                            </el-icon>
+                                        </div>
+                                        <div class="platform-info">
+                                            <div class="platform-name">{{ x.platform_name }}</div>
+                                            <div class="platform-tags" v-if="x.list.some(m => m.type === 'llm' || m.type === 'vim' || m.type === 'igm')">
+                                                <span v-if="x.list.some(m => m.type === 'llm')"
+                                                    class="custom-tag">LLM</span>
+                                                <span v-if="x.list.some(m => m.type === 'vim')"
+                                                    class="custom-tag">VIM</span>
+                                                <span v-if="x.list.some(m => m.type === 'igm')"
+                                                    class="custom-tag">IGM</span>
+                                            </div>
+                                            <div class="platform-tags" v-else>
+                                                <span class="placeholder-tag">&nbsp;</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="right-section" v-if="x.api_key_config">
-                                    <p>API-KEY</p>
-                                    <button class="api-key-btn" @click="showApiKeyCard(y)">
-                                        设置
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-content" :class="{ expanded: expandedCard === y }">
-                                <div class="content-divider"></div>
-                                <div class="content-header">
-                                    <div class="left-section">
-                                        <el-icon @click="toggleCard(y)" class="collapse-icon">
-                                            <ArrowDown v-if="expandedCard !== y" />
-                                            <ArrowUp v-else />
-                                        </el-icon>
-                                        <span class="header-title">模型列表</span>
-                                    </div>
-                                    <div class="right-section" v-if="x.model_config">
-                                        <button class="model-add-btn" @click="showModeConfigCard(y)">
-                                            添加模型
+                                    <div class="right-section" v-if="x.api_key_config">
+                                        <p>API-KEY</p>
+                                        <button class="api-key-btn" @click="showApiKeyCard(y)">
+                                            设置
                                         </button>
                                     </div>
                                 </div>
-
-                                <div class="model-list" v-if="expandedCard === y">
-                                    <div v-for="model in x.list" :key="model.version" class="model-item">
-                                        <div class="model-info">
-                                            <SvgIcon v-if="model.series" :icon-class="model.series" class="model-avatar"  />
-                                            <el-icon v-else class="model-avatar">
-                                                <Platform />
+                                <div class="card-content" :class="{ expanded: expandedCard === y }">
+                                    <div class="content-divider"></div>
+                                    <div class="content-header" @click="toggleCard(y)">
+                                        <div class="left-section">
+                                            <el-icon class="collapse-icon">
+                                                <ArrowDown v-if="expandedCard !== y" />
+                                                <ArrowUp v-else />
                                             </el-icon>
-                                            <span class="model-version">{{ model.version }}</span>
+                                            <span class="header-title">模型列表</span>
                                         </div>
-                                        <el-icon class="delete-icon" @click.stop="deleteModel(y, model.version)">
-                                            <SvgIcon icon-class="delete" />
-                                        </el-icon>
+                                        <div class="right-section" v-if="x.model_config">
+                                            <button class="model-add-btn" @click.stop="showModeConfigCard(y)">
+                                                添加模型
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="model-list" v-if="expandedCard === y">
+                                        <div v-for="model in x.list" :key="model.version" class="model-item">
+                                            <div class="model-info">
+                                                <SvgIcon v-if="model.series" :icon-class="model.series" class="model-avatar"  />
+                                                <el-icon v-else class="model-avatar">
+                                                    <Platform />
+                                                </el-icon>
+                                                <span class="model-version">{{ model.version }}</span>
+                                            </div>
+                                            <el-icon class="delete-icon" @click.stop="deleteModel(y, model.version)">
+                                                <SvgIcon icon-class="delete" />
+                                            </el-icon>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </el-tab-pane>
 
-                <!-- 知识库设置标签页 -->
-                <el-tab-pane label="知识库" class="flex-form-item">
-                    <el-form label-width="130" label-position="left">
-
-                        <!-- 知识库启用按钮 -->
-                        <el-form-item label="启用">
-                            <el-switch v-model="knowledgeEnabled" />
-                        </el-form-item>
-                        <!-- 分隔线 -->
-                        <div class="openai-divider">
-                            <span>以下配置在平台选择本地调用时无效</span>
-                        </div>
-                        <!-- 知识库选择 -->
-                        <el-form-item label="选择知识库" v-if="knowledgeEnabled">
-                            <el-select v-model="selectedRepoId" clearable>
-                                <el-option v-for="item in repoList" :key="item.repoId" :label="item.name"
-                                    :value="item.repoId" />
-                            </el-select>
-                        </el-form-item>
-                        <!-- chunk大小 -->
-                        <el-form-item>
-                            <template #label>
-                                分块大小
-                                <el-tooltip content="文档分块大小（字符数）" effect="dark" placement="top">
-                                    <el-icon class="tips-icon">
-                                        <QuestionFilled />
-                                    </el-icon>
-                                </el-tooltip>
-                            </template>
-                            <el-input-number v-model="chunkSize" :min="200" :max="1000" :step="100"
-                                controls-position="right" />
-                        </el-form-item>
-                        <!-- 召回数量 -->
-                        <el-form-item>
-                            <template #label>
-                                召回数量
-                                <el-tooltip content="单次查询返回的相关文段数量" effect="dark" placement="top">
-                                    <el-icon class="tips-icon">
-                                        <QuestionFilled />
-                                    </el-icon>
-                                </el-tooltip>
-                            </template>
-                            <el-input-number v-model="recallCount" :min="1" :max="3" :step="1"
-                                controls-position="right" />
-                        </el-form-item>
-
-                    </el-form>
-                </el-tab-pane>
-
-                <!-- 联网搜索设置标签页 -->
-                <el-tab-pane label="联网搜索" class="flex-form-item">
-                    <el-form label-width="130" label-position="left">
-
-                        <!-- 启用按钮 -->
-                        <el-form-item label="启用">
-                            <el-switch v-model="webSearchEnabled" />
-                        </el-form-item>
-
-                        <!-- 分隔线 -->
-                        <div class="openai-divider">
-                            <span>以下为TavilySearch搜索配置</span>
-                        </div>
-
-                        <!-- TavilySearch 使用开关 -->
-                        <el-form-item>
-                            <template #label>
-                                使用 Tavily
-                                <el-tooltip content="如不使用TavilySearch，将优先使用模型内置联网搜索，但是大部分模型没有内置联网功能；使用内置联网不会展示联网搜索内容" effect="dark" placement="top">
-                                    <el-icon class="tips-icon">
-                                        <QuestionFilled />
-                                    </el-icon>
-                                </el-tooltip>
-                            </template>
-                            <el-switch v-model="isTavilySearch" />
-                        </el-form-item>
-
-                        <!-- TavilySearch API Key -->
-                        <el-form-item>
-                            <template #label>
-                                Tavily API Key
-                                <el-tooltip content="Tavily每月1000次免费使用额度" effect="dark" placement="top">
-                                    <el-icon class="tips-icon">
-                                        <QuestionFilled />
-                                    </el-icon>
-                                </el-tooltip>
-                            </template>
-                            <el-input v-model="tavilySearchKey" placeholder="请输入 Tavily API Key" show-password />
-                        </el-form-item>
-
-                    </el-form>
-                </el-tab-pane>
-
-                <!-- 看板娘设置标签页 -->
-                <el-tab-pane label="动漫人物" class="flex-form-item">
-                    <el-form label-width="130" label-position="left">
-                        <!-- 启用按钮 -->
-                        <el-form-item label="启用">
-                            <el-switch v-model="live2dEnabled" />
-                        </el-form-item>
-
-                        <!-- 模型选择 -->
-                        <el-form-item label="模型" v-if="live2dEnabled">
-                            <div class="live2d-model-selector">
-                                <el-button :disabled="currentModelIndex <= 0" @click="prevModel">
-                                    <el-icon>
-                                        <ArrowLeft />
-                                    </el-icon>
-                                </el-button>
-
-                                <el-input v-model="currentModelIndex" style="width: 60px;" />
-
-                                <el-button :disabled="currentModelIndex >= live2dModels.length - 1" @click="nextModel">
-                                    <el-icon>
-                                        <ArrowRight />
-                                    </el-icon>
-                                </el-button>
+                    <!-- 知识库设置 -->
+                    <div v-if="currentMenu === 'knowledge'" class="form-content">
+                        <el-form label-width="130" label-position="left">
+                            <!-- 知识库启用按钮 -->
+                            <div class="form-item">
+                                <div class="form-label">启用</div>
+                                <el-switch v-model="knowledgeEnabled" />
                             </div>
-                        </el-form-item>
-                    </el-form>
-                </el-tab-pane>
+                            <!-- 分隔线 -->
+                            <div class="openai-divider">
+                                <span>以下配置在平台选择本地调用时无效</span>
+                            </div>
+                            <!-- 知识库选择 -->
+                            <div class="form-item" v-if="knowledgeEnabled">
+                                <div class="form-label">选择知识库</div>
+                                <el-select v-model="selectedRepoId" clearable>
+                                    <el-option v-for="item in repoList" :key="item.repoId" :label="item.name"
+                                        :value="item.repoId" />
+                                </el-select>
+                            </div>
+                            <!-- chunk大小 -->
+                            <div class="form-item">
+                                <div class="form-label">
+                                    分块大小
+                                    <el-tooltip content="文档分块大小（字符数）" effect="dark" placement="top">
+                                        <el-icon class="tips-icon">
+                                            <QuestionFilled />
+                                        </el-icon>
+                                    </el-tooltip>
+                                </div>
+                                <el-input-number v-model="chunkSize" :min="200" :max="1000" :step="100"
+                                    controls-position="right" />
+                            </div>
+                            <!-- 召回数量 -->
+                            <div class="form-item">
+                                <div class="form-label">
+                                    召回数量
+                                    <el-tooltip content="单次查询返回的相关文段数量" effect="dark" placement="top">
+                                        <el-icon class="tips-icon">
+                                            <QuestionFilled />
+                                        </el-icon>
+                                    </el-tooltip>
+                                </div>
+                                <el-input-number v-model="recallCount" :min="1" :max="3" :step="1"
+                                    controls-position="right" />
+                            </div>
+                        </el-form>
+                    </div>
 
-            </el-tabs>
-        </el-col>
-    </el-row>
+                    <!-- 联网搜索设置 -->
+                    <div v-if="currentMenu === 'websearch'" class="form-content">
+                        <el-form label-width="130" label-position="left">
+                            <!-- 启用按钮 -->
+                            <div class="form-item">
+                                <div class="form-label">启用</div>
+                                <el-switch v-model="webSearchEnabled" />
+                            </div>
 
-    <!-- 模型KEY配置弹窗 -->
-    <CustomDialog v-model="apiKeyCardVisible" title="API Key" width="500px">
-        <ApiKeyCard :platform="currentPlatform" :initial-data="model_list[currentPlatform]['api_key_config'] || {}"
-            @submit="handleApiKeySubmit" @close="apiKeyCardVisible = false" />
-    </CustomDialog>
+                            <!-- 分隔线 -->
+                            <div class="openai-divider">
+                                <span>以下为TavilySearch搜索配置</span>
+                            </div>
 
-    <!-- 添加模型弹窗 -->
-    <CustomDialog v-model="modeConfigCardVisible" title="添加模型" width="500px">
-        <ModelConfigCard :platform="currentPlatform" @submit="handleModeConfigSubmit" @close="modeConfigCardVisible = false" />
-    </CustomDialog>
+                            <!-- TavilySearch 使用开关 -->
+                            <div class="form-item">
+                                <div class="form-label">
+                                    使用 Tavily
+                                    <el-tooltip content="如不使用TavilySearch，将优先使用模型内置联网搜索，但是大部分模型没有内置联网功能；使用内置联网不会展示联网搜索内容" effect="dark" placement="top">
+                                        <el-icon class="tips-icon">
+                                            <QuestionFilled />
+                                        </el-icon>
+                                    </el-tooltip>
+                                </div>
+                                <el-switch v-model="isTavilySearch" />
+                            </div>
+
+                            <!-- TavilySearch API Key -->
+                            <div class="form-item">
+                                <div class="form-label">
+                                    Tavily API Key
+                                    <el-tooltip content="Tavily每月1000次免费使用额度" effect="dark" placement="top">
+                                        <el-icon class="tips-icon">
+                                            <QuestionFilled />
+                                        </el-icon>
+                                    </el-tooltip>
+                                </div>
+                                <el-input v-model="tavilySearchKey" placeholder="请输入 Tavily API Key" show-password />
+                            </div>
+                        </el-form>
+                    </div>
+
+                    <!-- 看板娘设置 -->
+                    <div v-if="currentMenu === 'live2d'" class="form-content">
+                        <el-form label-width="130" label-position="left">
+                            <!-- 启用按钮 -->
+                            <div class="form-item">
+                                <div class="form-label">启用</div>
+                                <el-switch v-model="live2dEnabled" />
+                            </div>
+
+                            <!-- 模型选择 -->
+                            <div class="form-item" v-if="live2dEnabled">
+                                <div class="form-label">模型</div>
+                                <div class="live2d-model-selector">
+                                    <el-button :disabled="currentModelIndex <= 0" @click="prevModel">
+                                        <el-icon>
+                                            <ArrowLeft />
+                                        </el-icon>
+                                    </el-button>
+
+                                    <el-input v-model="currentModelIndex" style="width: 60px;" />
+
+                                    <el-button :disabled="currentModelIndex >= live2dModels.length - 1" @click="nextModel">
+                                        <el-icon>
+                                            <ArrowRight />
+                                        </el-icon>
+                                    </el-button>
+                                </div>
+                            </div>
+                        </el-form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模型KEY配置弹窗 -->
+        <CustomDialog v-model="apiKeyCardVisible" title="API Key" width="500px">
+            <ApiKeyCard :platform="currentPlatform" :initial-data="model_list[currentPlatform]['api_key_config'] || {}"
+                @submit="handleApiKeySubmit" @close="apiKeyCardVisible = false" />
+        </CustomDialog>
+
+        <!-- 添加模型弹窗 -->
+        <CustomDialog v-model="modeConfigCardVisible" title="添加模型" width="500px">
+            <ModelConfigCard :platform="currentPlatform" @submit="handleModeConfigSubmit" @close="modeConfigCardVisible = false" />
+        </CustomDialog>
+    </div>
 </template>
 
 <script>
@@ -322,7 +351,7 @@ export default {
             // 预设背景图片
             presetBgs: [bg, bg2],
             // 标签页位置
-            tabPosition: 'left',
+            tabPosition: window.innerWidth <= 768 ? 'top' : 'left',
             // 当前展开的卡片
             expandedCard: null,
             // 模型KEY配置弹窗
@@ -330,7 +359,18 @@ export default {
             // 添加模型弹窗
             modeConfigCardVisible: false,
             // 当前平台
-            currentPlatform: ''
+            currentPlatform: '',
+            // 设置菜单
+            settingMenus: {
+                model: { label: '模型' },
+                general: { label: '通用' },
+                apikey: { label: 'API Key' },
+                knowledge: { label: '知识库' },
+                websearch: { label: '联网搜索' },
+                live2d: { label: '动漫人物' }
+            },
+            // 当前选择的菜单
+            currentMenu: 'model'
         };
     },
     computed: {
@@ -767,36 +807,596 @@ export default {
                     });
                 }
             }).catch(() => {});
+        },
+
+        // 选择菜单
+        selectMenu(menu) {
+            this.currentMenu = menu;
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
-:deep(.el-tabs__item, .el-tabs__item label)[aria-selected="false"] {
-    color: var(--common-color);
-    font-weight: bold;
-}
-
-:deep(.el-form-item__label) {
-    color: var(--common-color);
-}
-
-.bg-preview-container {
+/* 设置页面容器 - 采用MCP页面布局 */
+.setting-container {
     display: flex;
-    align-items: flex-start;
+    height: 100%;
+    overflow: hidden;
+    color: var(--page-mcp-text-color);
+    transition: all 0.3s ease;
+}
+
+.setting-sidebar {
+    margin: 20px 0;
+    border: 1px solid var(--page-mcp-sidebar-border);
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    background-color: var(--standard-page-bg-color);
+    transition: all 0.3s ease;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 0 2px 12px 0 var(--page-mcp-content-shadow);
+}
+
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--page-mcp-sidebar-border);
+    display: flex;
+    justify-content: center;
+    
+    h4 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--page-mcp-header-text);
+    }
+}
+
+.setting-menu {
+    flex: 1;
+    overflow: auto;
+    padding: 8px 0;
+}
+
+.menu-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    margin: 4px 8px;
+    border-radius: 6px;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-item:hover {
+    background-color: var(--page-mcp-server-hover-bg);
+    transform: translateX(2px);
+}
+
+.menu-item.active {
+    background-color: var(--page-mcp-server-active-bg);
+    color: var(--page-mcp-server-active-color);
+}
+
+.setting-content {
+    flex: 1;
+    padding: 30px;
+    overflow: auto;
+    background-color: var(--standard-page-bg-color);
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px 0 var(--page-mcp-content-shadow);
+    transition: all 0.3s ease;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.empty-state {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--page-mcp-empty-text-color);
+    font-size: 18px;
+    opacity: 0.7;
+}
+
+.config-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--page-mcp-header-border);
+}
+
+.config-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--page-mcp-header-text);
+    position: relative;
+    padding-left: 16px;
+}
+
+.config-header h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%;
+    width: 4px;
+    background-color: var(--page-mcp-header-accent);
+    border-radius: 2px;
+}
+
+.config-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    transition: all 0.3s ease;
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 12px 0;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid transparent;
+}
+
+.form-label {
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--page-mcp-form-label);
+    min-width: 120px;
+    flex-shrink: 0;
+}
+
+.form-label.required::before {
+    content: '*';
+    color: #f56c6c;
+    margin-right: 4px;
+}
+
+/* 分隔线样式 */
+.openai-divider {
+    display: flex;
+    align-items: center;
+    margin: 24px 0;
+    color: var(--page-mcp-text-color);
+
+    &::before,
+    &::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--page-mcp-sidebar-border);
+        opacity: 0.6;
+    }
+
+    >span {
+        padding: 0 16px;
+        font-weight: 500;
+        font-size: 14px;
+        white-space: nowrap;
+        color: var(--answer-stats-color);
+    }
+}
+
+/* 预设背景容器 */
+.preset-bg-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.preset-bg-item {
+    width: 80px;
+    height: 50px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    &.active {
+        border-color: var(--el-color-primary);
+        box-shadow: 0 0 0 2px var(--el-color-primary-light-8);
+    }
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+/* 看板娘模型选择器 */
+.live2d-model-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    .el-input {
+        width: 80px;
+    }
+    
+    .el-button {
+        padding: 8px;
+        border-radius: 8px;
+    }
+}
+
+/* 单选框样式调整 */
+.platform-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .el-radio {
+        font-weight: 400;
+        color: var(--page-mcp-text-color);
+        margin-right: 0;
+        transition: all 0.3s;
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--page-mcp-sidebar-border);
+        background-color: var(--page-mcp-sidebar-bg);
+        
+        &:hover {
+            color: var(--el-color-primary);
+            border-color: var(--el-color-primary);
+            transform: translateY(-1px);
+        }
+        
+        &.is-checked {
+            background-color: var(--el-color-primary-light-9);
+            border-color: var(--el-color-primary);
+            color: var(--el-color-primary);
+        }
+    }
+}
+
+.web-tag {
+    background-color: transparent !important;
+    border: none !important;
+    color: var(--el-color-warning);
+}
+
+.tips-icon {
+    margin-left: 4px;
+    color: var(--answer-stats-color);
+    cursor: help;
+}
+
+.custom-tag {
+    border-radius: 4px;
+    border: 1px solid var(--answer-stats-color);
+    padding: 2px 8px;
+    color: var(--answer-stats-color);
+    font-size: 12px;
+    background-color: rgba(var(--el-color-info-rgb), 0.1);
+    transition: all 0.3s;
+}
+
+.placeholder-tag {
+    height: 21px;
+    display: inline-block;
+}
+
+/* 修改API密钥卡片样式 */
+.api-key-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.api-key-card {
+    border-radius: 12px;
+    padding: 16px;
+    border: none;
+    background-color: var(--standard-page-bg-color);
+    box-shadow: 0 2px 12px 0 var(--page-mcp-content-shadow);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    
+    &:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        height: 60px;
+
+        .left-section {
+            display: flex;
+            gap: 12px;
+
+            .platform-logo {
+                width: 24px;
+                height: 24px;
+                border-radius: 6px;
+                display: flex;
+                justify-content: center;
+                background-color: var(--page-mcp-sidebar-bg);
+                padding: 4px;
+                transition: all 0.3s;
+
+                img,
+                svg {
+                    width: 24px;
+                    height: 24px;
+                }
+            }
+
+            .platform-info {
+                .platform-name {
+                    font-weight: 600;
+                    color: var(--page-mcp-header-text);
+                    margin-bottom: 4px;
+                    font-size: 16px;
+                }
+
+                .platform-tags {
+                    display: flex;
+                    gap: 6px;
+                }
+            }
+        }
+
+        .right-section {
+            width: 70px;
+            border-radius: 8px;
+            padding: 4px;
+            font-size: 12px;
+            border: 1px solid var(--page-mcp-sidebar-border);
+            text-align: center;
+
+            p {
+                margin: 4px;
+                color: var(--answer-stats-color);
+            }
+
+            .api-key-btn,
+            .model-add-btn {
+                width: 100%;
+                background: var(--page-mcp-sidebar-bg);
+                border: 0;
+                color: var(--page-mcp-text-color);
+                padding: 4px 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-family: var(--thchatui-font-family);
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                outline: none;
+
+                &:hover {
+                    background: var(--el-color-primary);
+                    color: white;
+                }
+            }
+        }
+    }
+
+    .card-content {
+        border-radius: 8px;
+        overflow: hidden;
+        font-size: 12px;
+        background-color: var(--page-mcp-sidebar-bg);
+        margin-top: 8px;
+        
+        /* 移除隐藏非展开卡片的CSS，默认显示内容头部 */
+        display: block;
+
+        .content-header {
+            padding: 4px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            height: 30px;
+            
+            &:hover {
+                background-color: rgba(var(--el-color-primary-rgb), 0.05);
+            }
+
+            .left-section {
+                display: flex;
+                align-items: center;
+
+                .collapse-icon {
+                    cursor: pointer;
+                    margin-right: 10px;
+                    color: var(--page-mcp-text-color);
+                }
+
+                .header-title {
+                    font-weight: 500;
+                    color: var(--page-mcp-header-text);
+                }
+            }
+
+            .right-section {
+                width: 80px;
+                border-radius: 6px;
+                padding: 2px 4px;
+                font-size: 12px;
+
+                .model-add-btn {
+                    width: 80px;
+                    background: var(--standard-page-bg-color);
+                    border: 0;
+                    color: var(--page-mcp-text-color);
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-family: var(--thchatui-font-family);
+                    font-size: 12px;
+                    text-align: center;
+                    transition: all 0.3s ease;
+                    text-decoration: none;
+                    outline: none;
+
+                    &:hover {
+                        background: var(--el-color-primary);
+                        color: white;
+                    }
+                }
+            }
+        }
+
+        .content-divider {
+            height: 1px;
+            background: var(--page-mcp-sidebar-border);
+            opacity: 0.5;
+        }
+
+        .model-list {
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            display: none; /* 默认隐藏模型列表 */
+
+            &.expanded {
+                display: flex; /* 展开时显示 */
+                animation: expandContent 0.3s ease-out;
+            }
+
+            .model-item {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-radius: 8px;
+                background: var(--standard-page-bg-color);
+                transition: all 0.3s;
+
+                .model-info {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+
+                    .model-avatar {
+                        width: 24px;
+                        height: 24px;
+                        display: flex;
+                        justify-content: center;
+                        padding: 4px;
+                        border-radius: 6px;
+
+                        img,
+                        svg {
+                            width: 24px;
+                            height: 24px;
+                        }
+                    }
+
+                    .model-version {
+                        color: var(--page-mcp-text-color);
+                        font-weight: 500;
+                    }
+                }
+
+                .delete-icon {
+                    margin-right: 5px;
+                    cursor: pointer;
+                    color: var(--el-color-danger);
+                    opacity: 0.7;
+                    transition: all 0.2s;
+                    padding: 6px;
+                    border-radius: 50%;
+                    
+                    &:hover {
+                        opacity: 1;
+                        background-color: rgba(var(--el-color-danger-rgb), 0.1);
+                    }
+                }
+            }
+        }
+        
+        /* 展开时显示模型列表 */
+        &.expanded {
+            .model-list {
+                display: flex;
+            }
+        }
+    }
+}
+
+@keyframes expandContent {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+    }
 }
 
 .avatar-uploader {
     position: relative;
     width: 200px;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s;
+    border: 2px dashed var(--page-mcp-sidebar-border);
 }
 
 /* 添加hover遮罩层 */
@@ -816,13 +1416,18 @@ export default {
     background-color: rgba(0, 0, 0, 0.3);
 }
 
+.avatar-uploader:hover {
+    border-color: var(--el-color-primary);
+    transform: translateY(-5px);
+}
+
 .avatar-uploader-icon {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 28px;
-    color: var(--common-color);
+    color: var(--page-mcp-text-color);
     z-index: 2;
     /* 确保图标在遮罩层上方 */
 }
@@ -834,334 +1439,127 @@ export default {
     display: block;
 }
 
-.current-bg {
-    width: 200px;
-}
-
-.current-bg .preview-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* 单选框样式调整 */
-.platform-radio-group {
-    gap: 5px;
+/* 表单元素样式优化 */
+:deep(.el-form) {
+    .el-input, .el-input-number, .el-select, .el-textarea {
+        .el-input__wrapper {
+            background-color: var(--page-mcp-sidebar-bg);
+            box-shadow: none;
+            border: 1px solid var(--page-mcp-sidebar-border);
+            border-radius: 8px;
+            transition: all 0.3s;
+            
+            &:hover, &.is-focus {
+                border-color: var(--el-color-primary);
+                box-shadow: 0 0 0 1px var(--el-color-primary-light-8);
+            }
+        }
+    }
 
     .el-radio {
-        font-weight: 100;
-        color: var(--common-color);
-        margin-right: 10px;
-    }
-}
-
-.flex-form-item {
-    :deep(.el-form-item) {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    :deep(.el-form-item__content) {
-        margin-left: auto !important;
-        flex: none;
-    }
-
-    :deep(.el-select) {
-        width: 100px;
-    }
-}
-
-.preset-bg-container {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.preset-bg-item {
-    width: 70px;
-    height: 45px;
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: all 0.3s;
-
-    &:hover {
-        transform: translateY(-2px);
-    }
-
-    &.active {
-        border-color: var(--el-color-primary);
-    }
-
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-}
-
-.web-tag {
-    background-color: transparent !important;
-    border: none !important;
-    color: var(--el-color-warning);
-}
-
-.tips-icon {
-    margin-left: 4px;
-    color: var(--answer-stats-color);
-    cursor: help;
-}
-
-.openai-divider {
-    display: flex;
-    align-items: center;
-    margin: 20px 0;
-    color: var(--common-color);
-
-    &::before,
-    &::after {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: var(--common-color);
-        opacity: 0.2;
-    }
-
-    >span {
-        padding: 0 10px;
-        font-weight: 500;
-    }
-}
-
-
-.live2d-model-selector {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.live2d-model-selector .model-name {
-    min-width: 120px;
-    text-align: center;
-    color: var(--common-color);
-}
-
-.live2d-model-selector .el-button {
-    padding: 8px;
-}
-
-/* 修改API密钥卡片样式 */
-.api-key-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.api-key-card {
-    border-radius: 8px;
-    padding: 10px 10px 0 10px;
-    border: 1px solid var(--answer-stats-color);
-
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 8px;
-
-        .left-section {
-            display: flex;
-            gap: 12px;
-
-            .platform-logo {
-                width: 20px;
-                height: 20px;
-                border-radius: 6px;
-                display: flex;
-                justify-content: center;
-
-                img,
-                svg {
-                    width: 20px;
-                    height: 20px;
-                }
-            }
-
-            .platform-info {
-                .platform-name {
-                    font-weight: 500;
-                    color: var(--common-color);
-                    margin-bottom: 4px;
-                }
-
-                .platform-tags {
-                    display: flex;
-                    gap: 6px;
-
-                    .el-tag {
-                        height: 20px;
-                        padding: 0 6px;
-                    }
-                }
-            }
-        }
-
-        .right-section {
-            width: 70px;
-            border-radius: 8px;
-            padding: 4px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            font-size: 12px;
-
-            p {
-                margin: 4px;
-            }
-
-            .api-key-btn,
-            .model-add-btn {
-                width: 100%;
-                background: var(--recall-bg-color);
-                border: 0;
-                color: var(--answer-stats-color);
-                padding: 2px 12px;
-                border-radius: 4px;
-                cursor: pointer;
-                font-family: var(--thchatui-font-family);
-
-                transition: all 0.3s ease;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                text-decoration: none;
-                outline: none;
-
-                &:hover {
-                    background: var(--el-color-primary);
-                    color: white;
-                }
-            }
-        }
-    }
-
-    .card-content {
+        height: 32px;
+        padding: 0 12px;
         border-radius: 6px;
-        // background: var(--recall-bg-color);
-        overflow: hidden;
-        font-size: 12px;
-
-        &.expanded {
-            display: block;
-        }
-
-        .content-header {
-            padding: 8px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            .left-section {
-                display: flex;
-                align-items: center;
-
-                .collapse-icon {
-                    cursor: pointer;
-                    margin-right: 10px;
-                    color: var(--common-color);
-                }
-
-                .header-title {
-                    font-weight: 500;
-                    color: var(--common-color);
-                }
-            }
-
-            .right-section {
-                width: 75px;
-                border-radius: 6px;
-                padding: 2px 4px;
-                font-size: 12px;
-
-                .model-add-btn {
-                    width: 80px;
-                    background: var(--recall-bg-color);
-                    border: 0;
-                    color: var(--answer-stats-color);
-                    padding: 2px 8px 3px 8px;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-family: var(--thchatui-font-family);
-                    font-size: 12px;
-                    text-align: center;
-
-                    transition: all 0.3s ease;
-                    text-decoration: none;
-                    outline: none;
-
-                    &:hover {
-                        background: var(--el-color-primary);
-                        color: white;
-                    }
-                }
+        transition: all 0.3s;
+        
+        &.is-checked {
+            background-color: var(--el-color-primary-light-9);
+            
+            .el-radio__label {
+                color: var(--el-color-primary);
             }
         }
+    }
 
-        .content-divider {
-            height: 1px;
-            background: var(--app-small-border-color);
-            opacity: 0.5;
+    .el-switch {
+        --el-switch-off-color: var(--page-mcp-sidebar-border);
+    }
+}
+
+/* 按钮样式优化 */
+:deep(.el-button) {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s;
+    
+    &:not(.is-text) {
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-
-        .model-list {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-
-            .model-item {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 8px;
-                border-radius: 4px;
-                background: var(--recall-bg-color);
-
-                .model-info {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-
-                    .model-avatar {
-                        width: 20px;
-                        height: 20px;
-                        display: flex;
-                        justify-content: center;
-
-                        img,
-                        svg {
-                            width: 20px;
-                            height: 20px;
-                        }
-                    }
-
-                    .model-version {
-                        color: var(--el-text-color-secondary);
-                    }
-                }
-
-                .delete-icon {
-                    cursor: pointer;
-                    color: var(--el-color-danger);
-                }
-            }
+    }
+    
+    &.is-text {
+        &:hover {
+            background-color: var(--page-mcp-sidebar-bg);
+        }
+    }
+    
+    &.el-button--primary {
+        &:hover {
+            background-color: var(--el-color-primary-light-3);
+        }
+    }
+    
+    &.el-button--warning {
+        &:hover {
+            background-color: var(--el-color-warning-light-3);
         }
     }
 }
 
-.custom-tag {
-    border-radius: 4px;
-    border: 1px solid var(--answer-stats-color);
-    padding: 1px 6px;
-    color: var(--answer-stats-color);
-    font-size: 12px;
+/* 响应式设计 */
+@media screen and (max-width: 768px) {
+    .setting-container {
+        flex-direction: column;
+    }
+
+    .setting-sidebar {
+        margin: 10px;
+        max-height: 200px;
+        border-radius: 8px;
+    }
+
+    .setting-content {
+        margin: 10px;
+        padding: 20px;
+    }
+
+    .menu-item {
+        margin: 2px 4px;
+        padding: 12px 16px;
+    }
+
+    .config-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .api-key-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .preset-bg-container {
+        justify-content: center;
+    }
+}
+
+/* 分段选择器样式优化 */
+:deep(.el-segmented) {
+    background-color: var(--page-mcp-sidebar-bg);
+    border: 1px solid var(--page-mcp-sidebar-border);
+    border-radius: 8px;
+    
+    .el-segmented__item {
+        color: var(--page-mcp-text-color);
+        
+        &.is-selected {
+            background-color: var(--el-color-primary);
+            color: white;
+        }
+    }
 }
 </style>

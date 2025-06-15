@@ -69,7 +69,17 @@ export const defaultSettings = {
     // 看板娘模型索引
     live2d_model_index: 0,
     // 看板娘模型
-    live2d_model: "https://raw.githubusercontent.com/zenghongtu/live2d-model-assets/master/assets/moc/22.xmas.1/22.2017.newyear.model.json"
+    live2d_model: "https://raw.githubusercontent.com/zenghongtu/live2d-model-assets/master/assets/moc/22.xmas.1/22.2017.newyear.model.json",
+    /******************************** MCP服务器参数 ********************************/
+    // MCP服务器配置
+    mcpServers: {
+        "server_1748533402872": {
+          "name": "zhipu-web-search-sse",
+          "type": "sse",
+          "url": "https://open.bigmodel.cn/api/mcp/web_search/sse?Authorization=<your_api_key>",
+          "enabled": true
+        }
+      }
 }
 
 const setting = {

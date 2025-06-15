@@ -7,17 +7,18 @@
         </div>
         <!-- 上方Logo End -->
 
-        <!-- 聊天选项卡 Start -->
+        <!-- 聊天选项卡 Start -->  
+        <div class="chats-header">
+            <span>对话</span>
+            <el-icon class="header-icon" @click="startNewSession">
+                <Plus />
+            </el-icon>
+        </div>
+
         <div class="chats">
-            <div class="chats-header">
-                <span>对话</span>
-                <el-icon class="header-icon" @click="startNewSession">
-                    <Plus />
-                </el-icon>
-            </div>
             <template v-for="group in groupedTabs" :key="group.title">
                 <div class="chats-header" style="padding: 10px 6px 2px 6px;font-weight: 600;">
-                    <span style="font-size: 12px; color: var(--answer-stats-color);">{{ group.title }}</span>
+                    <span style="font-size: 12px; color: var(--page-appaside-chats-header-color);">{{ group.title }}</span>
                 </div>
                 <div class="session flex" v-for="x in group.tabs" :key="x.uuid" :class="{ active: x.uuid === active }"
                     @click="pickTab(x.uuid)">
@@ -228,10 +229,6 @@ export default {
          */
         goToDialog(path) {
             const componentMap = {
-                '/setting': {
-                    component: 'Setting',
-                    title: '设置'
-                },
                 '/about': {
                     component: 'About',
                     title: '关于'
@@ -246,11 +243,6 @@ export default {
                 this.dialogTitle = componentMap[path].title
                 this.currentComponent = componentMap[path].component
                 this.dialogVisible = true
-                if (path === '/setting') {
-                    this.dialogClass = 'big-page'
-                } else {
-                    this.dialogClass = ''
-                }
             } else {
                 this.goToPage(path)
             }
@@ -260,16 +252,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/**
- * 通用的hover和active效果定义
- */
 @mixin hover-active-effect {
-
     &.active,
     &:hover {
-        background: var(--aside-active-hover-bg);
+        background: var(--page-appaside-active-hover-bg);
         border-radius: 8px;
         font-weight: 600;
+        transform: translateX(3px);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+}
+
+@mixin header-before {
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 70%;
+        width: 4px;
+        background-color: var(--page-appaside-chats-header-color);
+        border-radius: 2px;
     }
 }
 
@@ -281,7 +285,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: var(--aside-bg);
+    background: var(--page-appaside-bg);
 }
 
 /**
@@ -291,15 +295,59 @@ export default {
     display: flex;
     align-items: center;
     padding: 20px;
+    justify-content: center;
+    position: relative;
 
     img {
         height: 35px;
-        margin-right: 10px;
-        border-radius: 5px;
+        margin-right: 12px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
     }
 
     span {
-        font-size: 18px;
+        font-size: 20px;
+        font-weight: 700;
+        background: var(--page-appaside-logo-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: 0.5px;
+    }
+}
+
+.chats-header {
+    width: 98%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+
+    span {
+        color: var(--page-appaside-chats-header-color);
+        font-weight: 600;
+        position: relative;
+        padding-left: 14px;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        @include header-before;
+    }
+
+    .header-icon {
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        color: var(--common-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            background-color: var(--page-appaside-active-hover-bg);
+            transform: rotate(90deg);
+        }
     }
 }
 
@@ -308,7 +356,7 @@ export default {
  */
 .chats {
     flex: 1;
-    padding: 20px;
+    width: 100%;
     overflow-y: auto;
     scrollbar-width: none;
 
@@ -316,36 +364,32 @@ export default {
         display: none;
     }
 
-    &-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5px;
-
-        span {
-            color: var(--answer-stats-color);
-        }
-
-        .header-icon {
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
-
-            &:hover {
-                background-color: var(--aside-active-hover-bg);
-            }
-        }
-    }
-
     .session {
-        padding: 6px 6px 6px 6px;
-        margin-bottom: 2px;
+        width: 220px;
+        padding: 6px;
+        margin-bottom: 1px;
         cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+        animation: slideIn 0.3s ease-out;
+
+        &:nth-child(even) {
+            animation-delay: 0.1s;
+        }
+
+        &:nth-child(odd) {
+            animation-delay: 0.2s;
+        }
 
         @include hover-active-effect;
 
+        &.active {
+            background: var(--page-appaside-active-hover-bg);
+        }
+
         .title {
-            width: 220px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -355,17 +399,26 @@ export default {
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 flex: 1;
+                font-weight: 500;
+                transition: all 0.2s ease;
+                padding: 4px 2px;
             }
 
             .btn-box {
-                margin-left: 8px;
+                margin-left: 10px;
                 flex-shrink: 0;
                 display: flex;
                 align-items: center;
-                border-radius: 4px;
+                border-radius: 6px;
+                padding: 6px;
+                transition: all 0.3s ease;
+                color: var(--el-color-danger);
+                background-color: rgba(var(--el-color-danger-rgb), 0.1);
+                transform: scale(1.1);
 
                 &:hover {
-                    color: var(--el-color-primary);
+                    background-color: rgba(var(--el-color-danger-rgb), 0.5);
+                    transform: scale(1.2);
                 }
             }
         }
@@ -380,6 +433,22 @@ export default {
     font-size: 12px;
     border-top: 1px solid var(--app-small-border-color);
     padding: 4px 0;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 1px;
+        background: linear-gradient(90deg,
+                transparent 0%,
+                var(--app-small-border-color) 20%,
+                var(--app-small-border-color) 80%,
+                transparent 100%);
+    }
 
     .options {
         width: 100%;
@@ -396,24 +465,47 @@ export default {
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            padding: 8px 0;
-            margin: 0;
+            padding: 12px 0;
+            margin: 2px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
 
             &:hover {
-                @include hover-active-effect;
+                background: var(--page-appaside-active-hover-bg);
+                transform: translateY(-3px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+
+                &::before {
+                    opacity: 0.05;
+                }
+
+                .icon {
+                    transform: translateY(-2px);
+                }
+
+                .option-text {
+                    transform: translateY(2px);
+                }
             }
 
             .icon {
                 width: 24px;
                 height: 24px;
-                margin: 0 0 4px 0;
+                margin: 0 0 8px 0;
+                transition: all 0.3s ease;
             }
 
             .option-text {
-                font-weight: 600;
                 line-height: 16px;
                 width: auto;
                 text-align: center;
+                transition: all 0.3s ease;
+            }
+
+            &:active {
+                transform: translateY(-1px);
             }
         }
     }

@@ -1,16 +1,16 @@
 <template>
-    <div>
+    <div class="kb-container standard-page-container">
+        <div class="kb-header standard-page-header">
+            <h4>知识库</h4>
+            <div class="kb-stats standard-page-stats">
+                <span>总文件数: {{ totalFiles }}</span>
+                <span>总分段数: {{ totalChunks }}</span>
+            </div>
+        </div>
+
         <!-- 知识库列表 -->
         <el-row :gutter="24" justify="center" style="margin-left: 0;margin-right: 0;">
-            <el-col :md="22" :sm="22" :xs="22">
-                <div class="kb-header">
-                    <h4>知识库</h4>
-                    <div class="kb-stats">
-                        <span>总文件数: {{ totalFiles }}</span>
-                        <span>总分段数: {{ totalChunks }}</span>
-                    </div>
-                </div>
-
+            <el-col :md="24" :sm="24" :xs="24">
                 <!-- 知识库卡片列表 -->
                 <el-row :gutter="24">
                     <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6">
@@ -24,7 +24,7 @@
                         </div>
                     </el-col>
                     <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="6" v-for="repo in repos" :key="repo.repoId">
-                        <div class="kb-card dashed-border">
+                        <div class="kb-card">
                             <div class="kb-card-header">
                                 <div class="kb-card-title-row">
                                     <span class="kb-card-title">{{ repo.name }}</span>
@@ -48,7 +48,6 @@
                         </div>
                     </el-col>
                 </el-row>
-
             </el-col>
         </el-row>
 
@@ -115,7 +114,7 @@
                 </div>
 
                 <!-- 文件上传部分 -->
-                <div class="upload-card" style="border-bottom: none;">
+                <div class="upload-card">
                     <el-upload class="upload-button" drag :auto-upload="true" :http-request="handleLocalUpload" multiple
                         :before-upload="beforeUpload" :show-file-list="false" accept=".pdf,.doc,.docx,.txt">
                         <template v-if="!isUploading">
@@ -559,15 +558,13 @@ export default {
 
 <style lang="scss" scoped>
 /**
- * 通用的hover和active效果定义
+ * 知识库容器
  */
-@mixin hover-active-effect {
-
-    &.active,
-    &:hover {
-        background: var(--aside-active-hover-bg);
-        border-radius: 5px;
-    }
+.kb-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    animation: slideIn 0.3s ease-in-out;
 }
 
 /**
@@ -578,49 +575,32 @@ export default {
 }
 
 /**
- * 页面头部标题
- */
-.kb-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 28px;
-    line-height: 28px;
-    margin-bottom: 20px;
-
-    .kb-stats {
-        display: flex;
-        gap: 20px;
-        font-size: 14px;
-        color: var(--answer-stats-color);
-    }
-}
-
-/**
  * 知识库卡片
  */
 .kb-card {
     display: flex;
     flex-direction: column;
-    width: 90%;
-    padding: 5px 18px;
+    padding: 20px;
     border-radius: 8px;
-    margin: 5px 0 5px 0;
-    height: 120px;
+    margin-bottom: 20px;
+    height: 130px;
     justify-content: space-between;
-    border: 2px solid var(--app-small-border-color);
-    box-shadow: none;
-    transition: all 0.2s ease;
+    background-color: var(--standard-page-bg-color);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
 
     &:hover {
-        transform: translateY(-2px);
-        border-color: var(--el-color-primary-light-5);
+        transform: translateY(-5px);
+
+        &::after {
+            transform: scaleX(1);
+        }
     }
 
     /* 卡片内部头部 */
     >.kb-card-header {
-        font-weight: bold;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
 
         /* 卡片标题行,包含标题和操作按钮 */
         >.kb-card-title-row {
@@ -628,21 +608,27 @@ export default {
             justify-content: space-between;
             align-items: center;
 
+            >.kb-card-title {
+                font-weight: 600;
+                font-size: 18px;
+                color: var(--page-mcp-header-text);
+            }
+
             /* 卡片操作按钮容器 */
             >.kb-card-actions {
                 display: flex;
-                gap: 12px;
+                gap: 16px;
 
                 .action-icon {
                     cursor: pointer;
-                    font-size: 16px;
-                    padding: 4px;
+                    padding: 8px;
                     opacity: 0.7;
                     transition: all 0.2s;
+                    border-radius: 4px;
 
                     &:hover {
                         opacity: 1;
-                        background: none;
+                        background-color: var(--page-mcp-server-hover-bg);
                         transform: scale(1.1);
                     }
 
@@ -656,9 +642,9 @@ export default {
 
     /* 卡片描述文本 */
     .kb-card-description {
-        font-size: 12px;
+        font-size: 14px;
         line-height: 1.5;
-        color: #666;
+        color: var(--page-mcp-text-color);
         margin-bottom: 10px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -671,11 +657,14 @@ export default {
     /* 卡片底部信息 */
     .kb-card-footer {
         font-size: 12px;
-        color: #999;
+        color: var(--answer-stats-color);
+        margin-top: auto;
 
         /* 创建时间 */
         >.create-time {
             font-style: italic;
+            display: flex;
+            align-items: center;
         }
     }
 }
@@ -688,27 +677,28 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s;
-    border: 2px dashed var(--app-small-border-color);
-    background: transparent;
+    border: 2px dashed var(--page-mcp-sidebar-border);
+    background: transparent !important;
+    box-shadow: none !important;
 
     &:hover {
         border-color: var(--el-color-primary);
         background: transparent;
-
-        .create-kb-content {
-            color: var(--el-color-primary);
-        }
+        transform: translateY(-5px);
     }
 
     >.create-kb-content {
         display: flex;
         flex-direction: column;
         align-items: center;
-        color: #909399;
+        color: var(--page-mcp-text-color);
+        opacity: 0.7;
+        transition: all 0.3s;
 
         >.create-text {
-            margin-top: 10px;
+            margin-top: 12px;
+            font-size: 16px;
+            font-weight: 500;
         }
     }
 }
@@ -716,113 +706,164 @@ export default {
 .file-container {
     display: flex;
     flex-direction: column;
+    gap: 16px;
     padding: 5px;
     border-radius: 8px;
-    margin: 5px 0 5px 0;
+    margin: 5px 0;
+    animation: slideIn 0.4s ease-out;
+}
 
-    /* 卡片样式 */
-    >.file-card,
-    .upload-card {
-        display: flex;
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
 
-        justify-content: space-between;
-        padding: 10px;
-        border-bottom: 1px dashed grey;
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
 
-        /* 文件图标样式 */
-        >.file-icon {
-            width: 40px;
-            height: 40px;
-            object-fit: cover;
-            margin-right: 10px;
-            border-radius: 5px;
-        }
+/* 卡片样式 */
+.file-card {
+    display: flex;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: var(--page-mcp-sidebar-bg);
+    box-shadow: 0 2px 8px 0 var(--page-mcp-sidebar-shadow);
+    transition: all 0.3s ease;
 
-        /* 文件详情样式 */
-        >.file-details {
-            flex: 1;
+    /* 文件图标样式 */
+    >.file-icon {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        margin-right: 16px;
+        border-radius: 5px;
+    }
 
-            >.file-title {
-                font-weight: bold;
-                margin-bottom: 5px;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                color: var(--common-color);
+    /* 文件详情样式 */
+    >.file-details {
+        flex: 1;
 
-                .delete-btn {
-                    background: none;
-                    border: none;
-                    color: #f00;
-                    cursor: pointer;
-                    font-size: 18px;
-                    padding: 0;
-                    margin-left: auto;
-                }
+        >.file-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--page-mcp-header-text);
+            font-size: 16px;
+
+            .el-button {
+                font-size: 14px;
+                padding: 8px;
             }
 
-            >.file-info {
-                display: flex;
-                gap: 15px;
-                color: var(--answer-stats-color);
+            .delete-btn {
+                background: none;
+                border: none;
+                color: #909399;
+                cursor: pointer;
+                font-size: 18px;
+                padding: 6px;
+                margin-left: auto;
+                border-radius: 4px;
+                transition: all 0.2s;
 
-                .upload-time,
-                .file-size {
-                    white-space: nowrap;
+                &:hover {
+                    color: #F56C6C;
+                    background-color: rgba(245, 108, 108, 0.1);
                 }
             }
         }
 
-        /* 拖拽上传按钮 */
-        >.upload-button {
-            width: 100%;
+        >.file-info {
+            display: flex;
+            gap: 20px;
+            color: var(--answer-stats-color);
+            font-size: 12px;
+            margin-bottom: 10px;
+
+            .upload-time,
+            .file-size {
+                white-space: nowrap;
+            }
         }
     }
 }
 
+.upload-card {
+    padding: 24px;
+    border-radius: 8px;
+    background-color: var(--page-mcp-sidebar-bg);
+    box-shadow: 0 2px 8px 0 var(--page-mcp-sidebar-shadow);
+    transition: all 0.3s ease;
+}
+
 :deep(.el-upload-dragger) {
-    padding: 0;
+    width: 100%;
+    height: 180px;
+    padding: 20px;
     background: none;
+    border: 2px dashed var(--page-mcp-sidebar-border);
+    transition: all 0.3s;
+
+    &:hover {
+        border-color: var(--el-color-primary);
+        transform: translateY(-5px);
+    }
+
+    .el-icon--upload {
+        font-size: 48px;
+        color: var(--el-color-primary);
+        margin-bottom: 16px;
+    }
+
+    .el-upload__text {
+        font-size: 16px;
+        color: var(--page-mcp-text-color);
+    }
 }
 
 .el-upload__tip {
     text-align: center;
-}
-
-:deep(.el-page-header__content),
-:deep(.el-page-header__back) {
-    color: var(--common-color);
+    margin-top: 12px;
+    color: var(--answer-stats-color);
 }
 
 .upload-progress-text {
-    margin-top: 10px;
-    color: #909399;
+    margin-top: 16px;
+    color: var(--page-mcp-text-color);
     text-align: center;
+    font-size: 14px;
 }
 
 :deep(.el-progress) {
-    margin: 10px auto;
+    margin: 20px auto;
 }
 
 .chunks-preview {
-    margin-top: 10px;
+    margin-top: 20px;
 
     .chunks-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-        gap: 8px;
+        gap: 12px;
     }
 
     .chunk-square {
+        aspect-ratio: 1;
         border-radius: 8px;
         cursor: pointer;
-        transition: all 0.2s;
-        border: 1px solid var(--app-small-border-color);
-        background: transparent;
-        color: var(--answer-stats-color);
+        border: 1px solid var(--page-mcp-sidebar-border);
+        background-color: var(--standard-page-bg-color);
+        color: var(--page-mcp-text-color);
+        position: relative;
+        overflow: hidden;
 
         &:hover {
-            border-color: var(--el-color-primary-light-5);
+            border-color: var(--el-color-primary);
         }
 
         &.expanded {
@@ -831,39 +872,212 @@ export default {
             height: auto;
             min-height: 250px;
             border-width: 2px;
+            border-color: var(--el-color-primary);
         }
 
         .chunk-square-content {
-            padding: 8px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            height: 100%;
         }
 
         .chunk-number {
             text-align: center;
-        }
-
-        .chunk-length {
-            color: var(--answer-stats-color);
-            margin-top: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--page-mcp-header-text);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .chunk-expanded-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-            font-weight: bold;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--page-mcp-sidebar-border);
+
+            span:first-child {
+                font-weight: 600;
+                font-size: 16px;
+                color: var(--page-mcp-header-text);
+            }
+        }
+
+        .chunk-length {
+            color: var(--answer-stats-color);
+            font-size: 12px;
+            padding: 4px 8px;
+            background-color: rgba(var(--el-color-primary-rgb), 0.1);
+            border-radius: 12px;
         }
 
         .chunk-expanded-content {
             flex: 1;
             line-height: 1.6;
-            color: var(--answer-stats-color);
+            color: var(--page-mcp-text-color);
             white-space: pre-wrap;
             word-break: break-word;
+            font-size: 14px;
         }
     }
+}
+
+/* 添加更多动画效果 */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 添加响应式设计 */
+@media screen and (max-width: 768px) {
+    .kb-container {
+        padding: 10px;
+    }
+
+    .kb-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+
+        .kb-stats {
+            width: 100%;
+            justify-content: space-between;
+        }
+    }
+
+    .kb-card {
+        height: auto;
+        min-height: 130px;
+    }
+
+    .file-card {
+        flex-direction: column;
+
+        .file-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+
+        .file-title {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .file-info {
+            flex-direction: column;
+            gap: 5px;
+        }
+    }
+
+    .chunks-grid {
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)) !important;
+    }
+
+    .chunk-square.expanded {
+        min-height: 200px;
+    }
+}
+
+/* 优化弹窗样式 */
+:deep(.el-dialog) {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.3s ease-out;
+
+    .el-dialog__header {
+        padding: 20px;
+        margin: 0;
+        border-bottom: 1px solid var(--page-mcp-sidebar-border);
+        background-color: var(--page-mcp-sidebar-bg);
+    }
+
+    .el-dialog__title {
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--page-mcp-header-text);
+    }
+
+    .el-dialog__body {
+        padding: 24px;
+        background-color: var(--standard-page-bg-color);
+    }
+
+    .el-dialog__footer {
+        padding: 16px 24px;
+        border-top: 1px solid var(--page-mcp-sidebar-border);
+        background-color: var(--page-mcp-sidebar-bg);
+    }
+}
+
+/* 优化按钮样式 */
+:deep(.el-button) {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s;
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+
+    &.is-disabled:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+/* 优化表单样式 */
+:deep(.el-form-item) {
+    margin-bottom: 24px;
+    transition: all 0.2s ease;
+
+    &:hover {
+        transform: translateX(3px);
+    }
+
+    .el-input__wrapper,
+    .el-textarea__wrapper {
+        box-shadow: 0 0 0 1px var(--page-mcp-sidebar-border) inset;
+        transition: all 0.3s;
+
+        &:hover,
+        &.is-focus {
+            box-shadow: 0 0 0 1px var(--el-color-primary) inset;
+        }
+    }
+}
+
+/* 优化上传进度样式 */
+:deep(.el-progress-circle) {
+    animation: pulse 2s infinite;
 }
 </style>

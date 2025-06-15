@@ -6,7 +6,9 @@
         </div>
         <div class="carousel-container">
             <div class="carousel-prev" @click="scrollCarousel('prev')" v-show="items.length > 1">
-                <el-icon><ArrowLeft /></el-icon>
+                <el-icon>
+                    <ArrowLeft />
+                </el-icon>
             </div>
             <div :class="[`${type}-items-container`]" ref="itemsContainer">
                 <div v-for="(item, index) in items" :key="index" :class="[`${type}-item`]">
@@ -26,7 +28,9 @@
                 </div>
             </div>
             <div class="carousel-next" @click="scrollCarousel('next')" v-show="items.length > 1">
-                <el-icon><ArrowRight /></el-icon>
+                <el-icon>
+                    <ArrowRight />
+                </el-icon>
             </div>
         </div>
     </div>
@@ -75,10 +79,10 @@ export default {
         scrollCarousel(direction) {
             const container = this.$refs.itemsContainer;
             if (!container) return;
-            
+
             const scrollAmount = 300; // 每次滚动的像素数
             const currentScroll = container.scrollLeft;
-            
+
             if (direction === 'prev') {
                 container.scrollTo({
                     left: Math.max(0, currentScroll - scrollAmount),
@@ -121,6 +125,7 @@ export default {
     padding: 5px 0;
     width: 100%;
     font-size: 12px;
+    background-color: var(--components-searchresultcard-content-bg);
 }
 
 /**
@@ -138,13 +143,14 @@ export default {
  */
 .recall-header,
 .web-search-header {
-    color: var(--common-color);
-    font-weight: bold;
+    color: var(--components-searchresultcard-header-text);
     display: flex;
     align-items: center;
-    padding: 5px 10px;
-    background-color: var(--sendBox-bg-color);
-    border-radius: 10px;
+    background-color: var(--components-searchresultcard-header-bg);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    font-size: 12px;
 }
 
 /**
@@ -157,11 +163,14 @@ export default {
     overflow-x: auto;
     gap: 10px;
     scrollbar-width: thin;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
 
     &::-webkit-scrollbar {
-        display: none; /* Chrome, Safari and Opera */
+        display: none;
+        /* Chrome, Safari and Opera */
     }
 }
 
@@ -173,13 +182,17 @@ export default {
     min-width: 120px;
     max-width: 200px;
     flex: 0 0 auto;
-    margin-bottom: 0;
-    border-radius: 8px;
-    border: 1px solid var(--answer-stats-color);
-    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 20px;
+    border-radius: 12px;
+    background-color: var(--components-searchresultcard-item-bg);
+    border: 1px solid var(--components-searchresultcard-item-border);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
 
     &:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--components-searchresultcard-item-shadow);
     }
 }
 
@@ -202,17 +215,30 @@ export default {
 }
 
 .recall-title {
-    color: var(--recall-item-title-color);
-    font-weight: bold;
+    color: var(--components-searchresultcard-title-color);
+    font-weight: 600;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .web-search-link {
-    color: var(--el-color-primary);
-    font-weight: bold;
+    color: var(--components-searchresultcard-link-color);
+    font-weight: 600;
     text-decoration: none;
+    line-height: 1.4;
+    transition: all 0.3s ease;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    position: relative;
 
     &:hover {
         text-decoration: underline;
@@ -224,7 +250,7 @@ export default {
  */
 .recall-score,
 .web-search-score {
-    color: var(--recall-item-title-color);
+    color: var(--components-searchresultcard-score-color);
     font-weight: normal;
     font-size: 12px;
     margin-top: 4px;
@@ -235,16 +261,18 @@ export default {
  */
 .recall-text,
 .web-search-text {
-    color: var(--answer-stats-color);
-    line-height: 1.5;
-    position: relative;
-    font-size: 11px;
+    color: var(--components-searchresultcard-text-color);
+    line-height: 1.6;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    &:hover {
+        opacity: 1;
+    }
 }
 
 /**
@@ -252,7 +280,27 @@ export default {
  */
 .view-all-btn {
     margin: 0;
-    padding: 0;
+    padding: 8px 16px;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--components-searchresultcard-btn-color);
+    background: var(--components-searchresultcard-btn-bg);
+    border: 1px solid var(--components-searchresultcard-btn-border);
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+
+    &:hover {
+        background: var(--components-searchresultcard-btn-hover-bg);
+        border-color: var(--components-searchresultcard-btn-hover-border);
+        color: var(--components-searchresultcard-btn-hover-color);
+
+        &::before {
+            left: 100%;
+        }
+    }
 }
 
 /**
@@ -266,28 +314,64 @@ export default {
         width: 100%;
     }
 
-    &-prev, &-next {
+    &-prev,
+    &-next {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 28px;
-        height: 28px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
-        background-color: var(--sendBox-bg-color);
-        border: 1px solid var(--answer-stats-color);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        background: var(--components-searchresultcard-carousel-bg);
+        border: 1px solid var(--components-searchresultcard-carousel-border);
+        box-shadow: var(--components-searchresultcard-carousel-shadow);
         cursor: pointer;
         z-index: 10;
         flex-shrink: 0;
-        transition: all 0.2s;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
+        color: var(--components-searchresultcard-carousel-color);
+        backdrop-filter: blur(10px);
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--components-searchresultcard-link-color) 0%, var(--components-searchresultcard-btn-hover-color) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .el-icon {
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
 
         &:hover {
-            background-color: var(--el-color-primary-light-9);
-            color: var(--el-color-primary);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border-color: var(--components-searchresultcard-carousel-hover-border);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: var(--components-searchresultcard-carousel-hover-shadow);
+
+            &::before {
+                opacity: 1;
+            }
+
+            .el-icon {
+                color: white;
+                transform: scale(1.1);
+            }
+        }
+
+        &:active {
+            transform: translateY(-50%) scale(1.05);
+            transition: transform 0.1s ease;
         }
     }
 
@@ -299,4 +383,4 @@ export default {
         right: -12px;
     }
 }
-</style> 
+</style>

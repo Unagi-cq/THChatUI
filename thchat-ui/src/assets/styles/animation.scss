@@ -1,0 +1,57 @@
+/**
+ * SideBar 从右侧渐入动画
+ */
+@keyframes componentsSidebarFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+    }
+}
+
+/**
+ * 整体从右侧渐入动画
+ */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/**
+ * 整体从上向下渐入动画
+ */
+@keyframes elementFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/**
+ * ICON 鼠标悬停 放大效果 一般为关闭ICON设置
+ */
+.icon-hover-effect {
+    transition: opacity 0.1s ease, transform 0.1s ease;
+}
+
+.icon-hover-effect:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}

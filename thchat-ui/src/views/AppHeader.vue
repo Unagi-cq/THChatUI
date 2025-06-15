@@ -1,8 +1,9 @@
 <template>
     <div class="header-content">
         <div class="title-container">
-            <span class="header-title" :contenteditable="header_title !== 'THChatUI'" @blur="updateTitle"
-                @keydown.enter.prevent="$event.target.blur()" @input="limitTitleLength($event)">
+            <span class="header-title" :contenteditable="header_title !== 'THChatUI'"
+                @keydown.enter.prevent="$event.target.blur()" @input="limitTitleLength($event)" @focus="isActive = true"
+                @blur="onBlur($event)">
                 {{ header_title }}
             </span>
             <SvgIcon icon-class="magic-wand" style="width: 20px; height: 20px;" v-show="header_title !== 'THChatUI'"
@@ -31,7 +32,8 @@ export default {
     data() {
         return {
             max_title_length: 12,
-            default_title: 'THChatUI'
+            default_title: 'THChatUI',
+            isActive: false
         }
     },
     computed: {
@@ -97,79 +99,128 @@ export default {
                 sel.removeAllRanges();
                 sel.addRange(range);
             }
+        },
+        onBlur(event) {
+            this.isActive = false;
+            this.updateTitle(event);
         }
     }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@mixin underline-animation {
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--page-appheader-hover-underline);
+        transition: width 0.3s ease;
+        border-radius: 2px;
+    }
+
+    &:hover::after {
+        width: 100%;
+    }
+}
+
 .header-content {
     height: 100%;
-    padding: 0 10px;
+    padding: 0 4px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
 
-    .title-container {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
+.title-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+}
 
-    .header-title {
-        color: var(--common-color);
-        outline: none;
-        padding: 2px 4px;
-        border-radius: 4px;
-    }
+.header-title {
+    color: var(--page-appheader-title-color);
+    outline: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    letter-spacing: 0.3px;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
 
-    .header-title[contenteditable="true"]:hover {
-        background: var(--aside-active-hover-bg);
-    }
+    @include underline-animation;
+}
 
-    .header-title[contenteditable="true"]:focus {
-        background: var(--aside-active-hover-bg);
-    }
+.header-title[contenteditable="true"]:focus {
+    background: var(--page-appheader-title-focus-bg);
+}
 
-    .title-edit-icon {
-        color: var(--common-color);
-    }
+.title-edit-icon {
+    color: var(--page-appheader-icon-color);
+    transition: all 0.3s ease;
+    opacity: 0.8;
+}
 
+.title-container:hover .title-edit-icon {
+    transform: rotate(15deg) scale(1.1);
+    opacity: 1;
+}
+
+.model-info {
+    padding: 6px 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+    @include underline-animation;
+}
+
+.model-info-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.model-name {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: letter-spacing 0.3s ease;
+}
+
+.dropdown-icon {
+    color: var(--page-appheader-icon-color);
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.model-info:hover .dropdown-icon {
+    transform: rotate(15deg) scale(1.1);
+    opacity: 1;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 768px) {
     .model-info {
-        padding: 8px;
-        position: relative;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-
-        .model-info-content {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .model-name {
-            font-weight: bold;
-            letter-spacing: 0px;
-        }
-
-        .dropdown-icon {
-            color: var(--common-color);
-            display: flex;
-            align-items: center;
-        }
-
-        &.active,
-        &:hover {
-            background: var(--aside-active-hover-bg);
-            border-radius: 8px;
-        }
+        padding: 6px 8px;
     }
 }
 </style>
 
 <style>
 .settings-tooltip {
+    padding: 10px;
     white-space: pre-line !important;
     line-height: 1.5;
 }

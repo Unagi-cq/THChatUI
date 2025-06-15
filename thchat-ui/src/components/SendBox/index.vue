@@ -1,6 +1,6 @@
 <template>
     <el-row :gutter="24" justify="center" style="margin-left: 0;margin-right: 0;">
-        <el-col :md="16">
+        <el-col :md="18">
             <div class="search-container">
                 <!--    输入框    -->
                 <el-input placeholder="请输入你的问题或需求，按'↑'可快捷复制问题" v-model="query" :autosize="{ minRows: 2, maxRows: 8 }"
@@ -586,7 +586,6 @@ $icon-length: 32px;
  * 通用的hover效果定义
  */
 @mixin hover-effect {
-
     &.active,
     &:hover {
         background: var(--aside-active-hover-bg);
