@@ -3,7 +3,7 @@
         <div class="title-section">
             <img :src="logoSrc" class="logo" alt="logo" />
 
-            <span class="title">THChatUI<span style="font-size: 12px; color: #999;">v3.0.3</span></span>
+            <span class="title">THChatUI<span style="font-size: 12px; color: #999;">v3.0.4</span></span>
             <p class="subtitle">欢迎使用<span>THChatUI</span>，一个基于<span>Vue</span>和<span>Element Plus</span>的Web对话管理WebUI。目前支持以下平台：<b>Web PC端、Web 移动端、Wins桌面端。</b></p>
 
             <p>
@@ -29,6 +29,13 @@
         <!-- 更新日志 -->
         <div class="changelog-section">
             <h2>更新日志</h2>
+
+            <div class="version-block">
+                <h3>v3.0.4 - 2025.06.15</h3>
+                <ul>
+                    <li>[upd] UI优化</li>
+                </ul>
+            </div>
 
             <div class="version-block">
                 <h3>v3.0.3 - 2025.05.17</h3>
